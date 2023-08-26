@@ -11,7 +11,7 @@ import com.example.roomtodolist.database.task.TaskTable
 @Dao
 interface FolderDAO {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun addFolder(folderTable: FolderTable)
 
     @Query("SELECT * FROM FolderTable ORDER BY name")

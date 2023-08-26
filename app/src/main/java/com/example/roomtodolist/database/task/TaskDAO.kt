@@ -11,14 +11,14 @@ import com.example.roomtodolist.database.folder.FolderTable
 @Dao
 interface TaskDAO {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun addTask(taskTable: TaskTable)
 
     @Query("SELECT * FROM TaskTable ORDER BY id")
     suspend fun getTasks(): List<TaskTable>
 
-    @Query("SELECT * FROM TaskTable WHERE folder = :folder")
-    suspend fun getTasksFromFolder(folder: String)
+//    @Query("SELECT * FROM TaskTable WHERE TaskTable.folder = :folder")
+//    suspend fun getTasksFromFolder(folder: String)
 
     @Update
     suspend fun updateTask(taskTable: TaskTable)

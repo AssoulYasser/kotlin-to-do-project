@@ -5,6 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import com.example.roomtodolist.database.folder.FolderDAO
 import com.example.roomtodolist.database.folder.FolderTable
 import com.example.roomtodolist.database.task.TaskDAO
 import com.example.roomtodolist.database.task.converters.TaskDateConverter
@@ -14,7 +15,12 @@ import com.example.roomtodolist.database.task.TaskTable
 @Database(entities = [TaskTable::class, FolderTable::class], version = 1)
 @TypeConverters(value = [TaskDateConverter::class, TaskPriorityConverter::class])
 abstract class MainDataBase: RoomDatabase() {
-    abstract fun getDao() : TaskDAO
+
+    abstract fun getTaskDao() : TaskDAO
+    abstract fun getFolderDao() : FolderDAO
+
+
+   //TODO(STOP IGNORING THE CONFLECT)
 
     companion object {
         @Volatile

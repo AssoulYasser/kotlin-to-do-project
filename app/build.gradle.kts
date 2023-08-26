@@ -49,14 +49,31 @@ android {
 
 dependencies {
 
-    val roomVersion = "2.5.2"
 
+    //MATERIAL3
+    val material3Version = "1.1.1"
+    implementation("androidx.compose.material3:material3:$material3Version")
+    implementation("androidx.compose.material3:material3-window-size-class:$material3Version")
+
+
+    //ROOM
+    val roomVersion = "2.5.2"
     implementation("androidx.room:room-runtime:$roomVersion")
     implementation("androidx.room:room-ktx:$roomVersion")
     annotationProcessor("androidx.room:room-compiler:$roomVersion")
     ksp("androidx.room:room-compiler:$roomVersion")
 
+    //Navigation
+    val navVersion = "2.4.0-alpha10"
+    implementation("androidx.navigation:navigation-compose:$navVersion")
 
+    //Constraint Layout
+    val constraintLayoutVer = "1.0.1"
+    implementation("androidx.constraintlayout:constraintlayout-compose:$constraintLayoutVer")
+
+    //Lottie
+    val lottieVer = "6.1.0"
+    implementation("com.airbnb.android:lottie-compose:$lottieVer")
 
     implementation("androidx.core:core-ktx:1.10.1")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")

@@ -17,15 +17,19 @@ import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Color(0xFFFF0000),
-    secondary = Color.White,
-    background = Color(0xFF2B2B2B)
+    primary = LightColors.Primary,
+    secondary = LightColors.Secondary,
+    tertiary = LightColors.Tertiary,
+    background = LightColors.Background,
+    onBackground = LightColors.Foreground
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Color(0xFFFF0000),
-    secondary = Color(0xFF2B2B2B),
-    background = Color.White
+    primary = LightColors.Primary,
+    secondary = LightColors.Secondary,
+    tertiary = LightColors.Tertiary,
+    background = LightColors.Background,
+    onBackground = LightColors.Foreground
 )
 
 @Composable
@@ -47,7 +51,7 @@ fun RoomToDoListTheme(
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
-            window.statusBarColor = colorScheme.primary.toArgb()
+            window.statusBarColor = colorScheme.background.toArgb()
             WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
         }
     }

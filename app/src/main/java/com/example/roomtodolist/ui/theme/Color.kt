@@ -2,11 +2,19 @@ package com.example.roomtodolist.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val Purple80 = Color(0xFFD0BCFF)
-val PurpleGrey80 = Color(0xFFCCC2DC)
-val Pink80 = Color(0xFFEFB8C8)
 
-val Purple40 = Color(0xFF6650a4)
-val PurpleGrey40 = Color(0xFF625b71)
-val Pink40 = Color(0xFF7D5260)
+object LightColors {
+    val Primary = Color(0xff2b5c80)
+    val Secondary = Color(0xff2b5c80)
+    val Tertiary = Color(0xff95c1e3)
+    val Background = Color.White
+    val Foreground = Color.Black
+}
+
+object StateColors {
+    val Negative = Color(0xfff04c4d)
+    val Positive = Color(0xff48b864)
+    val Active = Color(0xff5084c4)
+    val Warning = Color(0xffffcd3d)
+}
 
