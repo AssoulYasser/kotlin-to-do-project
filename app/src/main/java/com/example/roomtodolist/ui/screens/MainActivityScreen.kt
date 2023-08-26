@@ -1,10 +1,8 @@
 package com.example.roomtodolist.ui.screens
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -25,8 +23,6 @@ const val TAG = "DEBUGGING : "
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun MainActivityScreen(windowSize: WindowSizeClass, navController: NavHostController) {
-    Log.d(TAG, if (LocalConfiguration.current.screenHeightDp >= LocalConfiguration.current.screenWidthDp) "portrait" else "landscape")
-    Log.d(TAG, "MainActivityScreen: ${windowSize.widthSizeClass}")
     if (LocalConfiguration.current.screenHeightDp >= LocalConfiguration.current.screenWidthDp) {
         Box(modifier = Modifier.fillMaxSize()) {
             Box(modifier = Modifier.padding(bottom = 50.dp)) {
@@ -39,23 +35,23 @@ fun MainActivityScreen(windowSize: WindowSizeClass, navController: NavHostContro
     } else {
         when(windowSize.widthSizeClass) {
             WindowWidthSizeClass.Compact, WindowWidthSizeClass.Medium -> {
-                Row(
-                    modifier = Modifier.fillMaxSize(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Start
-                ) {
-                    SideBar(navHostController = navController)
-                    NavGraph(navHostController = navController, windowSizeClass = windowSize)
+                Box(modifier = Modifier.fillMaxSize()){
+                    Box(modifier = Modifier.padding(start = 50.dp)) {
+                        NavGraph(navHostController = navController, windowSizeClass = windowSize)
+                    }
+                    Box(modifier = Modifier) {
+                        SideBar(navHostController = navController)
+                    }
                 }
             }
             WindowWidthSizeClass.Expanded -> {
-                Row(
-                    modifier = Modifier.fillMaxSize(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Start
-                ) {
-                    ExpendedBar(navHostController = navController)
-                    NavGraph(navHostController = navController, windowSizeClass = windowSize)
+                Box(modifier = Modifier.fillMaxSize()) {
+                    Box(modifier = Modifier.padding(start = 200.dp)) {
+                        NavGraph(navHostController = navController, windowSizeClass = windowSize)
+                    }
+                    Box(modifier = Modifier) {
+                        ExpendedBar(navHostController = navController)
+                    }
                 }
             }
         }
