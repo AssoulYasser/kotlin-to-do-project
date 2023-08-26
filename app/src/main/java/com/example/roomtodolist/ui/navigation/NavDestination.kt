@@ -11,7 +11,7 @@ sealed class NavDestination(val rout:String, val title: String, val icon: NavIco
     object Task : NavDestination(
         "task",
         "Tasks",
-        NavIcon(R.drawable.filled_add_icon, R.drawable.outlined_task_icon)
+        NavIcon(R.drawable.filled_task_icon, R.drawable.outlined_task_icon)
     )
     object Calendar : NavDestination(
         "calendar",

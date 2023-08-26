@@ -77,7 +77,11 @@ fun EmptyElements(
                 colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
                 border = BorderStroke(2.dp, MaterialTheme.colorScheme.primary)
             ) {
-                Text(text = "Create $elementName", textAlign = TextAlign.Center)
+                Text(
+                    text = "Create $elementName",
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.primary
+                )
             }
         }
     }
