@@ -46,11 +46,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.roomtodolist.R
 import com.example.roomtodolist.database.folder.FolderTable
 import com.example.roomtodolist.database.task.TaskTable
 import com.example.roomtodolist.ui.components.EmptyElements
@@ -131,13 +133,13 @@ private fun TopBar(
             Icon(
                 modifier = Modifier
                     .size(25.dp),
-                imageVector = Icons.Outlined.Notifications,
+                painter = painterResource(id = R.drawable.outlined_notification_icon),
                 contentDescription = null
             )
             Icon(
                 modifier = Modifier
                     .size(25.dp),
-                imageVector = Icons.Outlined.Settings,
+                painter = painterResource(id = R.drawable.outlined_setting_icon),
                 contentDescription = null
             )
         }
