@@ -7,6 +7,7 @@ object LightColors {
     val Primary = Color(0xff2b5c80)
     val Secondary = Color(0xff2b5c80)
     val Tertiary = Color(0xff95c1e3)
+    val PrimaryContainer = Color(0xFFF1F3F7)
     val Background = Color.White
     val Foreground = Color.Black
 }

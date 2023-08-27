@@ -25,7 +25,7 @@ fun NavGraph(navHostController: NavHostController, windowSizeClass: WindowSizeCl
             CalendarScreen()
         }
         composable(route = NavDestination.AddTask.rout) {
-            AddTaskScreen()
+            AddTaskScreen(navHostController)
         }
     }
 }

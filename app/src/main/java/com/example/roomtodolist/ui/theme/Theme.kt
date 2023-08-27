@@ -21,6 +21,7 @@ private val DarkColorScheme = darkColorScheme(
     secondary = LightColors.Secondary,
     tertiary = LightColors.Tertiary,
     background = LightColors.Background,
+    primaryContainer = LightColors.PrimaryContainer,
     onBackground = LightColors.Foreground
 )
 
@@ -29,6 +30,7 @@ private val LightColorScheme = lightColorScheme(
     secondary = LightColors.Secondary,
     tertiary = LightColors.Tertiary,
     background = LightColors.Background,
+    primaryContainer = LightColors.PrimaryContainer,
     onBackground = LightColors.Foreground
 )
 

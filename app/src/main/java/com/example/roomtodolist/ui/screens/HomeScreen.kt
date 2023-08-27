@@ -73,7 +73,7 @@ fun HomeScreen(
     )
     Column(
         modifier = Modifier
-            .padding(horizontal = 25.dp)
+            .padding(horizontal = 16.dp)
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
             .verticalScroll(rememberScrollState()),
@@ -90,7 +90,7 @@ fun HomeScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(
-                    MaterialTheme.colorScheme.onBackground.copy(0.1f),
+                    MaterialTheme.colorScheme.primaryContainer,
                     shape = RoundedCornerShape(20f)
                 )
         )
@@ -239,15 +239,15 @@ fun SearchForTask(
             Text(text = "Search Task")
         },
         colors = TextFieldDefaults.textFieldColors(
-            containerColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.1f),
-            focusedPlaceholderColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f),
-            unfocusedPlaceholderColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f),
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
+            focusedPlaceholderColor = MaterialTheme.colorScheme.onBackground,
+            unfocusedPlaceholderColor = MaterialTheme.colorScheme.onBackground,
             focusedLabelColor = MaterialTheme.colorScheme.onBackground,
-            unfocusedLabelColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f),
+            unfocusedLabelColor = MaterialTheme.colorScheme.onBackground,
             focusedLeadingIconColor = MaterialTheme.colorScheme.onBackground,
-            unfocusedLeadingIconColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f),
+            unfocusedLeadingIconColor = MaterialTheme.colorScheme.onBackground,
             focusedTextColor = MaterialTheme.colorScheme.onBackground,
-            unfocusedTextColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f),
+            unfocusedTextColor = MaterialTheme.colorScheme.onBackground,
             errorTextColor = StateColors.Negative,
             errorContainerColor = StateColors.Negative,
             cursorColor = Color.Black,
@@ -307,7 +307,7 @@ private fun Folders(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(
-                        color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.1f),
+                        color = MaterialTheme.colorScheme.primaryContainer,
                         shape = RoundedCornerShape(20f)
                     ),
                 contentAlignment = Alignment.Center
@@ -337,7 +337,7 @@ fun Tasks(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(
-                        color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.1f),
+                        color = MaterialTheme.colorScheme.primaryContainer,
                         shape = RoundedCornerShape(20f)
                     ),
                 contentAlignment = Alignment.Center
