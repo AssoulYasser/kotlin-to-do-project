@@ -62,12 +62,10 @@ import com.example.roomtodolist.ui.theme.StateColors
 
 @Composable
 fun HomeScreen(
-    windowSizeClass: WindowSizeClass,
+    searchFor: MutableState<String> = remember { mutableStateOf("") },
     folders: List<FolderTable> = listOf(),
     tasks: List<TaskTable> = listOf()
 ) {
-    val taskSearchedFor = remember { mutableStateOf("") }
-
     Box(
         modifier = Modifier
             .background(MaterialTheme.colorScheme.background)
@@ -96,7 +94,7 @@ fun HomeScreen(
                     shape = RoundedCornerShape(20f)
                 )
         )
-        SearchForTask(value = taskSearchedFor)
+        SearchForTask(value = searchFor)
         Folders(folders)
         Tasks(tasks)
         Spacer(modifier = Modifier)

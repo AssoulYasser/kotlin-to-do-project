@@ -33,8 +33,8 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 fun ExpendedBar(navHostController: NavHostController) {
     val screens = listOf(
         NavDestination.Home,
-        NavDestination.Calendar,
         NavDestination.Task,
+        NavDestination.Calendar,
         NavDestination.AddTask
     )
 

@@ -16,7 +16,7 @@ import com.example.roomtodolist.ui.screens.TaskScreen
 fun NavGraph(navHostController: NavHostController, windowSizeClass: WindowSizeClass) {
     NavHost(navController = navHostController, startDestination = NavDestination.Home.rout) {
         composable(route = NavDestination.Home.rout) {
-            HomeScreen(windowSizeClass)
+            HomeScreen()
         }
         composable(route = NavDestination.Task.rout) {
             TaskScreen()
