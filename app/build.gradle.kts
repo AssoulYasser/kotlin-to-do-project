@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.roomtodolist"
-        minSdk = 24
+        minSdk = 22
         targetSdk = 33
         versionCode = 1
         versionName = "1.0"
@@ -74,6 +74,12 @@ dependencies {
     //Lottie
     val lottieVer = "6.1.0"
     implementation("com.airbnb.android:lottie-compose:$lottieVer")
+
+    //MaxKeppler
+    val maxKeeplerVer = "1.2.0"
+    implementation("com.maxkeppeler.sheets-compose-dialogs:core:$maxKeeplerVer")
+    implementation("com.maxkeppeler.sheets-compose-dialogs:calendar:$maxKeeplerVer")
+    implementation("com.maxkeppeler.sheets-compose-dialogs:clock:$maxKeeplerVer")
 
     implementation("androidx.core:core-ktx:1.10.1")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
