@@ -11,6 +11,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -37,6 +38,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -49,9 +51,10 @@ import com.maxkeppeker.sheets.core.models.base.UseCaseState
 import com.maxkeppeler.sheets.calendar.CalendarDialog
 import com.maxkeppeler.sheets.calendar.models.CalendarConfig
 import com.maxkeppeler.sheets.calendar.models.CalendarSelection
-import com.maxkeppeler.sheets.calendar.models.CalendarStyle
+import com.maxkeppeler.sheets.clock.ClockDialog
+import com.maxkeppeler.sheets.clock.models.ClockSelection
 import java.time.LocalDate
-import java.util.Locale
+import java.time.LocalTime
 
 @Composable
 fun AddTaskScreen(
@@ -214,7 +217,8 @@ fun PriorityCard(
                 border = BorderStroke(color = Color.Green, width = 2.dp),
                 modifier = Modifier
                     .weight(1f)
-                    .padding(horizontal = 5.dp)
+                    .padding(horizontal = 5.dp),
+                shape = RoundedCornerShape(20f)
             ) {
                 Text(text = "Low", fontSize = 12.sp, color = if (selectedPriority.value == "Low") Color.White else Color.Black)
             }
@@ -224,7 +228,8 @@ fun PriorityCard(
                 border = BorderStroke(color = Color.Blue, width = 2.dp),
                 modifier = Modifier
                     .weight(1f)
-                    .padding(horizontal = 5.dp)
+                    .padding(horizontal = 5.dp),
+                shape = RoundedCornerShape(20f)
             ) {
                 Text(text = "Medium", fontSize = 12.sp, color = if (selectedPriority.value == "Medium") Color.White else Color.Black)
             }
@@ -234,7 +239,8 @@ fun PriorityCard(
                 border = BorderStroke(color = Color.Red, width = 2.dp),
                 modifier = Modifier
                     .weight(1f)
-                    .padding(horizontal = 5.dp)
+                    .padding(horizontal = 5.dp),
+                shape = RoundedCornerShape(20f)
             ) {
                 Text(
                     text = "High",
@@ -249,9 +255,45 @@ fun PriorityCard(
 
 @Composable
 fun DateCard(
-    dueTo: MutableState<LocalDate?> = remember { mutableStateOf(null) }
+    dueTo: MutableState<LocalDate?> = remember { mutableStateOf(null) },
+    atHour: MutableState<Int?> = remember { mutableStateOf(null) },
+    atMinute: MutableState<Int?> = remember { mutableStateOf(null) },
 ) {
-    MyCalendarDialog(dueTo)
+    val isCalendarVisible = remember { mutableStateOf(false) }
+    val isClockVisible = remember { mutableStateOf(false) }
+    MyCalendarDialog(dueTo, isVisible = isCalendarVisible, atHour, atMinute)
+    MyClockDialog(hour = atHour, minutes = atMinute, isVisible = isClockVisible, dueTo = dueTo)
+
+    val date = remember { mutableStateOf("--/--/----") }
+
+    date.value = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O)
+        if (dueTo.value == null) "yyyy/mm/dd" else dueTo.value.toString()
+    else
+        if (dueTo.value == null)
+            "--/--/----"
+        else
+            "${dueTo.value!!.dayOfMonth}/" +
+                    "${dueTo.value!!.monthValue}/" +
+                    "${dueTo.value!!.year}"
+
+    val time = remember { mutableStateOf("--:--") }
+
+    Log.d(TAG, "DateCard: ${atHour.value}")
+    Log.d(TAG, "DateCard: ${atMinute.value}")
+
+    time.value =
+        if (atHour.value == null || atMinute.value == null)
+            "--:--"
+        else {
+            if (atHour.value!!/10 > 0 && atMinute.value!!/10 >0)
+                "${atHour.value}:${atMinute.value}"
+            else if (atHour.value!!/10 > 0)
+                "${atHour.value}:0${atMinute.value}"
+            else if (atMinute.value!!/10 > 0)
+                "0${atHour.value}:${atMinute.value}"
+            else
+                "0${atHour.value}:0${atMinute.value}"
+        }
     ExpandableCard(icon = R.drawable.outlined_calendar_add_icon, title = "Set Date") {
         Column(
             modifier = Modifier,
@@ -259,11 +301,66 @@ fun DateCard(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Row(
-                modifier = Modifier,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 5.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(text = "due to: ")
+                Text(
+                    text = "due to: ",
+                    color = MaterialTheme.colorScheme.onBackground,
+                    modifier = Modifier.weight(0.5f)
+                )
+                Text(
+                    text = date.value,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    modifier = Modifier.weight(1f),
+                    textAlign = TextAlign.Center
+                )
+                Button(
+                    onClick = { isCalendarVisible.value = true },
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
+                    border = BorderStroke(color = MaterialTheme.colorScheme.primary, width = 1.dp),
+                    contentPadding = PaddingValues(horizontal = 20.dp, vertical = 0.dp),
+                    shape = RoundedCornerShape(20f),
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(start = 20.dp)
+                ) {
+                    Text(
+                        text = "set date",
+                        fontSize = 10.sp,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
+            }
+        Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 5.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(text = "At: ", color = MaterialTheme.colorScheme.onBackground, modifier = Modifier.weight(0.5f))
+                Text(
+                    text = time.value,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    modifier = Modifier.weight(1f),
+                    textAlign = TextAlign.Center
+                )
+                Button(
+                    onClick = { isClockVisible.value = true },
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
+                    border = BorderStroke(color = MaterialTheme.colorScheme.primary, width = 1.dp),
+                    contentPadding = PaddingValues(horizontal = 20.dp, vertical = 0.dp),
+                    shape = RoundedCornerShape(20f),
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(start = 20.dp)
+                ) {
+                    Text(text = "set time", fontSize = 10.sp, color = MaterialTheme.colorScheme.primary)
+                }
             }
         }
     }
@@ -271,24 +368,86 @@ fun DateCard(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MyCalendarDialog(dueTo: MutableState<LocalDate?>) {
+fun MyCalendarDialog(dueTo: MutableState<LocalDate?>, isVisible: MutableState<Boolean>, hour: MutableState<Int?>, minutes: MutableState<Int?>) {
     val context = LocalContext.current
     CalendarDialog(
         state = UseCaseState(
-            visible = true
+            visible = isVisible.value,
+            onCloseRequest = {
+                isVisible.value = false
+            }
         ),
         selection = CalendarSelection.Date { date ->
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-                if (date.isAfter(LocalDate.now()) or date.isEqual(LocalDate.now()))
-                    dueTo.value = date
-                else
-                    Toast.makeText(context, "NO", Toast.LENGTH_LONG).show()
-            else
+            isVisible.value = false
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                if (hour.value == null || minutes.value == null) {
+                    if (date.isBefore(LocalDate.now()))
+                        Toast.makeText(context, "Invalid date", Toast.LENGTH_LONG).show()
+                    else
+                        dueTo.value = date
+                }
+                else {
+                    if ((date.isEqual(LocalDate.now()) &&
+                            (hour.value!! < LocalTime.now().hour ||
+                                (hour.value!! == LocalTime.now().hour &&
+                                    minutes.value!! < LocalTime.now().minute))) ||
+                        date.isBefore(LocalDate.now())
+                    ) {
+                        Toast.makeText(context, "Invalid date", Toast.LENGTH_LONG).show()
+                    } else {
+                        dueTo.value = date
+                    }
+                }
+            }
+            else {
                 dueTo.value = date
+            }
         },
         config = CalendarConfig(
             monthSelection = true,
             yearSelection = true
         )
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun MyClockDialog(
+    hour: MutableState<Int?>,
+    minutes: MutableState<Int?>,
+    dueTo: MutableState<LocalDate?>,
+    isVisible: MutableState<Boolean>
+) {
+    val context = LocalContext.current
+    ClockDialog(
+        state = UseCaseState(visible = isVisible.value, onCloseRequest = {isVisible.value = false }),
+        selection = ClockSelection.HoursMinutes { h, m ->
+            isVisible.value = false
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                if (dueTo.value == null) {
+                    hour.value = h
+                    minutes.value = m
+                }
+                else{
+                    if (dueTo.value!!.isEqual(LocalDate.now())){
+                        if (h > LocalTime.now().hour){
+                            hour.value = h
+                            minutes.value = m
+                        } else {
+                            if (h != LocalTime.now().hour || m < LocalTime.now().minute)
+                                Toast.makeText(context, "Invalid date", Toast.LENGTH_LONG).show()
+                            else{
+                                hour.value = h
+                                minutes.value = m
+                            }
+                        }
+                    }
+                }
+            }
+            else{
+                hour.value = h
+                minutes.value = m
+            }
+        }
     )
 }
