@@ -26,24 +26,19 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 
 @Composable
 fun BottomBar(navHostController: NavHostController) {
-    val screens = listOf(
-        NavDestination.Home,
-        NavDestination.Task,
-        NavDestination.Calendar,
-        NavDestination.AddTask
-    )
 
     val navBackStackEntry by navHostController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
     
     BottomNavLayout {
-        screens.forEach{ navDestination ->
+        navigationList.forEach{ nav ->
+            val navDestination = nav.mainDestination
             NavElement(
                 modifier = Modifier,
                 element = navDestination,
-                isSelected = currentDestination?.hierarchy?.any { it.route == navDestination.rout } == true
+                isSelected = currentDestination?.hierarchy?.any { it.route == navDestination.route.name } == true
             ) {
-                navHostController.navigateTo(navDestination.rout)
+                navHostController.navigateTo(navDestination.route.name)
             }
         }
     }
@@ -74,7 +69,7 @@ private fun BottomNavLayout(
 @Composable
 private fun RowScope.NavElement(
     modifier: Modifier = Modifier,
-    element: NavDestination,
+    element: MainDestinations,
     isSelected: Boolean = false,
     selectedColor: Color = MaterialTheme.colorScheme.primary,
     unselectedColor: Color = MaterialTheme.colorScheme.onBackground,

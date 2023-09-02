@@ -1,7 +1,6 @@
 package com.example.roomtodolist.ui.screens
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -10,9 +9,7 @@ import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
-import com.example.roomtodolist.ui.screens.MainViewModel
 import com.example.roomtodolist.ui.navigation.BottomBar
 import com.example.roomtodolist.ui.navigation.ExpendedBar
 import com.example.roomtodolist.ui.navigation.NavGraph
@@ -24,7 +21,7 @@ const val TAG = "DEBUGGING : "
 fun MainActivityScreen(mainViewModel: MainViewModel) {
     @Composable
     fun Screen() {
-        NavGraph(mainViewModel.navHostController)
+        NavGraph(mainViewModel)
     }
 
     @Composable

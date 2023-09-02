@@ -41,11 +41,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
 import com.example.roomtodolist.R
 import com.example.roomtodolist.ui.components.ActionBar
-import com.example.roomtodolist.ui.navigation.NavDestination
-import com.example.roomtodolist.ui.navigation.navigateTo
+import com.example.roomtodolist.ui.screens.MainViewModel
 import com.example.roomtodolist.ui.screens.TAG
 import com.example.roomtodolist.ui.theme.StateColors
 import com.maxkeppeker.sheets.core.models.base.UseCaseState
@@ -59,9 +57,10 @@ import java.time.LocalTime
 
 @Composable
 fun AddTaskScreen(
-    navHostController: NavHostController,
-    taskTitleState: MutableState<String> = remember { mutableStateOf("") }
+    addTaskViewModel: AddTaskViewModel
 ) {
+    val taskTitleState: MutableState<String> = remember { mutableStateOf("") }
+
     Box(
         modifier = Modifier
             .background(MaterialTheme.colorScheme.background)
@@ -72,7 +71,7 @@ fun AddTaskScreen(
             .fillMaxSize()
     ) {
         ActionBar(title = "Add Task") {
-            navHostController.navigateTo(NavDestination.Home.rout)
+//            navHostController.navigateTo(NavDestination.Home.rout)
         }
         Column(
             modifier = Modifier
