@@ -1,4 +1,4 @@
-package com.example.roomtodolist.ui.screens
+package com.example.roomtodolist.ui.screens.tasks
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -9,7 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 
 @Composable
-fun CalendarScreen() {
-    Box(modifier = Modifier.background(Color.Blue).fillMaxSize())
-    Text(text = "CAL")
+fun TaskScreen() {
+    Box(modifier = Modifier.background(Color.Gray).fillMaxSize())
+    Text(text = "TASK")
 }

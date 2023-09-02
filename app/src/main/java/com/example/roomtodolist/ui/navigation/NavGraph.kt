@@ -1,19 +1,17 @@
 package com.example.roomtodolist.ui.navigation
 
-import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.roomtodolist.ui.screens.AddTaskScreen
-import com.example.roomtodolist.ui.screens.CalendarScreen
-import com.example.roomtodolist.ui.screens.HomeScreen
-import com.example.roomtodolist.ui.screens.TaskScreen
+import com.example.roomtodolist.ui.screens.addtask.AddTaskScreen
+import com.example.roomtodolist.ui.screens.calendar.CalendarScreen
+import com.example.roomtodolist.ui.screens.home.HomeScreen
+import com.example.roomtodolist.ui.screens.tasks.TaskScreen
 
 @Composable
-fun NavGraph(navHostController: NavHostController, windowSizeClass: WindowSizeClass) {
+fun NavGraph(navHostController: NavHostController) {
     NavHost(navController = navHostController, startDestination = NavDestination.Home.rout) {
         composable(route = NavDestination.Home.rout) {
             HomeScreen()

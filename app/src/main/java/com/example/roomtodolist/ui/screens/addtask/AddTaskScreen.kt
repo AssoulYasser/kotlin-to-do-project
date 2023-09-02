@@ -1,4 +1,4 @@
-package com.example.roomtodolist.ui.screens
+package com.example.roomtodolist.ui.screens.addtask
 
 import android.os.Build
 import android.util.Log
@@ -46,6 +46,7 @@ import com.example.roomtodolist.R
 import com.example.roomtodolist.ui.components.ActionBar
 import com.example.roomtodolist.ui.navigation.NavDestination
 import com.example.roomtodolist.ui.navigation.navigateTo
+import com.example.roomtodolist.ui.screens.TAG
 import com.example.roomtodolist.ui.theme.StateColors
 import com.maxkeppeker.sheets.core.models.base.UseCaseState
 import com.maxkeppeler.sheets.calendar.CalendarDialog
@@ -294,6 +295,7 @@ fun DateCard(
             else
                 "0${atHour.value}:0${atMinute.value}"
         }
+
     ExpandableCard(icon = R.drawable.outlined_calendar_add_icon, title = "Set Date") {
         Column(
             modifier = Modifier,
@@ -435,12 +437,19 @@ fun MyClockDialog(
                             minutes.value = m
                         } else {
                             if (h != LocalTime.now().hour || m < LocalTime.now().minute)
-                                Toast.makeText(context, "Invalid date", Toast.LENGTH_LONG).show()
+                                Toast.makeText(context, "Invalid Time", Toast.LENGTH_LONG).show()
                             else{
                                 hour.value = h
                                 minutes.value = m
                             }
                         }
+                    }
+                    else if(dueTo.value!!.isBefore(LocalDate.now())){
+                        Toast.makeText(context, "Invalid date", Toast.LENGTH_LONG).show()
+                    }
+                    else {
+                        hour.value = h
+                        minutes.value = m
                     }
                 }
             }
