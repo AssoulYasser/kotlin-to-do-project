@@ -1,7 +1,7 @@
-package com.example.roomtodolist.database.task.converters
+package com.example.roomtodolist.data.task.converters
 
 import androidx.room.TypeConverter
-import com.example.roomtodolist.database.task.TaskPriority
+import com.example.roomtodolist.data.task.TaskPriority
 
 class TaskPriorityConverter {
     @TypeConverter

@@ -1,16 +1,16 @@
-package com.example.roomtodolist.database
+package com.example.roomtodolist.data
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.example.roomtodolist.database.folder.FolderDAO
-import com.example.roomtodolist.database.folder.FolderTable
-import com.example.roomtodolist.database.task.TaskDAO
-import com.example.roomtodolist.database.task.converters.TaskDateConverter
-import com.example.roomtodolist.database.task.converters.TaskPriorityConverter
-import com.example.roomtodolist.database.task.TaskTable
+import com.example.roomtodolist.data.folder.FolderDAO
+import com.example.roomtodolist.data.folder.FolderTable
+import com.example.roomtodolist.data.task.TaskDAO
+import com.example.roomtodolist.data.task.converters.TaskDateConverter
+import com.example.roomtodolist.data.task.converters.TaskPriorityConverter
+import com.example.roomtodolist.data.task.TaskTable
 
 @Database(entities = [TaskTable::class, FolderTable::class], version = 1)
 @TypeConverters(value = [TaskDateConverter::class, TaskPriorityConverter::class])

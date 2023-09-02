@@ -1,4 +1,4 @@
-package com.example.roomtodolist.database.task.converters
+package com.example.roomtodolist.data.task.converters
 
 import androidx.room.TypeConverter
 import java.util.Date

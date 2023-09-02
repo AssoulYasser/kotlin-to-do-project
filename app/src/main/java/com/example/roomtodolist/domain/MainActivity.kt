@@ -1,4 +1,4 @@
-package com.example.roomtodolist.logic
+package com.example.roomtodolist.domain
 
 import android.content.Context
 import android.os.Bundle
@@ -6,13 +6,11 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
-import androidx.compose.runtime.remember
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
-import com.example.roomtodolist.database.Repository
+import com.example.roomtodolist.data.Repository
 import com.example.roomtodolist.ui.screens.MainActivityScreen
 import com.example.roomtodolist.ui.screens.MainViewModel
 import com.example.roomtodolist.ui.theme.RoomToDoListTheme

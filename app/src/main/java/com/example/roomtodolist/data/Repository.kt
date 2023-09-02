@@ -1,4 +1,4 @@
-package com.example.roomtodolist.database
+package com.example.roomtodolist.data
 
 import android.content.Context
 

@@ -1,4 +1,4 @@
-package com.example.roomtodolist.database.folder
+package com.example.roomtodolist.data.folder
 
 import androidx.room.Dao
 import androidx.room.Delete
@@ -6,7 +6,6 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
-import com.example.roomtodolist.database.task.TaskTable
 
 @Dao
 interface FolderDAO {

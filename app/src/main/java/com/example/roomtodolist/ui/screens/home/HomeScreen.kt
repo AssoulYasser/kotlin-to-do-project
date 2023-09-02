@@ -45,8 +45,8 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.roomtodolist.R
-import com.example.roomtodolist.database.folder.FolderTable
-import com.example.roomtodolist.database.task.TaskTable
+import com.example.roomtodolist.data.folder.FolderTable
+import com.example.roomtodolist.data.task.TaskTable
 import com.example.roomtodolist.ui.components.EmptyElements
 import com.example.roomtodolist.ui.components.ProfilePicture
 import com.example.roomtodolist.ui.components.Welcoming

@@ -1,4 +1,4 @@
-package com.example.roomtodolist.database.folder
+package com.example.roomtodolist.data.folder
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

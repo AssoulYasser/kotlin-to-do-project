@@ -1,4 +1,4 @@
-package com.example.roomtodolist.database.task
+package com.example.roomtodolist.data.task
 
 enum class TaskPriority {
     UNSPECIFIED,
