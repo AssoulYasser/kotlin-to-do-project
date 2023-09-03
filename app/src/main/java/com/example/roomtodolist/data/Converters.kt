@@ -1,9 +1,16 @@
-package com.example.roomtodolist.data.task.converters
+package com.example.roomtodolist.data
 
 import androidx.room.TypeConverter
 import com.example.roomtodolist.data.task.TaskPriority
+import java.util.Date
 
-class TaskPriorityConverter {
+class Converters {
+    @TypeConverter
+    fun getDate(long:Long) : Date = Date(long)
+    @TypeConverter
+    fun setDate(date: Date) : Long = date.time
+
+
     @TypeConverter
     fun getPriority(int: Int) : TaskPriority {
         return when(int) {
@@ -13,7 +20,6 @@ class TaskPriorityConverter {
             else -> TaskPriority.UNSPECIFIED
         }
     }
-
     @TypeConverter
     fun setPriority(taskPriority: TaskPriority) : Int {
         return when(taskPriority){
@@ -23,4 +29,5 @@ class TaskPriorityConverter {
             TaskPriority.HIGH -> 3
         }
     }
+
 }

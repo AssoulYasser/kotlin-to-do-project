@@ -54,10 +54,11 @@ import com.example.roomtodolist.ui.theme.StateColors
 
 @Composable
 fun HomeScreen(
-    searchFor: MutableState<String> = remember { mutableStateOf("") },
-    folders: List<FolderTable> = listOf(),
-    tasks: List<TaskTable> = listOf()
+    homeViewModel: HomeViewModel
 ) {
+    val searchFor: MutableState<String> = remember { mutableStateOf("") }
+    val folders: List<FolderTable> = listOf()
+    val tasks: List<TaskTable> = listOf()
     Box(
         modifier = Modifier
             .background(MaterialTheme.colorScheme.background)
@@ -87,7 +88,10 @@ fun HomeScreen(
                 )
         )
         SearchForTask(value = searchFor)
-        Folders(folders)
+        Folders(
+            folders = folders,
+            addFolder = { homeViewModel.navigateToAddFolderScreen() }
+        )
         Tasks(tasks)
         Spacer(modifier = Modifier)
     }
@@ -288,7 +292,8 @@ fun TitleWithSeeAll(
 
 @Composable
 private fun Folders(
-    folders: List<FolderTable>
+    folders: List<FolderTable>,
+    addFolder: () -> Unit
 ) {
     Column(
         modifier = Modifier.fillMaxWidth()
@@ -307,6 +312,7 @@ private fun Folders(
                 EmptyElements(
                     elementName = "Folder",
                     showGif = false,
+                    onCreateElement = addFolder,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 20.dp)

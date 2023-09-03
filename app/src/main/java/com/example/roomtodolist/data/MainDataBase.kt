@@ -8,16 +8,15 @@ import androidx.room.TypeConverters
 import com.example.roomtodolist.data.folder.FolderDAO
 import com.example.roomtodolist.data.folder.FolderTable
 import com.example.roomtodolist.data.task.TaskDAO
-import com.example.roomtodolist.data.task.converters.TaskDateConverter
-import com.example.roomtodolist.data.task.converters.TaskPriorityConverter
 import com.example.roomtodolist.data.task.TaskTable
 
 @Database(entities = [TaskTable::class, FolderTable::class], version = 1)
-@TypeConverters(value = [TaskDateConverter::class, TaskPriorityConverter::class])
+@TypeConverters(Converters::class)
 abstract class MainDataBase: RoomDatabase() {
 
     abstract fun getTaskDao() : TaskDAO
     abstract fun getFolderDao() : FolderDAO
+
 
 
    //TODO(STOP IGNORING THE CONFLECT)
@@ -30,15 +29,11 @@ abstract class MainDataBase: RoomDatabase() {
             return if (instance != null)
                 instance!!
             else {
-                val room = Room
-                val builder = room.databaseBuilder(
+                Room.databaseBuilder(
                     context = context,
                     klass = MainDataBase::class.java,
                     name = "TaskTable"
-                )
-                val build = builder.build()
-                instance = build
-                instance!!
+                ).build()
             }
         }
     }

@@ -28,11 +28,12 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.example.roomtodolist.ui.screens.MainViewModel
 
 @Composable
-fun ExpendedBar(navHostController: NavHostController) {
+fun ExpendedBar(mainViewModel: MainViewModel) {
 
-    val navBackStackEntry by navHostController.currentBackStackEntryAsState()
+    val navBackStackEntry by mainViewModel.navHostController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
 
     ExpendedNavLayout {
@@ -43,7 +44,7 @@ fun ExpendedBar(navHostController: NavHostController) {
                 element = navDestination,
                 isSelected = currentDestination?.hierarchy?.any { it.route == navDestination.route.name } == true
             ) {
-                navHostController.navigateTo(navDestination.route.name)
+                mainViewModel.navigateTo(navDestination.route.name)
             }
         }
     }

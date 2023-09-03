@@ -3,10 +3,13 @@ package com.example.roomtodolist.ui.navigation
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.ViewModel
 import com.example.roomtodolist.R
+import com.example.roomtodolist.ui.screens.addfolder.AddFolderScreen
+import com.example.roomtodolist.ui.screens.addfolder.AddFolderViewModel
 import com.example.roomtodolist.ui.screens.addtask.AddTaskScreen
 import com.example.roomtodolist.ui.screens.addtask.AddTaskViewModel
 import com.example.roomtodolist.ui.screens.calendar.CalendarScreen
 import com.example.roomtodolist.ui.screens.home.HomeScreen
+import com.example.roomtodolist.ui.screens.home.HomeViewModel
 import com.example.roomtodolist.ui.screens.tasks.TasksScreen
 
 interface ScreenRoute
@@ -68,7 +71,7 @@ sealed class MainDestinations(
         title = "Home",
         icon = NavIcon(R.drawable.filled_home_icon, R.drawable.outlined_home_icon),
         screen = { viewModel ->
-            HomeScreen()
+            HomeScreen(viewModel as HomeViewModel)
         }
     )
     object Task : MainDestinations(
@@ -97,8 +100,14 @@ sealed class MainDestinations(
     )
 }
 
-sealed class NestedDestinations(val rout: NestedRoutes) {
-    object AddFolder : NestedDestinations(rout = NestedRoutes.ADD_FOLDER)
+sealed class NestedDestinations(
+    val route: NestedRoutes,
+    var screen: @Composable (viewModel: ViewModel?) -> Unit
+) {
+    object AddFolder : NestedDestinations(
+        route = NestedRoutes.ADD_FOLDER,
+        screen = { viewModel -> AddFolderScreen(viewModel as AddFolderViewModel) }
+    )
 }
 
 data class NavIcon(

@@ -23,11 +23,12 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.example.roomtodolist.ui.screens.MainViewModel
 
 @Composable
-fun BottomBar(navHostController: NavHostController) {
+fun BottomBar(mainViewModel: MainViewModel) {
 
-    val navBackStackEntry by navHostController.currentBackStackEntryAsState()
+    val navBackStackEntry by mainViewModel.navHostController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
     
     BottomNavLayout {
@@ -38,7 +39,7 @@ fun BottomBar(navHostController: NavHostController) {
                 element = navDestination,
                 isSelected = currentDestination?.hierarchy?.any { it.route == navDestination.route.name } == true
             ) {
-                navHostController.navigateTo(navDestination.route.name)
+                mainViewModel.navigateTo(navDestination.route.name)
             }
         }
     }

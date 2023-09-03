@@ -31,7 +31,7 @@ fun MainActivityScreen(mainViewModel: MainViewModel) {
                 Screen()
             }
             Box(modifier = Modifier) {
-                SideBar(navHostController = mainViewModel.navHostController)
+                SideBar(mainViewModel = mainViewModel)
             }
         }
     }
@@ -43,7 +43,7 @@ fun MainActivityScreen(mainViewModel: MainViewModel) {
                 Screen()
             }
             Box(modifier = Modifier.align(Alignment.BottomCenter)) {
-                BottomBar(navHostController = mainViewModel.navHostController)
+                BottomBar(mainViewModel = mainViewModel)
             }
         }
     }
@@ -55,7 +55,7 @@ fun MainActivityScreen(mainViewModel: MainViewModel) {
                 Screen()
             }
             Box(modifier = Modifier) {
-                ExpendedBar(navHostController = mainViewModel.navHostController)
+                ExpendedBar(mainViewModel = mainViewModel)
             }
         }
     }

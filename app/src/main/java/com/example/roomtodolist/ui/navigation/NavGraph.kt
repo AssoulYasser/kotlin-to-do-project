@@ -1,8 +1,8 @@
 package com.example.roomtodolist.ui.navigation
 
-import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
@@ -10,6 +10,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.example.roomtodolist.ui.screens.MainViewModel
+import com.example.roomtodolist.ui.screens.addfolder.AddFolderViewModel
 import com.example.roomtodolist.ui.screens.addtask.AddTaskViewModel
 import com.example.roomtodolist.ui.screens.calendar.CalendarViewModel
 import com.example.roomtodolist.ui.screens.home.HomeViewModel
@@ -22,16 +23,58 @@ fun NavGraph(mainViewModel: MainViewModel) {
 
     val navHostController = mainViewModel.navHostController
 
-    val homeViewModel = viewModel<HomeViewModel>()
-    val tasksViewModel = viewModel<TasksViewModel>()
-    val calendarViewModel = viewModel<CalendarViewModel>()
-    val addTaskViewModel = viewModel<AddTaskViewModel>()
+    val homeViewModel = viewModel<HomeViewModel>(
+        factory = object: ViewModelProvider.Factory {
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                return HomeViewModel(
+                    mainViewModel = mainViewModel
+                ) as T
+            }
+        }
+    )
+    val tasksViewModel = viewModel<TasksViewModel>(
+        factory = object: ViewModelProvider.Factory {
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                return TasksViewModel(
+                    mainViewModel = mainViewModel
+                ) as T
+            }
+        }
+    )
+    val calendarViewModel = viewModel<CalendarViewModel>(
+        factory = object: ViewModelProvider.Factory {
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                return CalendarViewModel(
+                    mainViewModel = mainViewModel
+                ) as T
+            }
+        }
+    )
+    val addTaskViewModel = viewModel<AddTaskViewModel>(
+        factory = object: ViewModelProvider.Factory {
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                return AddTaskViewModel(
+                    mainViewModel = mainViewModel
+                ) as T
+            }
+        }
+    )
+    val addFolderViewModel = viewModel<AddFolderViewModel>(
+        factory = object: ViewModelProvider.Factory {
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                return AddFolderViewModel(
+                    mainViewModel = mainViewModel
+                ) as T
+            }
+        }
+    )
 
-    val screenHash = hashMapOf<ScreenRoute, ViewModel?>(
+    val viewModels = hashMapOf<ScreenRoute, ViewModel?>(
         MainRoutes.HOME to homeViewModel,
         MainRoutes.TASKS to tasksViewModel,
         MainRoutes.CALENDAR to calendarViewModel,
-        MainRoutes.ADD_TASK to addTaskViewModel
+        MainRoutes.ADD_TASK to addTaskViewModel,
+        NestedRoutes.ADD_FOLDER to addFolderViewModel
     )
 
     NavHost(navController = navHostController, startDestination = Routes.Home.route.name) {
@@ -42,14 +85,16 @@ fun NavGraph(mainViewModel: MainViewModel) {
             ) {
                 composable(route = route.mainDestination.route.name) {
                     route.mainDestination.also {
-                        val viewModel = screenHash[it.route]
-                        Log.d(TAG, "NavGraph: $viewModel")
+                        val viewModel = viewModels[it.route]
                         it.screen(viewModel)
                     }
                 }
                 route.nestedDestination?.forEach { nestedRoute ->
-                    composable(route = nestedRoute.rout.name){
-
+                    composable(route = nestedRoute.route.name){
+                        nestedRoute.also {
+                            val viewModel = viewModels[it.route]
+                            it.screen(viewModel)
+                        }
                     }
                 }
             }
