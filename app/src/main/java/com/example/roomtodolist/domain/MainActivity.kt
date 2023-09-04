@@ -34,6 +34,10 @@ class MainActivity : ComponentActivity() {
         context = this
         repository = Repository(context)
 
+        lifecycleScope.launch(Dispatchers.IO) {
+            Log.d(TAG, "onCreate: ${repository.taskDao.getTasks()}")
+        }
+
         setContent {
             val mainViewModel = viewModel<MainViewModel>(
                 factory = object: ViewModelProvider.Factory {

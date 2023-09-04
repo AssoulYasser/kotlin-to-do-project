@@ -14,7 +14,6 @@ import com.example.roomtodolist.ui.navigation.NestedRoutes
 import com.example.roomtodolist.ui.screens.MainViewModel
 import java.time.LocalDate
 import java.time.LocalTime
-import java.util.Date
 
 class AddTaskViewModel(private val mainViewModel: MainViewModel) : ViewModel() {
     var uiState by mutableStateOf(AddTaskUiState())
@@ -50,7 +49,7 @@ class AddTaskViewModel(private val mainViewModel: MainViewModel) : ViewModel() {
         mainViewModel.navigateTo(MainRoutes.HOME.name)
     }
 
-    fun isReadyToSave() = uiState.taskTitle == "" &&
+    fun isReadyToSave() = uiState.taskTitle != "" &&
                 uiState.taskPriority != TaskPriority.UNSPECIFIED &&
                 uiState.date != null &&
                 uiState.time != null &&
@@ -71,6 +70,10 @@ class AddTaskViewModel(private val mainViewModel: MainViewModel) : ViewModel() {
 
         else if (uiState.folder == null)
             Toast.makeText(context, "choose folder please", Toast.LENGTH_SHORT).show()
+
+        else
+            Toast.makeText(context, "something went wrong", Toast.LENGTH_SHORT).show()
+
     }
 
     fun showSuccessMessage(context: Context) {
@@ -78,18 +81,18 @@ class AddTaskViewModel(private val mainViewModel: MainViewModel) : ViewModel() {
     }
 
     fun save() {
-//        mainViewModel.addTask(
-//            TaskTable(
-//                title = uiState.taskTitle,
-//                dueTo = Date(),
-//                estimation = 0,
-//                priority =,
-//                folder = ""
-//            )
-//        )
+        mainViewModel.addTask(
+            TaskTable(
+                title = uiState.taskTitle,
+                date = uiState.date!!,
+                time = uiState.time!!,
+                priority = uiState.taskPriority,
+                folder = uiState.folder!!.name
+            )
+        )
     }
 
     fun clear() {
-
+        uiState = AddTaskUiState()
     }
 }

@@ -66,6 +66,7 @@ import java.time.LocalTime
 fun AddTaskScreen(
     addTaskViewModel: AddTaskViewModel
 ) {
+    val context = LocalContext.current
     Box(
         modifier = Modifier
             .background(MaterialTheme.colorScheme.background)
@@ -114,14 +115,18 @@ fun AddTaskScreen(
             )
             ValidationButtons(
                 onSave = {
-                    Log.d("DEBUGGING : ", "AddTaskScreen: ${addTaskViewModel.uiState.taskTitle}")
-                    Log.d("DEBUGGING : ", "AddTaskScreen: ${addTaskViewModel.uiState.folder}")
-                    Log.d("DEBUGGING : ", "AddTaskScreen: ${addTaskViewModel.uiState.date}")
-                    Log.d("DEBUGGING : ", "AddTaskScreen: ${addTaskViewModel.uiState.time}")
-                    Log.d("DEBUGGING : ", "AddTaskScreen: ${addTaskViewModel.uiState.taskPriority}")
+                    if (addTaskViewModel.isReadyToSave()) {
+                        addTaskViewModel.save()
+                        addTaskViewModel.navigateToHomeScreen()
+                        addTaskViewModel.showSuccessMessage(context = context)
+                        addTaskViewModel.clear()
+                    } else {
+                        addTaskViewModel.showErrorMessage(context = context)
+                    }
                 },
                 onCancel = {
-
+                    addTaskViewModel.clear()
+                    addTaskViewModel.navigateToHomeScreen()
                 }
             )
             Spacer(modifier = Modifier)
