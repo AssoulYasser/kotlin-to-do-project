@@ -14,6 +14,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -23,6 +25,9 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.KeyboardArrowRight
 import androidx.compose.material.icons.outlined.Search
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardColors
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -48,16 +53,16 @@ import com.example.roomtodolist.R
 import com.example.roomtodolist.data.folder.FolderTable
 import com.example.roomtodolist.data.task.TaskTable
 import com.example.roomtodolist.ui.components.EmptyElements
+import com.example.roomtodolist.ui.components.FolderCard
 import com.example.roomtodolist.ui.components.ProfilePicture
 import com.example.roomtodolist.ui.components.Welcoming
+import com.example.roomtodolist.ui.components.defaultTextFieldColors
 import com.example.roomtodolist.ui.theme.StateColors
 
 @Composable
 fun HomeScreen(
     homeViewModel: HomeViewModel
 ) {
-    val searchFor: MutableState<String> = remember { mutableStateOf("") }
-    val folders: List<FolderTable> = listOf()
     val tasks: List<TaskTable> = listOf()
     Box(
         modifier = Modifier
@@ -87,12 +92,18 @@ fun HomeScreen(
                     shape = RoundedCornerShape(20f)
                 )
         )
-        SearchForTask(value = searchFor)
+        SearchForTask(
+            value = homeViewModel.uiState.search,
+            onValueChange = { homeViewModel.setSearch(it) }
+        )
         Folders(
-            folders = folders,
+            folders = homeViewModel.getFolders(),
             addFolder = { homeViewModel.navigateToAddFolderScreen() }
         )
-        Tasks(tasks)
+        Tasks(
+            tasks = tasks,
+            addTask = { homeViewModel.navigateToAddTaskScreen() }
+        )
         Spacer(modifier = Modifier)
     }
 
@@ -219,13 +230,13 @@ private fun RowScope.DayElement(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchForTask(
-    modifier: Modifier = Modifier,
-    value: MutableState<String>
+    value: String,
+    onValueChange: (String) -> Unit
 ) {
     val focusManager = LocalFocusManager.current
     TextField(
-        value = value.value,
-        onValueChange = { value.value = it },
+        value = value,
+        onValueChange = onValueChange,
         modifier = Modifier
             .fillMaxWidth(),
         leadingIcon = {
@@ -234,23 +245,7 @@ fun SearchForTask(
         placeholder = {
             Text(text = "Search Task")
         },
-        colors = TextFieldDefaults.textFieldColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer,
-            focusedPlaceholderColor = MaterialTheme.colorScheme.onBackground,
-            unfocusedPlaceholderColor = MaterialTheme.colorScheme.onBackground,
-            focusedLabelColor = MaterialTheme.colorScheme.onBackground,
-            unfocusedLabelColor = MaterialTheme.colorScheme.onBackground,
-            focusedLeadingIconColor = MaterialTheme.colorScheme.onBackground,
-            unfocusedLeadingIconColor = MaterialTheme.colorScheme.onBackground,
-            focusedTextColor = MaterialTheme.colorScheme.onBackground,
-            unfocusedTextColor = MaterialTheme.colorScheme.onBackground,
-            errorTextColor = StateColors.Negative,
-            errorContainerColor = StateColors.Negative,
-            cursorColor = Color.Black,
-            errorCursorColor = StateColors.Negative,
-            focusedIndicatorColor = Color.Transparent,
-            unfocusedIndicatorColor = Color.Transparent
-        ),
+        colors = defaultTextFieldColors(),
         shape = RoundedCornerShape(20f),
         singleLine = true,
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
@@ -318,18 +313,27 @@ private fun Folders(
                         .padding(vertical = 20.dp)
                 )
             }
+        else
+            LazyRow() {
+                items(items = folders) {
+                    FolderCard(folder = it)
+                }
+            }
     }
     
 }
 
 @Composable
 fun Tasks(
-    tasks: List<TaskTable>
+    tasks: List<TaskTable>,
+    addTask: () -> Unit
 ) {
     Column(
         modifier = Modifier.fillMaxWidth()
     ) {
-        TitleWithSeeAll("TASKS") {}
+        TitleWithSeeAll("TASKS") {
+
+        }
         if (tasks.isEmpty())
             Box(
                 modifier = Modifier
@@ -340,12 +344,12 @@ fun Tasks(
                     ),
                 contentAlignment = Alignment.Center
             ) {
-                ->
                 EmptyElements(
                     elementName = "Task",
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 20.dp)
+                        .padding(vertical = 20.dp),
+                    onCreateElement = addTask
                 )
             }
     }

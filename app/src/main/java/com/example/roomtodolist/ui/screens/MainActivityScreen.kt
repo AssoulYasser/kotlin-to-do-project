@@ -74,5 +74,8 @@ fun MainActivityScreen(mainViewModel: MainViewModel) {
     }
 
 
+    mainViewModel.start()
+
+
 
 }

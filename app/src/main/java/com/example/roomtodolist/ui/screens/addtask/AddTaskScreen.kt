@@ -1,7 +1,6 @@
 package com.example.roomtodolist.ui.screens.addtask
 
 import android.os.Build
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearEasing
@@ -15,20 +14,20 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -42,10 +41,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.roomtodolist.R
+import com.example.roomtodolist.data.folder.FolderTable
+import com.example.roomtodolist.data.task.TaskPriority
 import com.example.roomtodolist.ui.components.ActionBar
-import com.example.roomtodolist.ui.screens.MainViewModel
-import com.example.roomtodolist.ui.screens.TAG
-import com.example.roomtodolist.ui.theme.StateColors
+import com.example.roomtodolist.ui.components.AddElementCard
+import com.example.roomtodolist.ui.components.FolderCard
+import com.example.roomtodolist.ui.components.defaultTextFieldColors
+import com.example.roomtodolist.ui.components.defaultTextFieldShape
 import com.maxkeppeker.sheets.core.models.base.UseCaseState
 import com.maxkeppeler.sheets.calendar.CalendarDialog
 import com.maxkeppeler.sheets.calendar.models.CalendarConfig
@@ -59,8 +61,6 @@ import java.time.LocalTime
 fun AddTaskScreen(
     addTaskViewModel: AddTaskViewModel
 ) {
-    val taskTitleState: MutableState<String> = remember { mutableStateOf("") }
-
     Box(
         modifier = Modifier
             .background(MaterialTheme.colorScheme.background)
@@ -71,7 +71,7 @@ fun AddTaskScreen(
             .fillMaxSize()
     ) {
         ActionBar(title = "Add Task") {
-//            navHostController.navigateTo(NavDestination.Home.rout)
+            addTaskViewModel.navigateToHomeScreen()
         }
         Column(
             modifier = Modifier
@@ -82,14 +82,88 @@ fun AddTaskScreen(
             verticalArrangement = Arrangement.spacedBy(20.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            TaskTitle(taskTitleState)
-            PriorityCard()
-            DateCard()
+            TaskTitle(
+                value = addTaskViewModel.uiState.taskTitle,
+                onValueChange = { addTaskViewModel.setTaskTitle(it) }
+            )
+            PriorityCard(
+                selectedPriority = addTaskViewModel.uiState.taskPriority,
+                onSelectPriority = { addTaskViewModel.setPriority(it) }
+            )
+            DateCard(
+                date = addTaskViewModel.uiState.date,
+                time = addTaskViewModel.uiState.time,
+                onDateChange = {
+                    addTaskViewModel.setDate(it)
+                },
+                onTimeChange = {
+                    addTaskViewModel.setTime(it)
+                }
+            )
+            FoldersCard(
+                addTaskViewModel.getFolders(),
+                onAddFolder = { addTaskViewModel.navigateToAddFolderScreen() }
+            )
         }
     }
 
 }
 
+@Composable
+fun FoldersCard(
+    folders: List<FolderTable>,
+    onAddFolder: () -> Unit
+) {
+    ExpandableCard(icon = R.drawable.outlined_folder_add_icon, title = "Set Folder") {
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.SpaceBetween
+        ) {
+            for (folderIndex in folders.indices step 2) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(5.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    FolderCard(
+                        folder = folders[folderIndex],
+                        modifier = Modifier.weight(1f),
+                        showArrowIcon = false
+                    )
+                    if (folderIndex + 1 < folders.size)
+                        FolderCard(
+                            folder = folders[folderIndex + 1],
+                            modifier = Modifier.weight(1f),
+                            showArrowIcon = false
+                        )
+                    else
+                        AddElementCard(
+                            modifier = Modifier.weight(1f).padding(vertical = 25.dp)
+                        ) {
+                            onAddFolder()
+                        }
+                }
+            }
+            if (folders.size % 2 == 0)
+                Row(
+                    modifier = Modifier.fillMaxWidth(0.5f).align(Alignment.Start),
+                    horizontalArrangement = Arrangement.spacedBy(5.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    AddElementCard(
+                        modifier = Modifier.weight(0.5f).padding(vertical = 25.dp)
+                    ) {
+                        onAddFolder()
+                    }
+                }
+
+        }
+
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ExpandableCard(
     icon: Int,
@@ -102,45 +176,54 @@ private fun ExpandableCard(
         modifier = Modifier
             .fillMaxWidth()
             .animateContentSize(animationSpec = tween(300, easing = LinearEasing)),
-        color = MaterialTheme.colorScheme.primaryContainer,
-        onClick = {
-            isOpen.value = !isOpen.value
-        }
+        color = Color.Transparent
     ) {
         Column(
-            modifier = Modifier
-                .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Box {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .align(Alignment.CenterStart),
-                    horizontalArrangement = Arrangement.spacedBy(10.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        painter = painterResource(id = icon),
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onBackground
-                    )
-                    Text(text = title, color = MaterialTheme.colorScheme.onBackground)
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(20f),
+                colors = CardDefaults
+                    .cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
+                onClick = {
+                    isOpen.value = !isOpen.value
                 }
+            ) {
+                Box(
+                    modifier = Modifier
+                        .padding(16.dp)
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .align(Alignment.CenterStart) ,
+                        horizontalArrangement = Arrangement.spacedBy(10.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            painter = painterResource(id = icon),
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onBackground
+                        )
+                        Text(text = title, color = MaterialTheme.colorScheme.onBackground)
+                    }
 
-                Icon(
-                    painter = painterResource(id =
+                    Icon(
+                        painter = painterResource(id =
                         if (isOpen.value)
                             R.drawable.outlined_non_lined_arrow_up_icon
                         else
                             R.drawable.outlined_non_lined_arrow_down_icon),
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onBackground,
-                    modifier = Modifier.align(Alignment.CenterEnd)
-                )
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onBackground,
+                        modifier = Modifier.align(Alignment.CenterEnd)
+                    )
 
+                }
             }
+
             if (isOpen.value) content()
         }
     }
@@ -148,56 +231,43 @@ private fun ExpandableCard(
 
 @Composable
 private fun TaskTitle(
-    taskTitleState: MutableState<String> = remember { mutableStateOf("") }
+    value: String,
+    onValueChange: (String) -> Unit
 ) {
     TextField(
-        value = taskTitleState.value,
-        onValueChange = { taskTitleState.value = it },
-        colors = TextFieldDefaults.colors(
-            focusedContainerColor = MaterialTheme.colorScheme.primaryContainer,
-            unfocusedContainerColor = MaterialTheme.colorScheme.primaryContainer,
-            focusedPlaceholderColor = MaterialTheme.colorScheme.onBackground,
-            unfocusedPlaceholderColor = MaterialTheme.colorScheme.onBackground,
-            focusedLabelColor = MaterialTheme.colorScheme.onBackground,
-            unfocusedLabelColor = MaterialTheme.colorScheme.onBackground,
-            focusedLeadingIconColor = MaterialTheme.colorScheme.onBackground,
-            unfocusedLeadingIconColor = MaterialTheme.colorScheme.onBackground,
-            focusedTextColor = MaterialTheme.colorScheme.onBackground,
-            unfocusedTextColor = MaterialTheme.colorScheme.onBackground,
-            errorTextColor = StateColors.Negative,
-            errorContainerColor = StateColors.Negative,
-            cursorColor = Color.Black,
-            errorCursorColor = StateColors.Negative,
-            focusedIndicatorColor = Color.Transparent,
-            unfocusedIndicatorColor = Color.Transparent
-        ),
-        shape = RoundedCornerShape(20f),
+        value = value,
+        onValueChange = onValueChange,
+        colors = defaultTextFieldColors(),
+        shape = defaultTextFieldShape(),
         modifier = Modifier
-            .fillMaxWidth()
-            .height(120.dp)
+            .fillMaxWidth(),
+        placeholder = {
+            Text(text = "Task title")
+        }
     )
 }
 
 @Composable
 fun PriorityCard(
-    selectedPriority: MutableState<String?> = remember { mutableStateOf(null) }
+    selectedPriority: TaskPriority,
+    onSelectPriority: (TaskPriority) -> Unit
 ) {
-    fun getColor(button: String) : Color {
-        return when(button) {
-            "Low" -> {
-                if (selectedPriority.value == button)
+    fun getContainerColor(selectedButton: TaskPriority) : Color {
+        return when(selectedButton) {
+            TaskPriority.LOW -> {
+                if (selectedPriority == selectedButton)
                     Color.Green
                 else
                     Color.Transparent
             }
-            "Medium" -> {
-                if (selectedPriority.value == button)
+            TaskPriority.MEDIUM -> {
+                if (selectedPriority == selectedButton)
                     Color.Blue
                 else
                     Color.Transparent
             }
-            "High" -> {
-                if (selectedPriority.value == button)
+            TaskPriority.HIGH -> {
+                if (selectedPriority == selectedButton)
                     Color.Red
                 else
                     Color.Transparent
@@ -206,36 +276,46 @@ fun PriorityCard(
             else -> Color.Transparent
         }
     }
+    fun getContentColor(selectedButton: TaskPriority) : Color
+        = if (selectedPriority == selectedButton) Color.White else Color.Black
     ExpandableCard(icon = R.drawable.outlined_document_favorite_icon, title = "Set Priority") {
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Button(
-                onClick = { selectedPriority.value = "Low" },
-                colors = ButtonDefaults.buttonColors(containerColor = getColor("Low")),
+                onClick = { onSelectPriority(TaskPriority.LOW) },
+                colors = ButtonDefaults.buttonColors(containerColor = getContainerColor(TaskPriority.LOW)),
                 border = BorderStroke(color = Color.Green, width = 2.dp),
                 modifier = Modifier
                     .weight(1f)
                     .padding(horizontal = 5.dp),
                 shape = RoundedCornerShape(20f)
             ) {
-                Text(text = "Low", fontSize = 12.sp, color = if (selectedPriority.value == "Low") Color.White else Color.Black)
+                Text(
+                    text = "Low",
+                    fontSize = 12.sp,
+                    color = getContentColor(TaskPriority.LOW)
+                )
             }
             Button(
-                onClick = { selectedPriority.value = "Medium" },
-                colors = ButtonDefaults.buttonColors(containerColor = getColor("Medium")),
+                onClick = { onSelectPriority(TaskPriority.MEDIUM) },
+                colors = ButtonDefaults.buttonColors(containerColor = getContainerColor(TaskPriority.MEDIUM)),
                 border = BorderStroke(color = Color.Blue, width = 2.dp),
                 modifier = Modifier
                     .weight(1f)
                     .padding(horizontal = 5.dp),
                 shape = RoundedCornerShape(20f)
             ) {
-                Text(text = "Medium", fontSize = 12.sp, color = if (selectedPriority.value == "Medium") Color.White else Color.Black)
+                Text(
+                    text = "Medium",
+                    fontSize = 12.sp,
+                    color = getContentColor(TaskPriority.MEDIUM)
+                )
             }
             Button(
-                onClick = { selectedPriority.value = "High" },
-                colors = ButtonDefaults.buttonColors(containerColor = getColor("High")),
+                onClick = { onSelectPriority(TaskPriority.HIGH) },
+                colors = ButtonDefaults.buttonColors(containerColor = getContainerColor(TaskPriority.HIGH)),
                 border = BorderStroke(color = Color.Red, width = 2.dp),
                 modifier = Modifier
                     .weight(1f)
@@ -245,7 +325,7 @@ fun PriorityCard(
                 Text(
                     text = "High",
                     fontSize = 12.sp,
-                    color = if (selectedPriority.value == "High") Color.White else Color.Black
+                    color = getContentColor(TaskPriority.HIGH)
                 )
             }
         }
@@ -255,44 +335,45 @@ fun PriorityCard(
 
 @Composable
 fun DateCard(
-    dueTo: MutableState<LocalDate?> = remember { mutableStateOf(null) },
-    atHour: MutableState<Int?> = remember { mutableStateOf(null) },
-    atMinute: MutableState<Int?> = remember { mutableStateOf(null) },
+    date: LocalDate?,
+    time: LocalTime?,
+    onDateChange: (LocalDate) -> Unit,
+    onTimeChange: (LocalTime) -> Unit
 ) {
     val isCalendarVisible = remember { mutableStateOf(false) }
     val isClockVisible = remember { mutableStateOf(false) }
-    MyCalendarDialog(dueTo, isVisible = isCalendarVisible, atHour, atMinute)
-    MyClockDialog(hour = atHour, minutes = atMinute, isVisible = isClockVisible, dueTo = dueTo)
+    MyCalendarDialog(setDate = onDateChange, time = time, isVisible = isCalendarVisible)
+    MyClockDialog(setTime = onTimeChange, date = date, isVisible = isClockVisible)
 
-    val date = remember { mutableStateOf("--/--/----") }
+    val dateUi = remember { mutableStateOf("--/--/----") }
 
-    date.value = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O)
-        if (dueTo.value == null) "yyyy/mm/dd" else dueTo.value.toString()
+    dateUi.value = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O)
+        date?.toString() ?: "yyyy/mm/dd"
     else
-        if (dueTo.value == null)
+        if (date == null)
             "--/--/----"
         else
-            "${dueTo.value!!.dayOfMonth}/" +
-                    "${dueTo.value!!.monthValue}/" +
-                    "${dueTo.value!!.year}"
+            "${date.dayOfMonth}/" +
+                    "${date.monthValue}/" +
+                    "${date.year}"
 
-    val time = remember { mutableStateOf("--:--") }
+    val timeUi = remember { mutableStateOf("--:--") }
 
-    Log.d(TAG, "DateCard: ${atHour.value}")
-    Log.d(TAG, "DateCard: ${atMinute.value}")
+    timeUi.value =
 
-    time.value =
-        if (atHour.value == null || atMinute.value == null)
+        if (time == null)
             "--:--"
         else {
-            if (atHour.value!!/10 > 0 && atMinute.value!!/10 >0)
-                "${atHour.value}:${atMinute.value}"
-            else if (atHour.value!!/10 > 0)
-                "${atHour.value}:0${atMinute.value}"
-            else if (atMinute.value!!/10 > 0)
-                "0${atHour.value}:${atMinute.value}"
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O)
+                time.toString()
+            else if (time.hour/10 > 0 && time.minute /10 >0)
+                "${time.hour}:${time.minute}"
+            else if (time.hour /10 > 0)
+                "${time.hour}:0${time.minute}"
+            else if (time.hour /10 > 0)
+                "0${time.hour}:${time.minute}"
             else
-                "0${atHour.value}:0${atMinute.value}"
+                "0${time.hour}:0${time.minute}"
         }
 
     ExpandableCard(icon = R.drawable.outlined_calendar_add_icon, title = "Set Date") {
@@ -314,7 +395,7 @@ fun DateCard(
                     modifier = Modifier.weight(0.5f)
                 )
                 Text(
-                    text = date.value,
+                    text = dateUi.value,
                     color = MaterialTheme.colorScheme.onBackground,
                     modifier = Modifier.weight(1f),
                     textAlign = TextAlign.Center
@@ -345,7 +426,7 @@ fun DateCard(
             ) {
                 Text(text = "At: ", color = MaterialTheme.colorScheme.onBackground, modifier = Modifier.weight(0.5f))
                 Text(
-                    text = time.value,
+                    text = timeUi.value,
                     color = MaterialTheme.colorScheme.onBackground,
                     modifier = Modifier.weight(1f),
                     textAlign = TextAlign.Center
@@ -369,7 +450,11 @@ fun DateCard(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MyCalendarDialog(dueTo: MutableState<LocalDate?>, isVisible: MutableState<Boolean>, hour: MutableState<Int?>, minutes: MutableState<Int?>) {
+fun MyCalendarDialog(
+    setDate: (LocalDate) -> Unit,
+    time: LocalTime?,
+    isVisible: MutableState<Boolean>
+) {
     val context = LocalContext.current
     CalendarDialog(
         state = UseCaseState(
@@ -381,27 +466,27 @@ fun MyCalendarDialog(dueTo: MutableState<LocalDate?>, isVisible: MutableState<Bo
         selection = CalendarSelection.Date { date ->
             isVisible.value = false
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                if (hour.value == null || minutes.value == null) {
+                if (time == null) {
                     if (date.isBefore(LocalDate.now()))
                         Toast.makeText(context, "Invalid date", Toast.LENGTH_LONG).show()
                     else
-                        dueTo.value = date
+                        setDate(date)
                 }
                 else {
                     if ((date.isEqual(LocalDate.now()) &&
-                            (hour.value!! < LocalTime.now().hour ||
-                                (hour.value!! == LocalTime.now().hour &&
-                                    minutes.value!! < LocalTime.now().minute))) ||
+                            (time.hour < LocalTime.now().hour ||
+                                (time.hour == LocalTime.now().hour &&
+                                    time.minute < LocalTime.now().minute))) ||
                         date.isBefore(LocalDate.now())
                     ) {
                         Toast.makeText(context, "Invalid date", Toast.LENGTH_LONG).show()
                     } else {
-                        dueTo.value = date
+                        setDate(date)
                     }
                 }
             }
             else {
-                dueTo.value = date
+                setDate(date)
             }
         },
         config = CalendarConfig(
@@ -414,47 +499,40 @@ fun MyCalendarDialog(dueTo: MutableState<LocalDate?>, isVisible: MutableState<Bo
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyClockDialog(
-    hour: MutableState<Int?>,
-    minutes: MutableState<Int?>,
-    dueTo: MutableState<LocalDate?>,
+    setTime: (LocalTime) -> Unit,
+    date: LocalDate?,
     isVisible: MutableState<Boolean>
 ) {
     val context = LocalContext.current
     ClockDialog(
         state = UseCaseState(visible = isVisible.value, onCloseRequest = {isVisible.value = false }),
         selection = ClockSelection.HoursMinutes { h, m ->
+
             isVisible.value = false
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                if (dueTo.value == null) {
-                    hour.value = h
-                    minutes.value = m
+                val localTime = LocalTime.of(h, m)
+                if (date == null) {
+                    setTime(localTime)
                 }
                 else{
-                    if (dueTo.value!!.isEqual(LocalDate.now())){
+                    if (date.isEqual(LocalDate.now())){
                         if (h > LocalTime.now().hour){
-                            hour.value = h
-                            minutes.value = m
+                            setTime(localTime)
                         } else {
                             if (h != LocalTime.now().hour || m < LocalTime.now().minute)
                                 Toast.makeText(context, "Invalid Time", Toast.LENGTH_LONG).show()
                             else{
-                                hour.value = h
-                                minutes.value = m
+                                setTime(localTime)
                             }
                         }
                     }
-                    else if(dueTo.value!!.isBefore(LocalDate.now())){
+                    else if(date.isBefore(LocalDate.now())){
                         Toast.makeText(context, "Invalid date", Toast.LENGTH_LONG).show()
                     }
                     else {
-                        hour.value = h
-                        minutes.value = m
+                        setTime(localTime)
                     }
                 }
-            }
-            else{
-                hour.value = h
-                minutes.value = m
             }
         }
     )

@@ -1,7 +1,11 @@
 package com.example.roomtodolist.ui.screens
 
+import android.icu.text.CaseMap.Fold
 import android.util.Log
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -15,22 +19,22 @@ class MainViewModel(
     val repository: Repository,
 ) : ViewModel() {
 
-    var uiState = MainUiState()
+    var uiState by mutableStateOf(MainUiState())
         private set
-
-    init {
-        viewModelScope.launch(Dispatchers.IO) {
-            val folders = repository.folderDao.getFolders()
-            uiState = uiState.copy(folders = folders)
-            Log.d(TAG, "UISTATE: ${uiState.folders}")
-        }
-    }
 
     lateinit var navHostController: NavHostController
         private set
 
     lateinit var windowSizeClass: WindowSizeClass
         private set
+
+    fun start() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val folders = repository.folderDao.getFolders()
+            val tasks = repository.taskDao.getTasks()
+            uiState = uiState.copy(folders = folders, tasks = tasks)
+        }
+    }
 
     fun setNavHostController(navHostController: NavHostController) {
         this.navHostController = navHostController
@@ -41,6 +45,7 @@ class MainViewModel(
     }
 
     fun navigateTo(destination: String) {
+        Log.d(TAG, "navigateTo: ${destination}")
         navHostController.navigate(destination) {
             popUpTo(navHostController.graph.findStartDestination().id) {
                 saveState = true
@@ -57,7 +62,12 @@ class MainViewModel(
     fun addFolder(folder: FolderTable) {
         viewModelScope.launch(Dispatchers.IO) {
             repository.folderDao.addFolder(folder)
+            updateFolderState(folder)
         }
+    }
+
+    private fun updateFolderState(newFolder: FolderTable){
+        uiState = uiState.copy(folders = uiState.folders + newFolder)
     }
 
 }

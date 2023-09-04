@@ -13,7 +13,7 @@ interface TaskDAO {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun addTask(taskTable: TaskTable)
 
-    @Query("SELECT * FROM TaskTable ORDER BY id")
+    @Query("SELECT * FROM TaskTable ORDER BY folder")
     suspend fun getTasks(): List<TaskTable>
 
 //    @Query("SELECT * FROM TaskTable WHERE TaskTable.folder = :folder")
