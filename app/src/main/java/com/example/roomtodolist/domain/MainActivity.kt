@@ -1,24 +1,34 @@
 package com.example.roomtodolist.domain
 
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.RequiresApi
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
 import com.example.roomtodolist.data.Repository
+import com.example.roomtodolist.data.task.TaskPriority
+import com.example.roomtodolist.data.task.TaskTable
 import com.example.roomtodolist.ui.screens.MainActivityScreen
 import com.example.roomtodolist.ui.screens.MainViewModel
 import com.example.roomtodolist.ui.theme.RoomToDoListTheme
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import java.time.LocalDate
 
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 class MainActivity : ComponentActivity() {
     private lateinit var context: Context
     private lateinit var repository: Repository
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         context = this

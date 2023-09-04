@@ -1,11 +1,13 @@
 package com.example.roomtodolist.ui.components
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ChipBorder
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -23,12 +25,15 @@ import com.example.roomtodolist.data.folder.FolderTable
 fun FolderCard(
     modifier: Modifier = Modifier,
     folder: FolderTable,
-    showArrowIcon: Boolean = true
+    showArrowIcon: Boolean = true,
+    color: Color = MaterialTheme.colorScheme.primaryContainer,
+    border: BorderStroke? = null
 ) {
     Surface(
         modifier = modifier,
         shape = RoundedCornerShape(24f),
-        color = MaterialTheme.colorScheme.primaryContainer
+        color = color,
+        border = border
     ) {
         Row(
             modifier = Modifier.padding(25.dp),

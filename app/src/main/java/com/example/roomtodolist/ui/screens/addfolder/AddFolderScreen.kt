@@ -1,6 +1,5 @@
 package com.example.roomtodolist.ui.screens.addfolder
 
-import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -13,7 +12,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -27,10 +25,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.example.roomtodolist.data.folder.folderColors
 import com.example.roomtodolist.ui.components.ActionBar
-import com.example.roomtodolist.ui.components.defaultButtonShape
-import com.example.roomtodolist.ui.components.defaultButtonStroke
-import com.example.roomtodolist.ui.components.defaultFilledButtonColors
-import com.example.roomtodolist.ui.components.defaultOutlinedButtonColors
+import com.example.roomtodolist.ui.components.ValidationButtons
 import com.example.roomtodolist.ui.components.defaultTextFieldColors
 import com.example.roomtodolist.ui.components.defaultTextFieldShape
 
@@ -77,11 +72,11 @@ fun AddFolderScreen(
                         if (addFolderViewModel.isReadyToSave()) {
                             addFolderViewModel.save()
                             addFolderViewModel.navigateBack()
-                            addFolderViewModel.showSuccessToast(context = context)
+                            addFolderViewModel.showSuccessMessage(context = context)
                             addFolderViewModel.clear()
                         }
                         else {
-                            addFolderViewModel.showErrorToast(context = context)
+                            addFolderViewModel.showErrorMessage(context = context)
                         }
                     },
                     onCancel = {
@@ -91,37 +86,6 @@ fun AddFolderScreen(
                 )
             }
 
-        }
-    }
-}
-
-@Composable
-fun ValidationButtons(onSave: () -> Unit, onCancel: () -> Unit) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceAround,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Button(
-            onClick = onCancel,
-            shape = defaultButtonShape(),
-            colors = defaultOutlinedButtonColors(),
-            border = defaultButtonStroke(MaterialTheme.colorScheme.onBackground),
-            modifier = Modifier
-                .weight(1f)
-                .padding(end = 10.dp)
-        ) {
-            Text(text = "Cancel")
-        }
-        Button(
-            onClick = onSave,
-            shape = defaultButtonShape(),
-            colors = defaultFilledButtonColors(),
-            modifier = Modifier
-                .weight(1f)
-                .padding(start = 10.dp)
-        ) {
-            Text(text = "Save")
         }
     }
 }

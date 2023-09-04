@@ -1,17 +1,21 @@
 package com.example.roomtodolist.ui.screens.addtask
 
 import android.os.Build
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -46,6 +50,7 @@ import com.example.roomtodolist.data.task.TaskPriority
 import com.example.roomtodolist.ui.components.ActionBar
 import com.example.roomtodolist.ui.components.AddElementCard
 import com.example.roomtodolist.ui.components.FolderCard
+import com.example.roomtodolist.ui.components.ValidationButtons
 import com.example.roomtodolist.ui.components.defaultTextFieldColors
 import com.example.roomtodolist.ui.components.defaultTextFieldShape
 import com.maxkeppeker.sheets.core.models.base.UseCaseState
@@ -75,13 +80,14 @@ fun AddTaskScreen(
         }
         Column(
             modifier = Modifier
-                .padding(horizontal = 16.dp, vertical = 20.dp)
+                .padding(horizontal = 16.dp)
                 .weight(1f)
                 .background(MaterialTheme.colorScheme.background)
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(20.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            Spacer(modifier = Modifier)
             TaskTitle(
                 value = addTaskViewModel.uiState.taskTitle,
                 onValueChange = { addTaskViewModel.setTaskTitle(it) }
@@ -101,9 +107,24 @@ fun AddTaskScreen(
                 }
             )
             FoldersCard(
-                addTaskViewModel.getFolders(),
-                onAddFolder = { addTaskViewModel.navigateToAddFolderScreen() }
+                selectedFolder = addTaskViewModel.uiState.folder,
+                folders = addTaskViewModel.getFolders(),
+                onAddFolder = { addTaskViewModel.navigateToAddFolderScreen() },
+                onSelectFolder = { addTaskViewModel.setFolder(it) }
             )
+            ValidationButtons(
+                onSave = {
+                    Log.d("DEBUGGING : ", "AddTaskScreen: ${addTaskViewModel.uiState.taskTitle}")
+                    Log.d("DEBUGGING : ", "AddTaskScreen: ${addTaskViewModel.uiState.folder}")
+                    Log.d("DEBUGGING : ", "AddTaskScreen: ${addTaskViewModel.uiState.date}")
+                    Log.d("DEBUGGING : ", "AddTaskScreen: ${addTaskViewModel.uiState.time}")
+                    Log.d("DEBUGGING : ", "AddTaskScreen: ${addTaskViewModel.uiState.taskPriority}")
+                },
+                onCancel = {
+
+                }
+            )
+            Spacer(modifier = Modifier)
         }
     }
 
@@ -112,8 +133,30 @@ fun AddTaskScreen(
 @Composable
 fun FoldersCard(
     folders: List<FolderTable>,
-    onAddFolder: () -> Unit
+    onAddFolder: () -> Unit,
+    onSelectFolder: (FolderTable) -> Unit,
+    selectedFolder: FolderTable?
 ) {
+
+    @Composable
+    fun RowScope.Folder(index: Int) {
+        FolderCard(
+            folder = folders[index],
+            modifier = Modifier
+                .weight(1f)
+                .clickable {
+                    onSelectFolder(folders[index])
+                },
+            showArrowIcon = false,
+            color =
+                if (selectedFolder == folders[index])
+                    MaterialTheme.colorScheme.primaryContainer
+                else
+                    Color.Transparent,
+            border = BorderStroke(1.dp, MaterialTheme.colorScheme.primaryContainer)
+        )
+    }
+
     ExpandableCard(icon = R.drawable.outlined_folder_add_icon, title = "Set Folder") {
         Column(
             modifier = Modifier.fillMaxWidth(),
@@ -126,20 +169,14 @@ fun FoldersCard(
                     horizontalArrangement = Arrangement.spacedBy(5.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    FolderCard(
-                        folder = folders[folderIndex],
-                        modifier = Modifier.weight(1f),
-                        showArrowIcon = false
-                    )
+                    Folder(index = folderIndex)
                     if (folderIndex + 1 < folders.size)
-                        FolderCard(
-                            folder = folders[folderIndex + 1],
-                            modifier = Modifier.weight(1f),
-                            showArrowIcon = false
-                        )
+                        Folder(index = folderIndex + 1)
                     else
                         AddElementCard(
-                            modifier = Modifier.weight(1f).padding(vertical = 25.dp)
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(vertical = 25.dp)
                         ) {
                             onAddFolder()
                         }
@@ -147,19 +184,21 @@ fun FoldersCard(
             }
             if (folders.size % 2 == 0)
                 Row(
-                    modifier = Modifier.fillMaxWidth(0.5f).align(Alignment.Start),
+                    modifier = Modifier
+                        .fillMaxWidth(0.5f)
+                        .align(Alignment.Start),
                     horizontalArrangement = Arrangement.spacedBy(5.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     AddElementCard(
-                        modifier = Modifier.weight(0.5f).padding(vertical = 25.dp)
+                        modifier = Modifier
+                            .weight(0.5f)
+                            .padding(vertical = 25.dp)
                     ) {
                         onAddFolder()
                     }
                 }
-
         }
-
     }
 }
 
@@ -366,12 +405,16 @@ fun DateCard(
         else {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O)
                 time.toString()
+
             else if (time.hour/10 > 0 && time.minute /10 >0)
                 "${time.hour}:${time.minute}"
+
             else if (time.hour /10 > 0)
                 "${time.hour}:0${time.minute}"
-            else if (time.hour /10 > 0)
+
+            else if (time.minute /10 > 0)
                 "0${time.hour}:${time.minute}"
+
             else
                 "0${time.hour}:0${time.minute}"
         }

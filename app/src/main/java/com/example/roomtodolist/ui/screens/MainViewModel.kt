@@ -12,6 +12,7 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import com.example.roomtodolist.data.Repository
 import com.example.roomtodolist.data.folder.FolderTable
+import com.example.roomtodolist.data.task.TaskTable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -68,6 +69,17 @@ class MainViewModel(
 
     private fun updateFolderState(newFolder: FolderTable){
         uiState = uiState.copy(folders = uiState.folders + newFolder)
+    }
+
+    fun addTask(task: TaskTable) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.taskDao.addTask(task)
+            updateTaskState(task)
+        }
+    }
+
+    private fun updateTaskState(newTask: TaskTable){
+        uiState = uiState.copy(tasks = uiState.tasks + newTask)
     }
 
 }

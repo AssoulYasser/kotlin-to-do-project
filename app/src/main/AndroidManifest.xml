@@ -12,6 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.RoomToDoList"
         tools:targetApi="31">
+        <meta-data
+            android:name="android.app.minSdkVersion"
+            android:value="26" />
         <activity
             android:name=".domain.MainActivity"
             android:exported="true"

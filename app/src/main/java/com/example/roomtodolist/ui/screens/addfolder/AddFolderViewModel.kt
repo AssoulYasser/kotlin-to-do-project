@@ -25,7 +25,7 @@ class AddFolderViewModel(private val mainViewModel: MainViewModel) : ViewModel()
 
     fun isReadyToSave() = uiState.folderColor != null && uiState.folderName != ""
 
-    fun showErrorToast(context: Context) {
+    fun showErrorMessage(context: Context) {
         if (uiState.folderName == "")
             Toast.makeText(context, "insert name please", Toast.LENGTH_SHORT).show()
 
@@ -34,7 +34,7 @@ class AddFolderViewModel(private val mainViewModel: MainViewModel) : ViewModel()
 
     }
 
-    fun showSuccessToast(context: Context) {
+    fun showSuccessMessage(context: Context) {
         Toast.makeText(context, "the folder ${uiState.folderName} has been saved successfully", Toast.LENGTH_SHORT).show()
     }
 
