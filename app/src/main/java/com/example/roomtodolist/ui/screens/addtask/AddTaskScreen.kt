@@ -297,28 +297,10 @@ fun PriorityCard(
     onSelectPriority: (TaskPriority) -> Unit
 ) {
     fun getContainerColor(selectedButton: TaskPriority) : Color {
-        return when(selectedButton) {
-            TaskPriority.LOW -> {
-                if (selectedPriority == selectedButton)
-                    Color.Green
-                else
-                    Color.Transparent
-            }
-            TaskPriority.MEDIUM -> {
-                if (selectedPriority == selectedButton)
-                    Color.Blue
-                else
-                    Color.Transparent
-            }
-            TaskPriority.HIGH -> {
-                if (selectedPriority == selectedButton)
-                    Color.Red
-                else
-                    Color.Transparent
-            }
-
-            else -> Color.Transparent
-        }
+        return if (selectedButton == selectedPriority)
+                selectedPriority.getPriorityColor()
+            else
+                Color.Transparent
     }
     fun getContentColor(selectedButton: TaskPriority) : Color
         = if (selectedPriority == selectedButton) Color.White else Color.Black

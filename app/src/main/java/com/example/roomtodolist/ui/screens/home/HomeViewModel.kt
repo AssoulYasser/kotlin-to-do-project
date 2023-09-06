@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.example.roomtodolist.data.folder.FolderTable
+import com.example.roomtodolist.data.task.TaskTable
 import com.example.roomtodolist.ui.navigation.MainRoutes
 import com.example.roomtodolist.ui.navigation.NestedRoutes
 import com.example.roomtodolist.ui.screens.MainViewModel
@@ -27,5 +28,6 @@ class HomeViewModel(private val mainViewModel: MainViewModel) : ViewModel() {
     }
 
     fun getFolders() : List<FolderTable> = mainViewModel.uiState.folders
+    fun getTasksPerFolder(): HashMap<FolderTable, List<TaskTable>> = mainViewModel.uiState.tasksPerFolder
 
 }

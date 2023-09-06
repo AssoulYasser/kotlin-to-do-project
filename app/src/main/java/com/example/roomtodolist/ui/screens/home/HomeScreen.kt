@@ -25,16 +25,12 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.KeyboardArrowRight
 import androidx.compose.material.icons.outlined.Search
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardColors
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -55,15 +51,15 @@ import com.example.roomtodolist.data.task.TaskTable
 import com.example.roomtodolist.ui.components.EmptyElements
 import com.example.roomtodolist.ui.components.FolderCard
 import com.example.roomtodolist.ui.components.ProfilePicture
+import com.example.roomtodolist.ui.components.TasksPerFolderCard
+import com.example.roomtodolist.ui.components.TasksPerFolderCards
 import com.example.roomtodolist.ui.components.Welcoming
 import com.example.roomtodolist.ui.components.defaultTextFieldColors
-import com.example.roomtodolist.ui.theme.StateColors
 
 @Composable
 fun HomeScreen(
     homeViewModel: HomeViewModel
 ) {
-    val tasks: List<TaskTable> = listOf()
     Box(
         modifier = Modifier
             .background(MaterialTheme.colorScheme.background)
@@ -101,8 +97,9 @@ fun HomeScreen(
             addFolder = { homeViewModel.navigateToAddFolderScreen() }
         )
         Tasks(
-            tasks = tasks,
-            addTask = { homeViewModel.navigateToAddTaskScreen() }
+            tasksPerFolder = homeViewModel.getTasksPerFolder(),
+            addTask = { homeViewModel.navigateToAddTaskScreen() },
+            onSelectTask = {}
         )
         Spacer(modifier = Modifier)
     }
@@ -325,8 +322,9 @@ private fun Folders(
 
 @Composable
 fun Tasks(
-    tasks: List<TaskTable>,
-    addTask: () -> Unit
+    tasksPerFolder: HashMap<FolderTable, List<TaskTable>>,
+    addTask: () -> Unit,
+    onSelectTask: (TaskTable) -> Unit
 ) {
     Column(
         modifier = Modifier.fillMaxWidth()
@@ -334,24 +332,13 @@ fun Tasks(
         TitleWithSeeAll("TASKS") {
 
         }
-        if (tasks.isEmpty())
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(
-                        color = MaterialTheme.colorScheme.primaryContainer,
-                        shape = RoundedCornerShape(20f)
-                    ),
-                contentAlignment = Alignment.Center
-            ) {
-                EmptyElements(
-                    elementName = "Task",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 20.dp),
-                    onCreateElement = addTask
-                )
-            }
+
+        TasksPerFolderCards(
+            tasksPerFolder = tasksPerFolder,
+            addTask = addTask,
+            onSelectTask = onSelectTask
+        )
+
     }
 
 }

@@ -33,7 +33,15 @@ class MainViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             val folders = repository.folderDao.getFolders()
             val tasks = repository.taskDao.getTasks()
-            uiState = uiState.copy(folders = folders, tasks = tasks)
+            val tasksPerFolder = hashMapOf<FolderTable, List<TaskTable>>()
+            for (folder in folders) {
+                tasksPerFolder[folder] = repository.taskDao.getTasksFromFolder(folder.name)
+            }
+            uiState = uiState.copy(
+                folders = folders,
+                tasks = tasks,
+                tasksPerFolder = tasksPerFolder
+            )
         }
     }
 
@@ -46,7 +54,6 @@ class MainViewModel(
     }
 
     fun navigateTo(destination: String) {
-        Log.d(TAG, "navigateTo: ${destination}")
         navHostController.navigate(destination) {
             popUpTo(navHostController.graph.findStartDestination().id) {
                 saveState = true
@@ -64,6 +71,7 @@ class MainViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             repository.folderDao.addFolder(folder)
             updateFolderState(folder)
+            updateTasksPerFolderState(folder)
         }
     }
 
@@ -75,11 +83,24 @@ class MainViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             repository.taskDao.addTask(task)
             updateTaskState(task)
+            updateTasksPerFolderState(task.folder, newTask = task)
         }
     }
 
     private fun updateTaskState(newTask: TaskTable){
         uiState = uiState.copy(tasks = uiState.tasks + newTask)
+    }
+
+    private fun updateTasksPerFolderState(newFolder: FolderTable) {
+        uiState.tasksPerFolder[newFolder] = listOf()
+    }
+
+    private fun updateTasksPerFolderState(folderName: String, newTask: TaskTable) {
+        for (folder in uiState.tasksPerFolder) {
+            if (folder.key.name == folderName)
+                uiState.tasksPerFolder[folder.key] = uiState.tasksPerFolder[folder.key]!!
+                    .plus(newTask)
+        }
     }
 
 }

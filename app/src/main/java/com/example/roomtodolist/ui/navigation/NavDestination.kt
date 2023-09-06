@@ -11,6 +11,7 @@ import com.example.roomtodolist.ui.screens.calendar.CalendarScreen
 import com.example.roomtodolist.ui.screens.home.HomeScreen
 import com.example.roomtodolist.ui.screens.home.HomeViewModel
 import com.example.roomtodolist.ui.screens.tasks.TasksScreen
+import com.example.roomtodolist.ui.screens.tasks.TasksViewModel
 
 interface ScreenRoute
 
@@ -79,7 +80,7 @@ sealed class MainDestinations(
         title = "Tasks",
         icon = NavIcon(R.drawable.filled_task_icon, R.drawable.outlined_task_icon),
         screen = {
-            TasksScreen()
+            TasksScreen(it as TasksViewModel)
         }
     )
     object Calendar : MainDestinations(

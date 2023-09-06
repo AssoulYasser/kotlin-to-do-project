@@ -16,8 +16,8 @@ interface TaskDAO {
     @Query("SELECT * FROM TaskTable ORDER BY folder")
     suspend fun getTasks(): List<TaskTable>
 
-//    @Query("SELECT * FROM TaskTable WHERE TaskTable.folder = :folder")
-//    suspend fun getTasksFromFolder(folder: String)
+    @Query("SELECT * FROM TaskTable WHERE TaskTable.folder = :folder ORDER BY priority")
+    suspend fun getTasksFromFolder(folder: String) : List<TaskTable>
 
     @Update
     suspend fun updateTask(taskTable: TaskTable)
