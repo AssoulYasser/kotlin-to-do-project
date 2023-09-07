@@ -16,13 +16,13 @@ interface TaskDAO {
     @Query("SELECT * FROM TaskTable ORDER BY folder")
     suspend fun getTasks(): MutableList<TaskTable>
 
-    @Query("SELECT * FROM TaskTable WHERE TaskTable.folder = :folder ORDER BY priority")
-    suspend fun getTasksFromFolder(folder: String) : MutableList<TaskTable>
+    @Query("SELECT * FROM TaskTable WHERE TaskTable.folder == :folder ORDER BY priority")
+    suspend fun getTasksFromFolder(folder: Long) : MutableList<TaskTable>
 
     @Update
     suspend fun updateTask(taskTable: TaskTable)
 
-    @Delete
-    suspend fun deleteTask(taskTable: TaskTable)
+    @Query("DELETE FROM TaskTable WHERE id == :taskId")
+    suspend fun deleteTask(taskId: Long)
 
 }

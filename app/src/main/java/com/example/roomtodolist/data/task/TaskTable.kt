@@ -13,5 +13,5 @@ data class TaskTable(
     val date: LocalDate,
     val time: LocalTime,
     val priority: TaskPriority,
-    val folder: String
+    val folder: Long
 )

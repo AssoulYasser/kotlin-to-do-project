@@ -35,7 +35,8 @@ class MainActivity : ComponentActivity() {
         repository = Repository(context)
 
         lifecycleScope.launch(Dispatchers.IO) {
-            Log.d(TAG, "onCreate: ${repository.taskDao.getTasks()}")
+            Log.d(TAG, "onCreate Tasks: ${repository.taskDao.getTasks()}")
+            Log.d(TAG, "onCreate Folders: ${repository.folderDao.getFolders()}")
         }
 
         setContent {

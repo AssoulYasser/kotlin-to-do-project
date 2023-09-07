@@ -11,10 +11,13 @@ import androidx.room.Update
 interface FolderDAO {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun addFolder(folderTable: FolderTable)
+    suspend fun addFolder(folderTable: FolderTable) : Long
 
     @Query("SELECT * FROM FolderTable ORDER BY name")
     suspend fun getFolders(): MutableList<FolderTable>
+
+    @Query("SELECT * FROM FolderTable WHERE id == :folderId")
+    suspend fun getFolderById(folderId: Long) : FolderTable
 
     @Query("SELECT * FROM FolderTable WHERE name == :folderName")
     suspend fun getFolderByName(folderName : String) : FolderTable
@@ -22,7 +25,7 @@ interface FolderDAO {
     @Update
     suspend fun updateFolder(folderTable: FolderTable)
 
-    @Delete
-    suspend fun deleteFolder(folderTable: FolderTable)
+    @Query("DELETE FROM FolderTable WHERE id == :folderId")
+    suspend fun deleteFolder(folderId: Long)
 
 }

@@ -6,7 +6,8 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class FolderTable(
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
+    val id: Long? = null,
     val name: String,
     val color: Int
 ) {

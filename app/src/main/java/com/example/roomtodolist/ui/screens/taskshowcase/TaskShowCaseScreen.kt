@@ -10,7 +10,6 @@ import com.example.roomtodolist.ui.components.DateCard
 import com.example.roomtodolist.ui.components.FoldersCard
 import com.example.roomtodolist.ui.components.PriorityCard
 import com.example.roomtodolist.ui.components.TaskTitle
-import com.example.roomtodolist.ui.components.SavingValidationButtons
 import com.example.roomtodolist.ui.components.UpdatingValidationButtons
 
 @Composable
@@ -34,8 +33,8 @@ fun TaskShowCaseScreen(
             onSelectPriority = { taskShowCaseViewModel.updatePriority(it) }
         )
         DateCard(
-            date = taskShowCaseViewModel.uiState.date,
-            time = taskShowCaseViewModel.uiState.time,
+            date = taskShowCaseViewModel.uiState.taskDate,
+            time = taskShowCaseViewModel.uiState.taskTime,
             onDateChange = {
                 taskShowCaseViewModel.updateDate(it)
             },
@@ -44,7 +43,7 @@ fun TaskShowCaseScreen(
             }
         )
         FoldersCard(
-            selectedFolder = taskShowCaseViewModel.uiState.folder,
+            selectedFolder = taskShowCaseViewModel.uiState.taskFolder,
             folders = taskShowCaseViewModel.getFolders(),
             onAddFolder = { taskShowCaseViewModel.navigateToAddFolderScreen() },
             onSelectFolder = { taskShowCaseViewModel.updateFolder(it) }

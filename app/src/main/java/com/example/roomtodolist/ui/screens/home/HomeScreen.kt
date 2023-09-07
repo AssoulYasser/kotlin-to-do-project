@@ -1,6 +1,8 @@
 package com.example.roomtodolist.ui.screens.home
 
+import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -81,6 +83,10 @@ fun HomeScreen(
         )
         Folders(
             folders = homeViewModel.getFolders(),
+            onClick = {
+                homeViewModel.setFolderToUpdate(it)
+                homeViewModel.navigateToFolderShowCase()
+            },
             addFolder = { homeViewModel.navigateToAddFolderScreen() }
         )
         Tasks(
@@ -275,6 +281,7 @@ fun TitleWithSeeAll(
 @Composable
 private fun Folders(
     folders: List<FolderTable>,
+    onClick: (FolderTable) -> Unit,
     addFolder: () -> Unit
 ) {
     Column(
@@ -303,7 +310,12 @@ private fun Folders(
         else
             LazyRow() {
                 items(items = folders) {
-                    FolderCard(folder = it)
+                    FolderCard(
+                        folder = it,
+                        modifier = Modifier.clickable {
+                            onClick(it)
+                        }
+                    )
                 }
             }
     }

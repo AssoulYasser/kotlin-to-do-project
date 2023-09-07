@@ -8,7 +8,7 @@ import java.time.LocalTime
 data class AddTaskUiState(
     val taskTitle: String = "",
     val taskPriority: TaskPriority = TaskPriority.UNSPECIFIED,
-    val date: LocalDate? = null,
-    val time: LocalTime? = null,
-    val folder: FolderTable? = null
+    val taskDate: LocalDate? = null,
+    val taskTime: LocalTime? = null,
+    val taskFolder: FolderTable? = null
 )

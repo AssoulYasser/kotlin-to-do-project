@@ -7,11 +7,9 @@ import java.time.LocalDate
 import java.time.LocalTime
 
 data class TaskShowCaseUiState(
-    var id: Long? = null,
     var taskTitle: String = "",
     var taskPriority: TaskPriority = TaskPriority.UNSPECIFIED,
-    var date: LocalDate? = null,
-    var time: LocalTime? = null,
-    var folder: FolderTable? = null,
-    var oldFolderName: String = ""
+    var taskDate: LocalDate? = null,
+    var taskTime: LocalTime? = null,
+    var taskFolder: FolderTable? = null
 )

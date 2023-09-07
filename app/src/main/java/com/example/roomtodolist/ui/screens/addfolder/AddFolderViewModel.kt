@@ -15,6 +15,8 @@ class AddFolderViewModel(private val mainViewModel: MainViewModel) : ViewModel()
     var uiState by mutableStateOf(AddFolderUiState())
         private set
 
+    fun getFolderColors() = mainViewModel.getFolderColors()
+
     fun setFolderName(name: String) {
         uiState = uiState.copy(folderName = name)
     }

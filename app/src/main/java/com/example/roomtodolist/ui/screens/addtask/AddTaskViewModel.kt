@@ -28,18 +28,18 @@ class AddTaskViewModel(private val mainViewModel: MainViewModel) : ViewModel() {
     }
 
     fun setDate(date: LocalDate) {
-        uiState = uiState.copy(date = date)
+        uiState = uiState.copy(taskDate = date)
     }
 
     fun setTime(time: LocalTime) {
-        uiState = uiState.copy(time = time)
+        uiState = uiState.copy(taskTime = time)
     }
 
     fun setFolder(folder: FolderTable) {
-        uiState = uiState.copy(folder = folder)
+        uiState = uiState.copy(taskFolder = folder)
     }
 
-    fun getFolders() : List<FolderTable> = mainViewModel.uiState.folders
+    fun getFolders() : List<FolderTable> = mainViewModel.uiState.folders.values.toList()
 
     fun navigateToAddFolderScreen() {
         mainViewModel.navigateTo(NestedRoutes.ADD_FOLDER.name)
@@ -51,9 +51,9 @@ class AddTaskViewModel(private val mainViewModel: MainViewModel) : ViewModel() {
 
     fun isReadyToSave() = uiState.taskTitle != "" &&
                 uiState.taskPriority != TaskPriority.UNSPECIFIED &&
-                uiState.date != null &&
-                uiState.time != null &&
-                uiState.folder != null
+                uiState.taskDate != null &&
+                uiState.taskTime != null &&
+                uiState.taskFolder != null
 
     fun showErrorMessage(context: Context) {
         if (uiState.taskTitle == "")
@@ -62,13 +62,13 @@ class AddTaskViewModel(private val mainViewModel: MainViewModel) : ViewModel() {
         else if (uiState.taskPriority == TaskPriority.UNSPECIFIED)
             Toast.makeText(context, "choose priority please", Toast.LENGTH_SHORT).show()
 
-        else if (uiState.date == null)
+        else if (uiState.taskDate == null)
             Toast.makeText(context, "choose date please", Toast.LENGTH_SHORT).show()
 
-        else if (uiState.time == null)
+        else if (uiState.taskTime == null)
             Toast.makeText(context, "choose time please", Toast.LENGTH_SHORT).show()
 
-        else if (uiState.folder == null)
+        else if (uiState.taskFolder == null)
             Toast.makeText(context, "choose folder please", Toast.LENGTH_SHORT).show()
 
         else
@@ -84,10 +84,10 @@ class AddTaskViewModel(private val mainViewModel: MainViewModel) : ViewModel() {
         mainViewModel.addTask(
             TaskTable(
                 title = uiState.taskTitle,
-                date = uiState.date!!,
-                time = uiState.time!!,
+                date = uiState.taskDate!!,
+                time = uiState.taskTime!!,
                 priority = uiState.taskPriority,
-                folder = uiState.folder!!.name
+                folder = uiState.taskFolder!!.id!!
             )
         )
     }

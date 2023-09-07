@@ -21,19 +21,18 @@ import java.time.LocalTime
 class TaskShowCaseViewModel(val mainViewModel: MainViewModel) : ViewModel() {
     var uiState by mutableStateOf(TaskShowCaseUiState())
         private set
+    private var originalTask : TaskTable? = null
 
     fun start() {
-        val oldTask = mainViewModel.uiState.taskToUpdate
+        originalTask = mainViewModel.uiState.taskToUpdate
         viewModelScope.launch(Dispatchers.IO) {
-            if (oldTask != null) {
-                val folder = mainViewModel.getFolderByName(oldTask.folder)
-                uiState.oldFolderName = folder.name
-                uiState.id = oldTask.id
-                uiState.taskTitle = oldTask.title
-                uiState.taskPriority = oldTask.priority
-                uiState.date = oldTask.date
-                uiState.time = oldTask.time
-                uiState.folder = folder
+            if (originalTask != null) {
+                val folder = mainViewModel.uiState.folders[originalTask!!.folder]
+                uiState.taskTitle = originalTask!!.title
+                uiState.taskPriority = originalTask!!.priority
+                uiState.taskDate = originalTask!!.date
+                uiState.taskTime = originalTask!!.time
+                uiState.taskFolder = folder
             }
         }
     }
@@ -50,6 +49,15 @@ class TaskShowCaseViewModel(val mainViewModel: MainViewModel) : ViewModel() {
         mainViewModel.navigateTo(NestedRoutes.ADD_FOLDER.name)
     }
 
+    private fun getTaskTable() = TaskTable(
+        id = originalTask!!.id,
+        title = uiState.taskTitle,
+        date = uiState.taskDate!!,
+        time = uiState.taskTime!!,
+        priority = uiState.taskPriority,
+        folder = uiState.taskFolder!!.id!!
+    )
+
     fun updateTaskTitle(title: String) {
         uiState = uiState.copy(taskTitle = title)
     }
@@ -59,24 +67,24 @@ class TaskShowCaseViewModel(val mainViewModel: MainViewModel) : ViewModel() {
     }
 
     fun updateDate(date: LocalDate) {
-        uiState = uiState.copy(date = date)
+        uiState = uiState.copy(taskDate = date)
     }
 
     fun updateTime(time: LocalTime) {
-        uiState = uiState.copy(time = time)
+        uiState = uiState.copy(taskTime = time)
     }
 
     fun updateFolder(folder: FolderTable) {
-        uiState = uiState.copy(folder = folder)
+        uiState = uiState.copy(taskFolder = folder)
     }
 
-    fun getFolders() = mainViewModel.uiState.folders
+    fun getFolders() = mainViewModel.uiState.folders.values.toList()
 
     fun isReadyToSave() = uiState.taskTitle != "" &&
             uiState.taskPriority != TaskPriority.UNSPECIFIED &&
-            uiState.date != null &&
-            uiState.time != null &&
-            uiState.folder != null
+            uiState.taskDate != null &&
+            uiState.taskTime != null &&
+            uiState.taskFolder != null
 
     fun showErrorMessage(context: Context) {
         if (uiState.taskTitle == "")
@@ -85,13 +93,13 @@ class TaskShowCaseViewModel(val mainViewModel: MainViewModel) : ViewModel() {
         else if (uiState.taskPriority == TaskPriority.UNSPECIFIED)
             Toast.makeText(context, "choose priority please", Toast.LENGTH_SHORT).show()
 
-        else if (uiState.date == null)
+        else if (uiState.taskDate == null)
             Toast.makeText(context, "choose date please", Toast.LENGTH_SHORT).show()
 
-        else if (uiState.time == null)
+        else if (uiState.taskTime == null)
             Toast.makeText(context, "choose time please", Toast.LENGTH_SHORT).show()
 
-        else if (uiState.folder == null)
+        else if (uiState.taskFolder == null)
             Toast.makeText(context, "choose folder please", Toast.LENGTH_SHORT).show()
 
         else
@@ -104,30 +112,11 @@ class TaskShowCaseViewModel(val mainViewModel: MainViewModel) : ViewModel() {
     }
 
     fun save() {
-        mainViewModel.updateTask(
-            TaskTable(
-                id = uiState.id!!,
-                title = uiState.taskTitle,
-                date = uiState.date!!,
-                time = uiState.time!!,
-                priority = uiState.taskPriority,
-                folder = uiState.folder!!.name
-            ),
-            uiState.oldFolderName
-        )
+        mainViewModel.updateTask(getTaskTable())
     }
 
     fun delete() {
-        mainViewModel.deleteTask(
-            TaskTable(
-                id = uiState.id!!,
-                title = uiState.taskTitle,
-                date = uiState.date!!,
-                time = uiState.time!!,
-                priority = uiState.taskPriority,
-                folder = uiState.folder!!.name
-            )
-        )
+        mainViewModel.deleteTask(getTaskTable())
     }
 
     fun clear() {

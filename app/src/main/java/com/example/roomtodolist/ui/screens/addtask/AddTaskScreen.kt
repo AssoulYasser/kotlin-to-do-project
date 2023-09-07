@@ -32,8 +32,8 @@ fun AddTaskScreen(
             onSelectPriority = { addTaskViewModel.setPriority(it) }
         )
         DateCard(
-            date = addTaskViewModel.uiState.date,
-            time = addTaskViewModel.uiState.time,
+            date = addTaskViewModel.uiState.taskDate,
+            time = addTaskViewModel.uiState.taskTime,
             onDateChange = {
                 addTaskViewModel.setDate(it)
             },
@@ -42,7 +42,7 @@ fun AddTaskScreen(
             }
         )
         FoldersCard(
-            selectedFolder = addTaskViewModel.uiState.folder,
+            selectedFolder = addTaskViewModel.uiState.taskFolder,
             folders = addTaskViewModel.getFolders(),
             onAddFolder = { addTaskViewModel.navigateToAddFolderScreen() },
             onSelectFolder = { addTaskViewModel.setFolder(it) }
