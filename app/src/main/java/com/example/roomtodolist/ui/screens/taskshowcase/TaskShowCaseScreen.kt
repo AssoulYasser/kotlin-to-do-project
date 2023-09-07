@@ -10,7 +10,8 @@ import com.example.roomtodolist.ui.components.DateCard
 import com.example.roomtodolist.ui.components.FoldersCard
 import com.example.roomtodolist.ui.components.PriorityCard
 import com.example.roomtodolist.ui.components.TaskTitle
-import com.example.roomtodolist.ui.components.ValidationButtons
+import com.example.roomtodolist.ui.components.SavingValidationButtons
+import com.example.roomtodolist.ui.components.UpdatingValidationButtons
 
 @Composable
 fun TaskShowCaseScreen(
@@ -48,8 +49,8 @@ fun TaskShowCaseScreen(
             onAddFolder = { taskShowCaseViewModel.navigateToAddFolderScreen() },
             onSelectFolder = { taskShowCaseViewModel.updateFolder(it) }
         )
-        ValidationButtons(
-            onSave = {
+        UpdatingValidationButtons(
+            onUpdate = {
                 if (taskShowCaseViewModel.isReadyToSave()) {
                     taskShowCaseViewModel.save()
                     taskShowCaseViewModel.navigateToHomeScreen()
@@ -58,6 +59,11 @@ fun TaskShowCaseScreen(
                 } else {
                     taskShowCaseViewModel.showErrorMessage(context = context)
                 }
+            },
+            onDelete = {
+                taskShowCaseViewModel.delete()
+                taskShowCaseViewModel.clear()
+                taskShowCaseViewModel.navigateBack()
             },
             onCancel = {
                 taskShowCaseViewModel.clear()

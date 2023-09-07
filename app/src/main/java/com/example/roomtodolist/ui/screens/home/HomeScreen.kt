@@ -85,6 +85,7 @@ fun HomeScreen(
         )
         Tasks(
             tasksPerFolder = homeViewModel.getTasksPerFolder(),
+            noTaskExists = homeViewModel.noTaskExists(),
             addTask = { homeViewModel.navigateToAddTaskScreen() },
             onClick = {
                 homeViewModel.setTaskToUpdate(it)
@@ -312,6 +313,7 @@ private fun Folders(
 @Composable
 fun Tasks(
     tasksPerFolder: HashMap<FolderTable, MutableList<TaskTable>>,
+    noTaskExists: Boolean,
     addTask: () -> Unit,
     onClick: (TaskTable) -> Unit,
     onSelectTask: (TaskTable) -> Unit
@@ -325,6 +327,7 @@ fun Tasks(
 
         TasksPerFolderCards(
             tasksPerFolder = tasksPerFolder,
+            noTaskExists = noTaskExists,
             addTask = addTask,
             onClick = onClick,
             onSelectTask = onSelectTask

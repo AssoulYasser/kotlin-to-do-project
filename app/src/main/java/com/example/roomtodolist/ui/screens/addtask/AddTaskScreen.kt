@@ -10,7 +10,7 @@ import com.example.roomtodolist.ui.components.DateCard
 import com.example.roomtodolist.ui.components.FoldersCard
 import com.example.roomtodolist.ui.components.PriorityCard
 import com.example.roomtodolist.ui.components.TaskTitle
-import com.example.roomtodolist.ui.components.ValidationButtons
+import com.example.roomtodolist.ui.components.SavingValidationButtons
 
 @Composable
 fun AddTaskScreen(
@@ -47,7 +47,7 @@ fun AddTaskScreen(
             onAddFolder = { addTaskViewModel.navigateToAddFolderScreen() },
             onSelectFolder = { addTaskViewModel.setFolder(it) }
         )
-        ValidationButtons(
+        SavingValidationButtons(
             onSave = {
                 if (addTaskViewModel.isReadyToSave()) {
                     addTaskViewModel.save()

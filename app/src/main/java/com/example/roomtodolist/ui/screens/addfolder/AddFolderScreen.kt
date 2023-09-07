@@ -3,16 +3,10 @@ package com.example.roomtodolist.ui.screens.addfolder
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -26,7 +20,7 @@ import androidx.compose.ui.unit.dp
 import com.example.roomtodolist.data.folder.folderColors
 import com.example.roomtodolist.ui.components.ActionBar
 import com.example.roomtodolist.ui.components.Container
-import com.example.roomtodolist.ui.components.ValidationButtons
+import com.example.roomtodolist.ui.components.SavingValidationButtons
 import com.example.roomtodolist.ui.components.defaultTextFieldColors
 import com.example.roomtodolist.ui.components.defaultTextFieldShape
 
@@ -55,7 +49,7 @@ fun AddFolderScreen(
             }
         )
 
-        ValidationButtons(
+        SavingValidationButtons(
             onSave = {
                 if (addFolderViewModel.isReadyToSave()) {
                     addFolderViewModel.save()

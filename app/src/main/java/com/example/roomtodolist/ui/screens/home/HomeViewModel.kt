@@ -36,6 +36,7 @@ class HomeViewModel(private val mainViewModel: MainViewModel) : ViewModel() {
     }
 
     fun getFolders() : List<FolderTable> = mainViewModel.uiState.folders
+    fun noTaskExists() : Boolean = mainViewModel.uiState.tasks.isEmpty()
     fun getTasksPerFolder(): HashMap<FolderTable, MutableList<TaskTable>> = mainViewModel.uiState.tasksPerFolder
 
 }

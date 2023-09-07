@@ -24,16 +24,17 @@ class TaskShowCaseViewModel(val mainViewModel: MainViewModel) : ViewModel() {
 
     fun start() {
         val oldTask = mainViewModel.uiState.taskToUpdate
-        if (oldTask != null)
         viewModelScope.launch(Dispatchers.IO) {
-            val folder = mainViewModel.getFolderByName(oldTask.folder)
-            uiState.oldFolderName = folder.name
-            uiState.id = oldTask.id
-            uiState.taskTitle = oldTask.title
-            uiState.taskPriority = oldTask.priority
-            uiState.date = oldTask.date
-            uiState.time = oldTask.time
-            uiState.folder = folder
+            if (oldTask != null) {
+                val folder = mainViewModel.getFolderByName(oldTask.folder)
+                uiState.oldFolderName = folder.name
+                uiState.id = oldTask.id
+                uiState.taskTitle = oldTask.title
+                uiState.taskPriority = oldTask.priority
+                uiState.date = oldTask.date
+                uiState.time = oldTask.time
+                uiState.folder = folder
+            }
         }
     }
 
@@ -113,6 +114,19 @@ class TaskShowCaseViewModel(val mainViewModel: MainViewModel) : ViewModel() {
                 folder = uiState.folder!!.name
             ),
             uiState.oldFolderName
+        )
+    }
+
+    fun delete() {
+        mainViewModel.deleteTask(
+            TaskTable(
+                id = uiState.id!!,
+                title = uiState.taskTitle,
+                date = uiState.date!!,
+                time = uiState.time!!,
+                priority = uiState.taskPriority,
+                folder = uiState.folder!!.name
+            )
         )
     }
 

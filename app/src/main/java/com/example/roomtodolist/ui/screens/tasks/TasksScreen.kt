@@ -37,6 +37,7 @@ fun TasksScreen(
         AddTaskButton { tasksViewModel.navigateToAddTaskScreen() }
         TasksPerFolderCards(
             tasksPerFolder = tasksViewModel.getTasksPerFolder(),
+            noTaskExists = tasksViewModel.noTaskExists(),
             addTask = { tasksViewModel.navigateToAddTaskScreen() },
             onClick = {
                 tasksViewModel.setTaskToUpdate(it)

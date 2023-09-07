@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.dp
 
 
 @Composable
-fun ValidationButtons(onSave: () -> Unit, onCancel: () -> Unit) {
+fun SavingValidationButtons(onSave: () -> Unit, onCancel: () -> Unit) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceAround,

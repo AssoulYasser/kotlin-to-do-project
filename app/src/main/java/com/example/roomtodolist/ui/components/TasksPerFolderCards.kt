@@ -18,11 +18,12 @@ import com.example.roomtodolist.data.task.TaskTable
 @Composable
 fun TasksPerFolderCards(
     tasksPerFolder: HashMap<FolderTable, MutableList<TaskTable>>,
+    noTaskExists: Boolean = true,
     addTask: () -> Unit,
     onClick: (TaskTable) -> Unit,
     onSelectTask: (TaskTable) -> Unit
 ) {
-    if (tasksPerFolder.isEmpty())
+    if (noTaskExists)
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -47,7 +48,7 @@ fun TasksPerFolderCards(
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             for (folder in tasksPerFolder.keys) {
-                if (tasksPerFolder.containsKey(folder)) {
+                if (tasksPerFolder.containsKey(folder) && tasksPerFolder[folder]!!.isNotEmpty()) {
                     TasksPerFolderCard(
                         folder = folder,
                         tasks = tasksPerFolder[folder]!!,

@@ -77,14 +77,14 @@ class MainViewModel(
         repository.folderDao.getFolderByName(folderName)
 
     private fun updateFolderState(newFolder: FolderTable){
-        uiState = uiState.copy(folders = uiState.folders + newFolder)
+        uiState.folders += newFolder
     }
 
     fun addTask(task: TaskTable) {
         viewModelScope.launch(Dispatchers.IO) {
             val id = repository.taskDao.addTask(task)
             val newTask = task.copy(id = id)
-            updateTaskState(newTask)
+            updateTaskStateByAddingTask(newTask)
             updateTasksPerFolderStateByAddingNewTask(task = newTask)
         }
     }
@@ -96,7 +96,7 @@ class MainViewModel(
     fun updateTask(task: TaskTable, oldFolderName: String) {
         viewModelScope.launch(Dispatchers.IO) {
             repository.taskDao.updateTask(task)
-            updateTaskState(task)
+            updateTaskStateByUpdatingTask(task)
             if (oldFolderName == task.folder)
                 updateTasksPerFolderStateByUpdatingTaskData(task.folder, task = task)
             else
@@ -104,12 +104,38 @@ class MainViewModel(
         }
     }
 
+    fun deleteTask(task: TaskTable) {
+        viewModelScope.launch {
+            repository.taskDao.deleteTask(taskTable = task)
+            updateTaskStateByDeletingTask(task)
+            updateTasksPerFolderStateByDeletingTaskFromFolder(task.folder, task)
+        }
+    }
+
     fun clearTaskToUpdate() {
         uiState = uiState.copy(taskToUpdate = null)
     }
 
-    private fun updateTaskState(newTask: TaskTable){
-        uiState = uiState.copy(tasks = uiState.tasks + newTask)
+    private fun updateTaskStateByAddingTask(newTask: TaskTable){
+        uiState.tasks += newTask
+    }
+
+    private fun updateTaskStateByUpdatingTask(task: TaskTable) {
+        for(taskIndex in uiState.tasks.indices) {
+            if (uiState.tasks[taskIndex].id == task.id) {
+                uiState.tasks[taskIndex] = task
+                break
+            }
+        }
+    }
+
+    private fun updateTaskStateByDeletingTask(task: TaskTable) {
+        for(taskIndex in uiState.tasks.indices) {
+            if (uiState.tasks[taskIndex].id == task.id) {
+                uiState.tasks.removeAt(taskIndex)
+                break
+            }
+        }
     }
 
     private fun updateTasksPerFolderStateByAddingNewFolder(newFolder: FolderTable) {
@@ -128,16 +154,21 @@ class MainViewModel(
     private fun updateTasksPerFolderStateByUpdatingTaskData(folderName: String, task: TaskTable){
         for (folder in uiState.tasksPerFolder) {
             if (folderName == folder.key.name)
-            for (taskIndex in uiState.tasksPerFolder[folder.key]!!.indices) {
-                if (uiState.tasksPerFolder[folder.key]!![taskIndex].id == task.id) {
-                    uiState.tasksPerFolder[folder.key]!![taskIndex] = task
-                    break
+                for (taskIndex in uiState.tasksPerFolder[folder.key]!!.indices) {
+                    if (uiState.tasksPerFolder[folder.key]!![taskIndex].id == task.id) {
+                        uiState.tasksPerFolder[folder.key]!![taskIndex] = task
+                        break
+                    }
                 }
-            }
         }
     }
 
     private fun updateTasksPerFolderStateByChangingTasksFolder(folderName: String, task: TaskTable) {
+        updateTasksPerFolderStateByDeletingTaskFromFolder(folderName, task)
+        updateTasksPerFolderStateByAddingNewTask(task)
+    }
+
+    private fun updateTasksPerFolderStateByDeletingTaskFromFolder(folderName: String, task: TaskTable) {
         for (folder in uiState.tasksPerFolder) {
             if (folderName == folder.key.name)
                 for (taskIndex in uiState.tasksPerFolder[folder.key]!!.indices) {
@@ -147,6 +178,6 @@ class MainViewModel(
                     }
                 }
         }
-        updateTasksPerFolderStateByAddingNewTask(task)
     }
+
 }
