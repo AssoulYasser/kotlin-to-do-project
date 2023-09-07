@@ -1,7 +1,5 @@
 package com.example.roomtodolist.ui.screens
 
-import android.icu.text.CaseMap.Fold
-import android.util.Log
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -33,7 +31,7 @@ class MainViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             val folders = repository.folderDao.getFolders()
             val tasks = repository.taskDao.getTasks()
-            val tasksPerFolder = hashMapOf<FolderTable, List<TaskTable>>()
+            val tasksPerFolder = hashMapOf<FolderTable, MutableList<TaskTable>>()
             for (folder in folders) {
                 tasksPerFolder[folder] = repository.taskDao.getTasksFromFolder(folder.name)
             }
@@ -71,9 +69,12 @@ class MainViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             repository.folderDao.addFolder(folder)
             updateFolderState(folder)
-            updateTasksPerFolderState(folder)
+            updateTasksPerFolderStateByAddingNewFolder(folder)
         }
     }
+
+    suspend fun getFolderByName(folderName: String) : FolderTable =
+        repository.folderDao.getFolderByName(folderName)
 
     private fun updateFolderState(newFolder: FolderTable){
         uiState = uiState.copy(folders = uiState.folders + newFolder)
@@ -81,26 +82,71 @@ class MainViewModel(
 
     fun addTask(task: TaskTable) {
         viewModelScope.launch(Dispatchers.IO) {
-            repository.taskDao.addTask(task)
-            updateTaskState(task)
-            updateTasksPerFolderState(task.folder, newTask = task)
+            val id = repository.taskDao.addTask(task)
+            val newTask = task.copy(id = id)
+            updateTaskState(newTask)
+            updateTasksPerFolderStateByAddingNewTask(task = newTask)
         }
+    }
+
+    fun setTaskToUpdate(task: TaskTable) {
+        uiState = uiState.copy(taskToUpdate = task)
+    }
+
+    fun updateTask(task: TaskTable, oldFolderName: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.taskDao.updateTask(task)
+            updateTaskState(task)
+            if (oldFolderName == task.folder)
+                updateTasksPerFolderStateByUpdatingTaskData(task.folder, task = task)
+            else
+                updateTasksPerFolderStateByChangingTasksFolder(oldFolderName, task)
+        }
+    }
+
+    fun clearTaskToUpdate() {
+        uiState = uiState.copy(taskToUpdate = null)
     }
 
     private fun updateTaskState(newTask: TaskTable){
         uiState = uiState.copy(tasks = uiState.tasks + newTask)
     }
 
-    private fun updateTasksPerFolderState(newFolder: FolderTable) {
-        uiState.tasksPerFolder[newFolder] = listOf()
+    private fun updateTasksPerFolderStateByAddingNewFolder(newFolder: FolderTable) {
+        uiState.tasksPerFolder[newFolder] = mutableListOf()
     }
 
-    private fun updateTasksPerFolderState(folderName: String, newTask: TaskTable) {
+    private fun updateTasksPerFolderStateByAddingNewTask(task: TaskTable) {
         for (folder in uiState.tasksPerFolder) {
-            if (folder.key.name == folderName)
-                uiState.tasksPerFolder[folder.key] = uiState.tasksPerFolder[folder.key]!!
-                    .plus(newTask)
+            if (folder.key.name == task.folder) {
+                uiState.tasksPerFolder[folder.key]!! += task
+                break
+            }
         }
     }
 
+    private fun updateTasksPerFolderStateByUpdatingTaskData(folderName: String, task: TaskTable){
+        for (folder in uiState.tasksPerFolder) {
+            if (folderName == folder.key.name)
+            for (taskIndex in uiState.tasksPerFolder[folder.key]!!.indices) {
+                if (uiState.tasksPerFolder[folder.key]!![taskIndex].id == task.id) {
+                    uiState.tasksPerFolder[folder.key]!![taskIndex] = task
+                    break
+                }
+            }
+        }
+    }
+
+    private fun updateTasksPerFolderStateByChangingTasksFolder(folderName: String, task: TaskTable) {
+        for (folder in uiState.tasksPerFolder) {
+            if (folderName == folder.key.name)
+                for (taskIndex in uiState.tasksPerFolder[folder.key]!!.indices) {
+                    if (uiState.tasksPerFolder[folder.key]!![taskIndex].id == task.id) {
+                        uiState.tasksPerFolder[folder.key]!!.removeAt(taskIndex)
+                        break
+                    }
+                }
+        }
+        updateTasksPerFolderStateByAddingNewTask(task)
+    }
 }

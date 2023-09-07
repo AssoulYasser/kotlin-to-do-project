@@ -12,6 +12,8 @@ import com.example.roomtodolist.ui.screens.home.HomeScreen
 import com.example.roomtodolist.ui.screens.home.HomeViewModel
 import com.example.roomtodolist.ui.screens.tasks.TasksScreen
 import com.example.roomtodolist.ui.screens.tasks.TasksViewModel
+import com.example.roomtodolist.ui.screens.taskshowcase.TaskShowCaseScreen
+import com.example.roomtodolist.ui.screens.taskshowcase.TaskShowCaseViewModel
 
 interface ScreenRoute
 
@@ -30,7 +32,8 @@ enum class MainRoutes : ScreenRoute {
 }
 
 enum class NestedRoutes : ScreenRoute {
-    ADD_FOLDER
+    ADD_FOLDER,
+    TASK_SHOW_CASE
 }
 
 sealed class Routes(
@@ -43,10 +46,10 @@ sealed class Routes(
         mainDestination = MainDestinations.Home,
         nestedDestination = mutableListOf(NestedDestinations.AddFolder)
     )
-    object Task : Routes(
+    object Tasks : Routes(
         route = RootRoutes.TASK_ROOT,
         mainDestination = MainDestinations.Task,
-        nestedDestination = null
+        nestedDestination = mutableListOf(NestedDestinations.TaskShowCase)
     )
     object Calendar : Routes(
         route = RootRoutes.CALENDAR_ROOT,
@@ -108,6 +111,11 @@ sealed class NestedDestinations(
     object AddFolder : NestedDestinations(
         route = NestedRoutes.ADD_FOLDER,
         screen = { viewModel -> AddFolderScreen(viewModel as AddFolderViewModel) }
+    )
+
+    object TaskShowCase : NestedDestinations(
+        route = NestedRoutes.TASK_SHOW_CASE,
+        screen = { viewModel -> TaskShowCaseScreen(viewModel as TaskShowCaseViewModel) }
     )
 }
 

@@ -6,5 +6,6 @@ import com.example.roomtodolist.data.task.TaskTable
 data class MainUiState(
     val folders : List<FolderTable> = mutableListOf(),
     val tasks : List<TaskTable> = mutableListOf(),
-    val tasksPerFolder: HashMap<FolderTable, List<TaskTable>> = hashMapOf()
+    val tasksPerFolder: HashMap<FolderTable, MutableList<TaskTable>> = hashMapOf(),
+    val taskToUpdate: TaskTable? = null
 )

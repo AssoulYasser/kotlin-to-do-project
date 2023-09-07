@@ -4,9 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
@@ -19,8 +17,9 @@ import com.example.roomtodolist.data.task.TaskTable
 
 @Composable
 fun TasksPerFolderCards(
-    tasksPerFolder: HashMap<FolderTable, List<TaskTable>>,
+    tasksPerFolder: HashMap<FolderTable, MutableList<TaskTable>>,
     addTask: () -> Unit,
+    onClick: (TaskTable) -> Unit,
     onSelectTask: (TaskTable) -> Unit
 ) {
     if (tasksPerFolder.isEmpty())
@@ -52,6 +51,7 @@ fun TasksPerFolderCards(
                     TasksPerFolderCard(
                         folder = folder,
                         tasks = tasksPerFolder[folder]!!,
+                        onClick = onClick,
                         onTaskSelect = onSelectTask
                     )
                 }

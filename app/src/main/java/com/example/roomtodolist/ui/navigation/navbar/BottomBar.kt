@@ -1,19 +1,16 @@
-package com.example.roomtodolist.ui.navigation
+package com.example.roomtodolist.ui.navigation.navbar
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -21,22 +18,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavDestination.Companion.hierarchy
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.example.roomtodolist.ui.navigation.MainDestinations
+import com.example.roomtodolist.ui.navigation.navigationList
 import com.example.roomtodolist.ui.screens.MainViewModel
 
 @Composable
-fun ExpendedBar(mainViewModel: MainViewModel) {
+fun BottomBar(mainViewModel: MainViewModel) {
 
     val navBackStackEntry by mainViewModel.navHostController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
-
-    ExpendedNavLayout {
+    
+    BottomNavLayout {
         navigationList.forEach{ nav ->
             val navDestination = nav.mainDestination
             NavElement(
@@ -48,35 +44,32 @@ fun ExpendedBar(mainViewModel: MainViewModel) {
             }
         }
     }
-
 }
 
-
 @Composable
-fun ExpendedNavLayout(
+private fun BottomNavLayout(
     backgroundColor: Color = MaterialTheme.colorScheme.background,
-    navWidth: Dp = 200.dp,
+    navHeight: Dp = 50.dp,
     elevation: Dp = 8.dp,
-    content: @Composable ColumnScope.() -> Unit
+    content: @Composable RowScope.() -> Unit
 ) {
     Surface(
         color = backgroundColor,
         shadowElevation = elevation
     ) {
-        Column(
+        Row (
             modifier = Modifier
-                .width(navWidth)
-                .fillMaxHeight(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceEvenly,
+                .height(navHeight)
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceAround,
+            verticalAlignment = Alignment.CenterVertically,
             content = content
         )
     }
 }
 
-
 @Composable
-private fun ColumnScope.NavElement(
+private fun RowScope.NavElement(
     modifier: Modifier = Modifier,
     element: MainDestinations,
     isSelected: Boolean = false,
@@ -86,7 +79,7 @@ private fun ColumnScope.NavElement(
 ) {
     Box(modifier = modifier
         .weight(1f)
-        .fillMaxWidth()
+        .fillMaxHeight()
         .selectable(
             selected = true,
             enabled = true,
@@ -94,28 +87,14 @@ private fun ColumnScope.NavElement(
             onClick = {
                 onClick()
             }
-        ),
-        contentAlignment = Alignment.CenterStart
+        )
     ) {
-        Row(
-            modifier = Modifier,
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceAround
-        ) {
-            Icon(
-                painter = painterResource(id = if (isSelected) element.icon.selected else element.icon.unselected),
-                contentDescription = null,
-                tint = if (isSelected) selectedColor else unselectedColor.copy(alpha = 0.2f),
-                modifier = Modifier.padding(horizontal = 10.dp)
-            )
-            Text(
-                text = element.title,
-                color = if (isSelected) selectedColor else unselectedColor.copy(alpha = 0.2f),
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold
-            )
-        }
-
+        Icon(
+            painter = painterResource(id = if (isSelected) element.icon.selected else element.icon.unselected),
+            contentDescription = null,
+            tint = if (isSelected) selectedColor else unselectedColor.copy(alpha = 0.2f),
+            modifier = Modifier.align(Alignment.Center)
+        )
     }
 
 }

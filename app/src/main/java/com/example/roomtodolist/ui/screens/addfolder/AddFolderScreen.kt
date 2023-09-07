@@ -25,6 +25,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.example.roomtodolist.data.folder.folderColors
 import com.example.roomtodolist.ui.components.ActionBar
+import com.example.roomtodolist.ui.components.Container
 import com.example.roomtodolist.ui.components.ValidationButtons
 import com.example.roomtodolist.ui.components.defaultTextFieldColors
 import com.example.roomtodolist.ui.components.defaultTextFieldShape
@@ -36,57 +37,41 @@ fun AddFolderScreen(
     addFolderViewModel: AddFolderViewModel
 ) {
     val context = LocalContext.current
-    Surface(
-        modifier = Modifier.fillMaxSize(),
-        color = MaterialTheme.colorScheme.background
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-        ) {
-            ActionBar(title = "Add Folder") {
+    Container(actionBar = {
+        ActionBar(title = "Add Folder") {
+            addFolderViewModel.navigateBack()
+        }
+    }) {
+        FolderNameTextField(
+            folderName = addFolderViewModel.uiState.folderName,
+            onFolderNameChange = { addFolderViewModel.setFolderName(it) }
+        )
+
+        FolderColorPicker(
+            colors = folderColors,
+            selectedColor = addFolderViewModel.uiState.folderColor,
+            setFolderColor = {
+                addFolderViewModel.setFolderColor(it)
+            }
+        )
+
+        ValidationButtons(
+            onSave = {
+                if (addFolderViewModel.isReadyToSave()) {
+                    addFolderViewModel.save()
+                    addFolderViewModel.navigateBack()
+                    addFolderViewModel.showSuccessMessage(context = context)
+                    addFolderViewModel.clear()
+                }
+                else {
+                    addFolderViewModel.showErrorMessage(context = context)
+                }
+            },
+            onCancel = {
+                addFolderViewModel.clear()
                 addFolderViewModel.navigateBack()
             }
-            Column(
-                modifier = Modifier
-                    .padding(horizontal = 16.dp, vertical = 20.dp)
-                    .verticalScroll(rememberScrollState()),
-                verticalArrangement = Arrangement.spacedBy(20.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                FolderNameTextField(
-                    folderName = addFolderViewModel.uiState.folderName,
-                    onFolderNameChange = { addFolderViewModel.setFolderName(it) }
-                )
-
-                FolderColorPicker(
-                    colors = folderColors,
-                    selectedColor = addFolderViewModel.uiState.folderColor,
-                    setFolderColor = {
-                        addFolderViewModel.setFolderColor(it)
-                    }
-                )
-
-                ValidationButtons(
-                    onSave = {
-                        if (addFolderViewModel.isReadyToSave()) {
-                            addFolderViewModel.save()
-                            addFolderViewModel.navigateBack()
-                            addFolderViewModel.showSuccessMessage(context = context)
-                            addFolderViewModel.clear()
-                        }
-                        else {
-                            addFolderViewModel.showErrorMessage(context = context)
-                        }
-                    },
-                    onCancel = {
-                        addFolderViewModel.clear()
-                        addFolderViewModel.navigateBack()
-                    }
-                )
-            }
-
-        }
+        )
     }
 }
 

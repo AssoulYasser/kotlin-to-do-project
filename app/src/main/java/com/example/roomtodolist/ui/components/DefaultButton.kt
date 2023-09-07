@@ -9,11 +9,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 fun defaultButtonShape() = RoundedCornerShape(24)
+
 @Composable
 fun defaultButtonStroke(primary: Color = MaterialTheme.colorScheme.primary) =
     BorderStroke(2.dp, primary)
+
 @Composable
 fun defaultOutlinedButtonColors() = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
+
 @Composable
 fun defaultFilledButtonColors(primary: Color = MaterialTheme.colorScheme.primary) =
     ButtonDefaults.buttonColors(containerColor = primary, contentColor = MaterialTheme.colorScheme.background)

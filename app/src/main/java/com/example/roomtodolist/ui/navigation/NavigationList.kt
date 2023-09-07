@@ -2,7 +2,7 @@ package com.example.roomtodolist.ui.navigation
 
 val navigationList = listOf(
     Routes.Home,
-    Routes.Task,
+    Routes.Tasks,
     Routes.Calendar,
     Routes.AddTask
 )

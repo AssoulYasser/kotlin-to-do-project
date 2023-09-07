@@ -8,7 +8,7 @@ import java.time.LocalTime
 @Entity
 data class TaskTable(
     @PrimaryKey(autoGenerate = true)
-    val id: Int? = null,
+    val id: Long? = null,
     val title: String,
     val date: LocalDate,
     val time: LocalTime,

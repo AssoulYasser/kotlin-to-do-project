@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import com.example.roomtodolist.data.folder.FolderTable
 import com.example.roomtodolist.data.task.TaskTable
 import com.example.roomtodolist.ui.navigation.MainRoutes
+import com.example.roomtodolist.ui.navigation.NestedRoutes
 import com.example.roomtodolist.ui.screens.MainViewModel
 
 class TasksViewModel(private val mainViewModel: MainViewModel) : ViewModel() {
@@ -15,12 +16,20 @@ class TasksViewModel(private val mainViewModel: MainViewModel) : ViewModel() {
         mainViewModel.navigateTo(MainRoutes.ADD_TASK.name)
     }
 
+    fun navigateToTaskShowCase() {
+        mainViewModel.navigateTo(NestedRoutes.TASK_SHOW_CASE.name)
+    }
+
     fun navigateBack() {
         mainViewModel.navigateBack()
     }
 
+    fun setTaskToUpdate(taskTable: TaskTable) {
+        mainViewModel.setTaskToUpdate(taskTable)
+    }
+
     fun getFolders() : List<FolderTable> = mainViewModel.uiState.folders
 
-    fun getTasksPerFolder(): HashMap<FolderTable, List<TaskTable>> = mainViewModel.uiState.tasksPerFolder
+    fun getTasksPerFolder(): HashMap<FolderTable, MutableList<TaskTable>> = mainViewModel.uiState.tasksPerFolder
 
 }

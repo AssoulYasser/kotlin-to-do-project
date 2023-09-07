@@ -15,6 +15,7 @@ import com.example.roomtodolist.ui.screens.addtask.AddTaskViewModel
 import com.example.roomtodolist.ui.screens.calendar.CalendarViewModel
 import com.example.roomtodolist.ui.screens.home.HomeViewModel
 import com.example.roomtodolist.ui.screens.tasks.TasksViewModel
+import com.example.roomtodolist.ui.screens.taskshowcase.TaskShowCaseViewModel
 
 const val TAG = "DEBUGGING : "
 
@@ -69,12 +70,23 @@ fun NavGraph(mainViewModel: MainViewModel) {
         }
     )
 
+    val taskShowCaseViewModel = viewModel<TaskShowCaseViewModel>(
+        factory = object: ViewModelProvider.Factory {
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                return TaskShowCaseViewModel(
+                    mainViewModel = mainViewModel
+                ) as T
+            }
+        }
+    )
+
     val viewModels = hashMapOf<ScreenRoute, ViewModel?>(
         MainRoutes.HOME to homeViewModel,
         MainRoutes.TASKS to tasksViewModel,
         MainRoutes.CALENDAR to calendarViewModel,
         MainRoutes.ADD_TASK to addTaskViewModel,
-        NestedRoutes.ADD_FOLDER to addFolderViewModel
+        NestedRoutes.ADD_FOLDER to addFolderViewModel,
+        NestedRoutes.TASK_SHOW_CASE to taskShowCaseViewModel
     )
 
     NavHost(navController = navHostController, startDestination = Routes.Home.route.name) {
@@ -99,16 +111,5 @@ fun NavGraph(mainViewModel: MainViewModel) {
                 }
             }
         }
-    }
-}
-
-fun NavHostController.navigateTo(destination: String) {
-    val navController = this
-    navController.navigate(destination) {
-        popUpTo(navController.graph.findStartDestination().id) {
-            saveState = true
-        }
-        launchSingleTop = true
-        restoreState = true
     }
 }

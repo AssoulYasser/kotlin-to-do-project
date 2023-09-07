@@ -14,7 +14,10 @@ interface FolderDAO {
     suspend fun addFolder(folderTable: FolderTable)
 
     @Query("SELECT * FROM FolderTable ORDER BY name")
-    suspend fun getFolders(): List<FolderTable>
+    suspend fun getFolders(): MutableList<FolderTable>
+
+    @Query("SELECT * FROM FolderTable WHERE name == :folderName")
+    suspend fun getFolderByName(folderName : String) : FolderTable
 
     @Update
     suspend fun updateFolder(folderTable: FolderTable)

@@ -10,10 +10,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.roomtodolist.ui.navigation.BottomBar
-import com.example.roomtodolist.ui.navigation.ExpendedBar
+import com.example.roomtodolist.ui.navigation.navbar.BottomBar
+import com.example.roomtodolist.ui.navigation.navbar.ExpendedBar
 import com.example.roomtodolist.ui.navigation.NavGraph
-import com.example.roomtodolist.ui.navigation.SideBar
+import com.example.roomtodolist.ui.navigation.navbar.SideBar
 
 const val TAG = "DEBUGGING : "
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")

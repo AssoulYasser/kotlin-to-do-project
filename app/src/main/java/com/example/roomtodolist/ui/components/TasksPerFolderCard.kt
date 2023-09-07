@@ -30,6 +30,7 @@ import com.example.roomtodolist.data.task.TaskTable
 fun TasksPerFolderCard(
     folder: FolderTable,
     tasks: List<TaskTable>,
+    onClick: (TaskTable) -> Unit,
     onTaskSelect: (TaskTable) -> Unit
 ) {
     Surface(
@@ -60,7 +61,7 @@ fun TasksPerFolderCard(
             }
             Column {
                 tasks.forEach {
-                    TaskCard(taskTable = it, onSelect = onTaskSelect)
+                    TaskCard(taskTable = it, onSelect = onTaskSelect, onClick = onClick)
                 }
             }
         }

@@ -11,13 +11,13 @@ import androidx.room.Update
 interface TaskDAO {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun addTask(taskTable: TaskTable)
+    suspend fun addTask(taskTable: TaskTable) : Long
 
     @Query("SELECT * FROM TaskTable ORDER BY folder")
-    suspend fun getTasks(): List<TaskTable>
+    suspend fun getTasks(): MutableList<TaskTable>
 
     @Query("SELECT * FROM TaskTable WHERE TaskTable.folder = :folder ORDER BY priority")
-    suspend fun getTasksFromFolder(folder: String) : List<TaskTable>
+    suspend fun getTasksFromFolder(folder: String) : MutableList<TaskTable>
 
     @Update
     suspend fun updateTask(taskTable: TaskTable)

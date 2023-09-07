@@ -9,19 +9,16 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.absoluteOffset
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.KeyboardArrowRight
 import androidx.compose.material.icons.outlined.Search
@@ -48,10 +45,10 @@ import androidx.compose.ui.unit.sp
 import com.example.roomtodolist.R
 import com.example.roomtodolist.data.folder.FolderTable
 import com.example.roomtodolist.data.task.TaskTable
+import com.example.roomtodolist.ui.components.Container
 import com.example.roomtodolist.ui.components.EmptyElements
 import com.example.roomtodolist.ui.components.FolderCard
 import com.example.roomtodolist.ui.components.ProfilePicture
-import com.example.roomtodolist.ui.components.TasksPerFolderCard
 import com.example.roomtodolist.ui.components.TasksPerFolderCards
 import com.example.roomtodolist.ui.components.Welcoming
 import com.example.roomtodolist.ui.components.defaultTextFieldColors
@@ -60,26 +57,16 @@ import com.example.roomtodolist.ui.components.defaultTextFieldColors
 fun HomeScreen(
     homeViewModel: HomeViewModel
 ) {
-    Box(
-        modifier = Modifier
-            .background(MaterialTheme.colorScheme.background)
-            .fillMaxSize()
-    )
-    Column(
-        modifier = Modifier
-            .padding(horizontal = 16.dp)
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-            .verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.spacedBy(20.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Spacer(modifier = Modifier)
+    Container(actionBar = {
         TopBar(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(100.dp)
+                .padding(16.dp)
         )
+    }) {
+        Spacer(modifier = Modifier)
+
         WeekCalendar(
             modifier = Modifier
                 .fillMaxWidth()
@@ -99,11 +86,13 @@ fun HomeScreen(
         Tasks(
             tasksPerFolder = homeViewModel.getTasksPerFolder(),
             addTask = { homeViewModel.navigateToAddTaskScreen() },
-            onSelectTask = {}
-        )
+            onClick = {
+                homeViewModel.setTaskToUpdate(it)
+                homeViewModel.navigateToTaskShowCase()
+            }
+        ) {}
         Spacer(modifier = Modifier)
     }
-
 }
 
 @Composable
@@ -322,8 +311,9 @@ private fun Folders(
 
 @Composable
 fun Tasks(
-    tasksPerFolder: HashMap<FolderTable, List<TaskTable>>,
+    tasksPerFolder: HashMap<FolderTable, MutableList<TaskTable>>,
     addTask: () -> Unit,
+    onClick: (TaskTable) -> Unit,
     onSelectTask: (TaskTable) -> Unit
 ) {
     Column(
@@ -336,6 +326,7 @@ fun Tasks(
         TasksPerFolderCards(
             tasksPerFolder = tasksPerFolder,
             addTask = addTask,
+            onClick = onClick,
             onSelectTask = onSelectTask
         )
 

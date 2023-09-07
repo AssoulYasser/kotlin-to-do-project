@@ -23,11 +23,19 @@ class HomeViewModel(private val mainViewModel: MainViewModel) : ViewModel() {
         mainViewModel.navigateTo(MainRoutes.ADD_TASK.name)
     }
 
+    fun navigateToTaskShowCase() {
+        mainViewModel.navigateTo(NestedRoutes.TASK_SHOW_CASE.name)
+    }
+
+    fun setTaskToUpdate(taskTable: TaskTable) {
+        mainViewModel.setTaskToUpdate(taskTable)
+    }
+
     fun setSearch(value: String) {
         uiState = uiState.copy(search = value)
     }
 
     fun getFolders() : List<FolderTable> = mainViewModel.uiState.folders
-    fun getTasksPerFolder(): HashMap<FolderTable, List<TaskTable>> = mainViewModel.uiState.tasksPerFolder
+    fun getTasksPerFolder(): HashMap<FolderTable, MutableList<TaskTable>> = mainViewModel.uiState.tasksPerFolder
 
 }

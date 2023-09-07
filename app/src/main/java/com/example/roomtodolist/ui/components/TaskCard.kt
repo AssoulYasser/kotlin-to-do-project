@@ -32,10 +32,11 @@ fun TaskCard(
     taskTable: TaskTable,
     color: Color = MaterialTheme.colorScheme.onBackground,
     selected: Boolean = false,
+    onClick: (TaskTable) -> Unit,
     onSelect: (TaskTable) -> Unit
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth().padding(vertical = 10.dp),
+        modifier = Modifier.fillMaxWidth().padding(vertical = 10.dp).clickable { onClick(taskTable) },
         horizontalArrangement = Arrangement.spacedBy(10.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
