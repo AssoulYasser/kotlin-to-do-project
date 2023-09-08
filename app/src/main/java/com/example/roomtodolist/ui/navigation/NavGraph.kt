@@ -4,8 +4,6 @@ import androidx.compose.runtime.Composable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavGraph.Companion.findStartDestination
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
@@ -17,8 +15,6 @@ import com.example.roomtodolist.ui.screens.foldershowcase.FolderShowCaseViewMode
 import com.example.roomtodolist.ui.screens.home.HomeViewModel
 import com.example.roomtodolist.ui.screens.tasks.TasksViewModel
 import com.example.roomtodolist.ui.screens.taskshowcase.TaskShowCaseViewModel
-
-const val TAG = "DEBUGGING : "
 
 @Composable
 fun NavGraph(mainViewModel: MainViewModel) {

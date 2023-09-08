@@ -1,10 +1,8 @@
-package com.example.roomtodolist.domain
+package com.example.roomtodolist.ui.navigation
 
 import android.util.Log
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
-import com.example.roomtodolist.ui.navigation.MainRoutes
-import com.example.roomtodolist.ui.navigation.ScreenRoute
 import java.util.Stack
 
 class NavigationSystem(val navHostController: NavHostController) {

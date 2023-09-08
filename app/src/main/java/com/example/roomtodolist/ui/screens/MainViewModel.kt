@@ -7,14 +7,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.NavDestination
-import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import com.example.roomtodolist.data.Repository
 import com.example.roomtodolist.data.folder.FolderTable
 import com.example.roomtodolist.data.folder.folderColors
 import com.example.roomtodolist.data.task.TaskTable
-import com.example.roomtodolist.domain.NavigationSystem
+import com.example.roomtodolist.ui.navigation.NavigationSystem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
