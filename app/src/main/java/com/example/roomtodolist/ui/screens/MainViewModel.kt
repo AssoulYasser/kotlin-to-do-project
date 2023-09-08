@@ -7,12 +7,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavDestination
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import com.example.roomtodolist.data.Repository
 import com.example.roomtodolist.data.folder.FolderTable
 import com.example.roomtodolist.data.folder.folderColors
 import com.example.roomtodolist.data.task.TaskTable
+import com.example.roomtodolist.domain.NavigationSystem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -23,8 +25,7 @@ class MainViewModel(
     var uiState by mutableStateOf(MainUiState())
         private set
 
-    lateinit var navHostController: NavHostController
-        private set
+    private lateinit var navigationSystem: NavigationSystem
 
     lateinit var windowSizeClass: WindowSizeClass
         private set
@@ -51,25 +52,21 @@ class MainViewModel(
     }
 
     fun setNavHostController(navHostController: NavHostController) {
-        this.navHostController = navHostController
+        navigationSystem = NavigationSystem(navHostController)
+    }
+
+    fun getNavHostController() = navigationSystem.navHostController
+
+    fun navigateTo(destination: String) {
+        navigationSystem.navigateTo(destination)
+    }
+
+    fun navigateBack() {
+        navigationSystem.navigateBack()
     }
 
     fun setWindowSizeClass(windowSizeClass: WindowSizeClass) {
         this.windowSizeClass = windowSizeClass
-    }
-
-    fun navigateTo(destination: String) {
-        navHostController.navigate(destination) {
-            popUpTo(navHostController.graph.findStartDestination().id) {
-                saveState = true
-            }
-            launchSingleTop = true
-            restoreState = true
-        }
-    }
-
-    fun navigateBack() {
-        navHostController.popBackStack()
     }
 
     fun setFolderToUpdate(folder: FolderTable) {

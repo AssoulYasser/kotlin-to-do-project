@@ -28,7 +28,7 @@ import com.example.roomtodolist.ui.screens.MainViewModel
 
 @Composable
 fun SideBar(mainViewModel: MainViewModel) {
-    val navBackStackEntry by mainViewModel.navHostController.currentBackStackEntryAsState()
+    val navBackStackEntry by mainViewModel.getNavHostController().currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
 
     SideNavLayout {

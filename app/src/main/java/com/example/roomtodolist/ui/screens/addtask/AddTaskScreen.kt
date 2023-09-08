@@ -19,7 +19,8 @@ fun AddTaskScreen(
     val context = LocalContext.current
     Container(actionBar = {
         ActionBar {
-            addTaskViewModel.navigateToHomeScreen()
+            addTaskViewModel.navigateBack()
+            addTaskViewModel.clear()
         }
     }) {
         Spacer(modifier = Modifier)
@@ -51,7 +52,7 @@ fun AddTaskScreen(
             onSave = {
                 if (addTaskViewModel.isReadyToSave()) {
                     addTaskViewModel.save()
-                    addTaskViewModel.navigateToHomeScreen()
+                    addTaskViewModel.navigateBack()
                     addTaskViewModel.showSuccessMessage(context = context)
                     addTaskViewModel.clear()
                 } else {
@@ -60,7 +61,7 @@ fun AddTaskScreen(
             },
             onCancel = {
                 addTaskViewModel.clear()
-                addTaskViewModel.navigateToHomeScreen()
+                addTaskViewModel.navigateBack()
             }
         )
         Spacer(modifier = Modifier)

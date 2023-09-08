@@ -29,7 +29,7 @@ import com.example.roomtodolist.ui.screens.MainViewModel
 @Composable
 fun BottomBar(mainViewModel: MainViewModel) {
 
-    val navBackStackEntry by mainViewModel.navHostController.currentBackStackEntryAsState()
+    val navBackStackEntry by mainViewModel.getNavHostController().currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
     
     BottomNavLayout {

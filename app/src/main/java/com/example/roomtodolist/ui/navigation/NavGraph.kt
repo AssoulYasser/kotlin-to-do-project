@@ -23,7 +23,7 @@ const val TAG = "DEBUGGING : "
 @Composable
 fun NavGraph(mainViewModel: MainViewModel) {
 
-    val navHostController = mainViewModel.navHostController
+    val navHostController = mainViewModel.getNavHostController()
 
     val homeViewModel = viewModel<HomeViewModel>(
         factory = object: ViewModelProvider.Factory {

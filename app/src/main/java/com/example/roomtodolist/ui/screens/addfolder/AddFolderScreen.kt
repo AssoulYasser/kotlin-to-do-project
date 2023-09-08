@@ -19,6 +19,7 @@ fun AddFolderScreen(
     Container(actionBar = {
         ActionBar(title = "Add Folder") {
             addFolderViewModel.navigateBack()
+            addFolderViewModel.clear()
         }
     }) {
         FolderNameTextField(

@@ -45,8 +45,8 @@ class AddTaskViewModel(private val mainViewModel: MainViewModel) : ViewModel() {
         mainViewModel.navigateTo(NestedRoutes.ADD_FOLDER.name)
     }
 
-    fun navigateToHomeScreen() {
-        mainViewModel.navigateTo(MainRoutes.HOME.name)
+    fun navigateBack() {
+        mainViewModel.navigateBack()
     }
 
     fun isReadyToSave() = uiState.taskTitle != "" &&
