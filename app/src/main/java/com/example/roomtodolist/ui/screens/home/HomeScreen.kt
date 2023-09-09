@@ -32,9 +32,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -91,14 +88,16 @@ fun HomeScreen(
             addFolder = { homeViewModel.navigateToAddFolderScreen() }
         )
         Tasks(
-            tasksPerFolder = homeViewModel.getTasksPerFolder(),
+            tasksPerFolder = homeViewModel.getTasksPerFolderInSelectedDay(),
             noTaskExists = homeViewModel.noTaskExists(),
+            seeAll = { homeViewModel.navigateToTasksScreen() },
             addTask = { homeViewModel.navigateToAddTaskScreen() },
             onClick = {
                 homeViewModel.setTaskToUpdate(it)
-                homeViewModel.navigateToTaskShowCase()
-            }
-        ) {}
+                homeViewModel.navigateToTaskShowCaseScreen()
+            },
+            onSelectTask = {}
+        )
         Spacer(modifier = Modifier)
     }
 }
@@ -341,6 +340,7 @@ private fun Folders(
 fun Tasks(
     tasksPerFolder: HashMap<FolderTable, MutableList<TaskTable>>,
     noTaskExists: Boolean,
+    seeAll: () -> Unit,
     addTask: () -> Unit,
     onClick: (TaskTable) -> Unit,
     onSelectTask: (TaskTable) -> Unit
@@ -349,7 +349,7 @@ fun Tasks(
         modifier = Modifier.fillMaxWidth()
     ) {
         TitleWithSeeAll("TASKS") {
-
+            seeAll()
         }
 
         TasksPerFolderCards(

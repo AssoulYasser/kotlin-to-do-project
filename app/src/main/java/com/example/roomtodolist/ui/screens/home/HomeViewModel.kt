@@ -1,9 +1,7 @@
 package com.example.roomtodolist.ui.screens.home
 
 import android.annotation.SuppressLint
-import android.os.Build
 import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -14,7 +12,6 @@ import com.example.roomtodolist.data.task.TaskTable
 import com.example.roomtodolist.ui.navigation.MainRoutes
 import com.example.roomtodolist.ui.navigation.NestedRoutes
 import com.example.roomtodolist.ui.screens.MainViewModel
-import java.time.DayOfWeek
 import java.time.LocalDate
 
 @SuppressLint("NewApi")
@@ -35,12 +32,16 @@ class HomeViewModel(private val mainViewModel: MainViewModel) : ViewModel() {
         mainViewModel.navigateTo(MainRoutes.ADD_TASK.name)
     }
 
-    fun navigateToTaskShowCase() {
+    fun navigateToTaskShowCaseScreen() {
         mainViewModel.navigateTo(NestedRoutes.TASK_SHOW_CASE.name)
     }
 
     fun navigateToFolderShowCase() {
         mainViewModel.navigateTo(NestedRoutes.FOLDER_SHOW_CASE.name)
+    }
+
+    fun navigateToTasksScreen() {
+        mainViewModel.navigateTo(MainRoutes.TASKS.name)
     }
 
     fun setFolderToUpdate(folderTable: FolderTable) {
@@ -65,18 +66,35 @@ class HomeViewModel(private val mainViewModel: MainViewModel) : ViewModel() {
     fun getFolders() : List<FolderTable> = mainViewModel.uiState.folders.values.toList()
     fun noTaskExists() : Boolean = mainViewModel.uiState.tasks.isEmpty()
     fun getTasksPerFolder(): HashMap<FolderTable, MutableList<TaskTable>> = mainViewModel.uiState.tasksPerFolder
-    fun noTasksInCurrentDayExists(date: LocalDate) = filterTasksByDay(date).isEmpty()
+    fun getSelectedDate() : LocalDate = LocalDate.of(
+        mainViewModel.getCurrentDate().currentYear,
+        mainViewModel.getCurrentDate().currentMonth,
+        uiState.selectedDayInCurrentDate
+    )
+    fun noTasksInCurrentDayExists() = getTasksPerFolderInSelectedDay().isEmpty()
 
-    private fun filterTasksByDay(date: LocalDate): HashMap<FolderTable, MutableList<TaskTable>> {
+    fun getTasksPerFolderInSelectedDay(): HashMap<FolderTable, MutableList<TaskTable>> {
+        Log.d("DEBUGGING : ", "getTasksPerFolderInSelectedDay: ${getTasksPerFolder()}")
+        val date = getSelectedDate()
         val list = getTasksPerFolder()
-        val returnValue = getTasksPerFolder()
-        for (folder in list.keys) {
-            for (task in list[folder]!!) {
-                if (!task.date.isEqual(date))
-                    returnValue[folder]!!.remove(task)
-            }
+
+        val returnValue = HashMap<FolderTable, MutableList<TaskTable>>()
+        for ((folder, tasks) in list) {
+            returnValue[folder] = ArrayList(tasks)
         }
+
+        for (folder in list.keys) {
+            val tasksToRemove = mutableListOf<TaskTable>()
+
+            for (task in list[folder]!!)
+                if (!task.date.isEqual(date))
+                    tasksToRemove.add(task)
+
+            returnValue[folder]!!.removeAll(tasksToRemove)
+        }
+
         return returnValue
     }
+
 
 }
