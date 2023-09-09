@@ -1,5 +1,6 @@
 package com.example.roomtodolist.ui.screens.home
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -47,6 +48,7 @@ import androidx.compose.ui.unit.sp
 import com.example.roomtodolist.R
 import com.example.roomtodolist.data.folder.FolderTable
 import com.example.roomtodolist.data.task.TaskTable
+import com.example.roomtodolist.ui.calendar.DaysOfWeek
 import com.example.roomtodolist.ui.components.Container
 import com.example.roomtodolist.ui.components.EmptyElements
 import com.example.roomtodolist.ui.components.FolderCard
@@ -55,6 +57,7 @@ import com.example.roomtodolist.ui.components.TasksPerFolderCards
 import com.example.roomtodolist.ui.components.Welcoming
 import com.example.roomtodolist.ui.components.defaultTextFieldColors
 
+@SuppressLint("NewApi")
 @Composable
 fun HomeScreen(
     homeViewModel: HomeViewModel
@@ -70,12 +73,10 @@ fun HomeScreen(
         Spacer(modifier = Modifier)
 
         WeekCalendar(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(
-                    MaterialTheme.colorScheme.primaryContainer,
-                    shape = RoundedCornerShape(20f)
-                )
+            selectedDay = homeViewModel.uiState.selectedDayInCurrentDate,
+            setSelectedDay = { homeViewModel.setSelectedDay(it) },
+            days = homeViewModel.getDaysOfWeek(),
+            isCompactWidth = homeViewModel.isCompactWidth()
         )
         SearchForTask(
             value = homeViewModel.uiState.search,
@@ -146,18 +147,22 @@ private fun TopBar(
 
 
 @Composable
-private fun WeekCalendar(modifier: Modifier = Modifier) {
-    val days = hashMapOf(
-        "mon" to 18,
-        "tue" to 19,
-        "wed" to 20,
-        "thu" to 20,
-        "fri" to 21,
-        "sat" to 22,
-        "sun" to 22,
-    )
-    val selectedDay = remember { mutableStateOf("wed") }
-    Box(modifier = modifier, contentAlignment = Alignment.Center) {
+private fun WeekCalendar(
+    days: HashMap<Int, DaysOfWeek>,
+    isCompactWidth: Boolean,
+    selectedDay: Int,
+    setSelectedDay: (Int) -> Unit
+) {
+    Log.d("DEBUGGING : ", "WeekCalendar: $days")
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(
+                MaterialTheme.colorScheme.primaryContainer,
+                shape = RoundedCornerShape(20f)
+            ),
+        contentAlignment = Alignment.Center
+    ) {
         Row(
             modifier = Modifier
                 .padding(horizontal = 10.dp),
@@ -165,7 +170,16 @@ private fun WeekCalendar(modifier: Modifier = Modifier) {
             horizontalArrangement = Arrangement.Center
         ) {
             days.forEach {
-                DayElement(dayName = it.key, dayNumber = it.value, selectedDay = selectedDay)
+                val dayOfMonth = it.key
+                val dayOfWeek = it.value
+                val dayName =
+                    if (isCompactWidth) dayOfWeek.oneLetterAbbreviation else dayOfWeek.threeLetterAbbreviation
+                DayElement(
+                    dayName = dayName.toString(),
+                    dayNumber = dayOfMonth,
+                    selectedDay = selectedDay,
+                    setSelectedDay = setSelectedDay
+                )
             }
         }
     }
@@ -173,7 +187,8 @@ private fun WeekCalendar(modifier: Modifier = Modifier) {
 
 @Composable
 private fun RowScope.DayElement(
-    selectedDay: MutableState<String>,
+    selectedDay: Int,
+    setSelectedDay: (Int) -> Unit,
     dayName: String,
     dayNumber: Int
 ) {
@@ -182,18 +197,18 @@ private fun RowScope.DayElement(
             .weight(1f)
             .padding(vertical = 12.dp)
             .background(
-                if (selectedDay.value == dayName)
+                if (selectedDay == dayNumber)
                     MaterialTheme.colorScheme.secondary
                 else
                     Color.Transparent,
                 shape = RoundedCornerShape(20f)
             )
             .selectable(
-                selected = selectedDay.value == dayName,
+                selected = selectedDay == dayNumber,
                 enabled = true,
                 role = Role.Tab,
                 onClick = {
-                    selectedDay.value = dayName
+                    setSelectedDay(dayNumber)
                 }
             ),
         contentAlignment = Alignment.Center
@@ -206,13 +221,13 @@ private fun RowScope.DayElement(
         ) {
             Text(
                 text = dayName,
-                color = if (selectedDay.value == dayName) MaterialTheme.colorScheme.background else Color.Black,
+                color = if (selectedDay == dayNumber) MaterialTheme.colorScheme.background else Color.Black,
                 fontSize = 11.sp,
                 fontWeight = FontWeight.Medium
             )
             Text(
                 text = dayNumber.toString(),
-                color = if (selectedDay.value == dayName) MaterialTheme.colorScheme.background else Color.Black,
+                color = if (selectedDay == dayNumber) MaterialTheme.colorScheme.background else Color.Black,
                 fontSize = 11.sp,
                 fontWeight = FontWeight.Medium
             )

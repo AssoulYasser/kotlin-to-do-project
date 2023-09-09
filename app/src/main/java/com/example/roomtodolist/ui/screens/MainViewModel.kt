@@ -1,6 +1,8 @@
 package com.example.roomtodolist.ui.screens
 
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -12,6 +14,8 @@ import com.example.roomtodolist.data.Repository
 import com.example.roomtodolist.data.folder.FolderTable
 import com.example.roomtodolist.data.folder.folderColors
 import com.example.roomtodolist.data.task.TaskTable
+import com.example.roomtodolist.ui.calendar.CalendarSystem
+import com.example.roomtodolist.ui.calendar.DaysOfWeek
 import com.example.roomtodolist.ui.navigation.NavigationSystem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -24,6 +28,12 @@ class MainViewModel(
         private set
 
     private lateinit var navigationSystem: NavigationSystem
+    private val calendarSystem: CalendarSystem
+
+    init {
+        @RequiresApi(Build.VERSION_CODES.O)
+        calendarSystem = CalendarSystem()
+    }
 
     lateinit var windowSizeClass: WindowSizeClass
         private set
@@ -211,7 +221,13 @@ class MainViewModel(
         }
     }
 
-    enum class Operation {
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun getCurrentDate() = calendarSystem.currentDate
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun getDaysOfTheWeek() = calendarSystem.currentWeeklyCalendar
+
+    private enum class Operation {
         ADD,
         CHANGE,
         DELETE
