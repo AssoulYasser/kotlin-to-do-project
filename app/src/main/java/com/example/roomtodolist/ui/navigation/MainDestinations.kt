@@ -6,6 +6,7 @@ import com.example.roomtodolist.R
 import com.example.roomtodolist.ui.screens.addtask.AddTaskScreen
 import com.example.roomtodolist.ui.screens.addtask.AddTaskViewModel
 import com.example.roomtodolist.ui.screens.calendar.CalendarScreen
+import com.example.roomtodolist.ui.screens.calendar.CalendarViewModel
 import com.example.roomtodolist.ui.screens.home.HomeScreen
 import com.example.roomtodolist.ui.screens.home.HomeViewModel
 import com.example.roomtodolist.ui.screens.tasks.TasksScreen
@@ -38,7 +39,7 @@ sealed class MainDestinations(
         title = "Calendar",
         icon = NavIcon(R.drawable.filled_calendar_icon, R.drawable.outlined_calendar_icon),
         screen = {
-            CalendarScreen()
+            CalendarScreen(it as CalendarViewModel)
         }
     )
     object AddTask : MainDestinations(

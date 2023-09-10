@@ -5,7 +5,7 @@ import androidx.annotation.RequiresApi
 import java.time.DayOfWeek
 
 @RequiresApi(Build.VERSION_CODES.O)
-enum class DaysOfWeek(
+enum class Days(
     val threeLetterAbbreviation: String,
     val oneLetterAbbreviation: Char,
     val dayOfWeek: DayOfWeek
@@ -20,7 +20,7 @@ enum class DaysOfWeek(
 
     companion object {
         @RequiresApi(Build.VERSION_CODES.O)
-        fun getDayOfWeek(dayOfWeek: DayOfWeek): DaysOfWeek = when (dayOfWeek) {
+        fun getDayOfWeek(dayOfWeek: DayOfWeek): Days = when (dayOfWeek) {
             DayOfWeek.MONDAY -> MONDAY
             DayOfWeek.TUESDAY -> TUESDAY
             DayOfWeek.WEDNESDAY -> WEDNESDAY

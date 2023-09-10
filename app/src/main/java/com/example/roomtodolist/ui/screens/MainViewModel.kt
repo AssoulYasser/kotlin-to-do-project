@@ -15,10 +15,11 @@ import com.example.roomtodolist.data.folder.FolderTable
 import com.example.roomtodolist.data.folder.folderColors
 import com.example.roomtodolist.data.task.TaskTable
 import com.example.roomtodolist.ui.calendar.CalendarSystem
-import com.example.roomtodolist.ui.calendar.DaysOfWeek
 import com.example.roomtodolist.ui.navigation.NavigationSystem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.time.LocalDate
+import java.time.Month
 
 class MainViewModel(
     val repository: Repository,
@@ -221,11 +222,14 @@ class MainViewModel(
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun getDaysOfTheWeek() = calendarSystem.getWeeklyCalendar(LocalDate.now().year, LocalDate.now().month, LocalDate.now().dayOfMonth)
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun getCurrentDate() = calendarSystem.currentDate
-    @RequiresApi(Build.VERSION_CODES.O)
-    fun getDaysOfTheWeek() = calendarSystem.currentWeeklyCalendar
+    fun getMonthForFiveWeeks(month: Month, year: Int) = calendarSystem.getMonthlyCalendar(
+        year = year,
+        month = month
+    )
 
     private enum class Operation {
         ADD,

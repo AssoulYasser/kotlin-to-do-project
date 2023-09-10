@@ -45,7 +45,7 @@ import androidx.compose.ui.unit.sp
 import com.example.roomtodolist.R
 import com.example.roomtodolist.data.folder.FolderTable
 import com.example.roomtodolist.data.task.TaskTable
-import com.example.roomtodolist.ui.calendar.DaysOfWeek
+import com.example.roomtodolist.ui.calendar.Days
 import com.example.roomtodolist.ui.components.Container
 import com.example.roomtodolist.ui.components.EmptyElements
 import com.example.roomtodolist.ui.components.FolderCard
@@ -147,7 +147,7 @@ private fun TopBar(
 
 @Composable
 private fun WeekCalendar(
-    days: HashMap<Int, DaysOfWeek>,
+    days: HashMap<Int, Days>,
     isCompactWidth: Boolean,
     selectedDay: Int,
     setSelectedDay: (Int) -> Unit

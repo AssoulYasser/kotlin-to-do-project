@@ -20,10 +20,6 @@ class HomeViewModel(private val mainViewModel: MainViewModel) : ViewModel() {
     var uiState by mutableStateOf(HomeUiState())
         private set
 
-    init {
-        uiState = uiState.copy(selectedDayInCurrentDate = mainViewModel.getCurrentDate().currentDayOfMonth)
-    }
-
     fun navigateToAddFolderScreen() {
         mainViewModel.navigateTo(NestedRoutes.ADD_FOLDER.name)
     }
@@ -65,32 +61,25 @@ class HomeViewModel(private val mainViewModel: MainViewModel) : ViewModel() {
     fun getDaysOfWeek() = mainViewModel.getDaysOfTheWeek()
     fun getFolders() : List<FolderTable> = mainViewModel.uiState.folders.values.toList()
     fun noTaskExists() : Boolean = mainViewModel.uiState.tasks.isEmpty()
-    fun getTasksPerFolder(): HashMap<FolderTable, MutableList<TaskTable>> = mainViewModel.uiState.tasksPerFolder
-    fun getSelectedDate() : LocalDate = LocalDate.of(
-        mainViewModel.getCurrentDate().currentYear,
-        mainViewModel.getCurrentDate().currentMonth,
+    private fun getTasksPerFolder(): HashMap<FolderTable, MutableList<TaskTable>> = mainViewModel.uiState.tasksPerFolder
+    private fun getSelectedDate() : LocalDate = LocalDate.of(
+        LocalDate.now().year,
+        LocalDate.now().month,
         uiState.selectedDayInCurrentDate
     )
     fun noTasksInCurrentDayExists() = getTasksPerFolderInSelectedDay().isEmpty()
 
     fun getTasksPerFolderInSelectedDay(): HashMap<FolderTable, MutableList<TaskTable>> {
-        Log.d("DEBUGGING : ", "getTasksPerFolderInSelectedDay: ${getTasksPerFolder()}")
         val date = getSelectedDate()
         val list = getTasksPerFolder()
 
         val returnValue = HashMap<FolderTable, MutableList<TaskTable>>()
         for ((folder, tasks) in list) {
-            returnValue[folder] = ArrayList(tasks)
-        }
-
-        for (folder in list.keys) {
-            val tasksToRemove = mutableListOf<TaskTable>()
-
-            for (task in list[folder]!!)
-                if (!task.date.isEqual(date))
-                    tasksToRemove.add(task)
-
-            returnValue[folder]!!.removeAll(tasksToRemove)
+            returnValue[folder] = ArrayList()
+            for (task in tasks) {
+                if (task.date.isEqual(date))
+                    returnValue[folder]!!.add(task)
+            }
         }
 
         return returnValue

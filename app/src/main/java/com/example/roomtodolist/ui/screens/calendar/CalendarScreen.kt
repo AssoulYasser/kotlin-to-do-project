@@ -1,15 +1,257 @@
 package com.example.roomtodolist.ui.screens.calendar
 
+import android.os.Build
+import android.widget.Space
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import com.example.roomtodolist.R
+import com.example.roomtodolist.data.task.TaskTable
+import com.example.roomtodolist.ui.calendar.Days
+import com.example.roomtodolist.ui.components.ActionBar
+import com.example.roomtodolist.ui.components.Container
+import java.time.Month
+
+@RequiresApi(Build.VERSION_CODES.O)
+@Composable
+fun CalendarScreen(
+    calendarViewModel: CalendarViewModel
+) {
+    val context = LocalContext.current
+    Container(actionBar = {
+        ActionBar(title = "Calendar") {
+            calendarViewModel.navigateBack()
+        }
+    }) {
+        CalendarUi(
+            onPreviousMonth = { calendarViewModel.setPreviousMonth() },
+            onNextMonth = { calendarViewModel.setNextMonth() },
+            selectedMonth = calendarViewModel.uiState.selectedMonth,
+            selectedYear = calendarViewModel.uiState.selectedYear,
+            isCompactWidth = calendarViewModel.isCompactWidth(),
+            daysOfTheWeek = calendarViewModel.getDaysOfTheWeek(),
+            monthlyCalendar = calendarViewModel.getMonthlyCalendar(),
+            selectedDay = calendarViewModel.uiState.selectedDay,
+            setDay = { calendarViewModel.setDay(it) }
+        )
+        Tasks(
+            tasksPerColor = calendarViewModel.orderTasksByTime()
+        )
+    }
+}
 
 @Composable
-fun CalendarScreen() {
-    Box(modifier = Modifier.background(Color.Blue).fillMaxSize())
-    Text(text = "CAL")
+private fun Tasks(
+    tasksPerColor: HashMap<TaskTable, Color>
+) {
+   Column(
+       modifier = Modifier
+           .fillMaxWidth(),
+       horizontalAlignment = Alignment.CenterHorizontally,
+       verticalArrangement = Arrangement.spacedBy(16.dp)
+   ) {
+       tasksPerColor.forEach {
+           Row(
+               modifier = Modifier
+                   .fillMaxWidth(),
+               horizontalArrangement = Arrangement.spacedBy(14.dp),
+               verticalAlignment = Alignment.CenterVertically
+           ) {
+               Spacer(modifier = Modifier)
+               Text(
+                   text = it.key.time.toString(),
+                   modifier = Modifier
+               )
+               Box(modifier = Modifier
+                   .size(width = 5.dp, height = 25.dp)
+                   .background(it.value)
+               )
+               Text(text = it.key.title, modifier = Modifier.weight(4f))
+           }
+           Spacer(modifier = Modifier.height(10.dp))
+       }
+   }
+}
+
+@Composable
+private fun CalendarUi(
+    onPreviousMonth: () -> Unit,
+    onNextMonth: () -> Unit,
+    selectedMonth: Month,
+    selectedYear: Int,
+    isCompactWidth: Boolean,
+    daysOfTheWeek: Array<Days>,
+    monthlyCalendar: List<Int>,
+    selectedDay: Int,
+    setDay: (Int) -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(
+                MaterialTheme.colorScheme.primaryContainer,
+                RoundedCornerShape(24f)
+            )
+            .padding(bottom = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(10.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        MonthPicker(
+            onPreviousMonth = onPreviousMonth,
+            onNextMonth = onNextMonth,
+            selectedMonth = selectedMonth,
+            selectedYear = selectedYear,
+        )
+        CalendarGrid(
+            isCompactWidth = isCompactWidth,
+            daysOfTheWeek = daysOfTheWeek,
+            monthlyCalendar = monthlyCalendar,
+            selectedDay = selectedDay,
+            setDay = setDay
+        )
+    }
+}
+
+@Composable
+fun CalendarGrid(
+    isCompactWidth: Boolean,
+    daysOfTheWeek: Array<Days>,
+    monthlyCalendar: List<Int>,
+    selectedDay: Int,
+    setDay: (Int) -> Unit
+) {
+    val currentDateInsideCurrentMonth = remember {
+        mutableStateOf(false)
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(26.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            daysOfTheWeek.forEach {
+                Text(
+                    text =
+                        if (isCompactWidth) it.oneLetterAbbreviation.toString()
+                        else it.threeLetterAbbreviation,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.weight(1f)
+                )
+            }
+        }
+        var dayIndex = 0
+        while (dayIndex < monthlyCalendar.size) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                for (dayOfWeek in 0 until 7) {
+                    if (dayIndex > monthlyCalendar.size)
+                        break
+
+                    val currentDay = monthlyCalendar[dayIndex]
+
+                    if (currentDay == 1)
+                        currentDateInsideCurrentMonth.value = !currentDateInsideCurrentMonth.value
+
+                    val inMonth = currentDateInsideCurrentMonth.value
+
+                    Box(modifier = Modifier
+                        .weight(1f)
+                        .aspectRatio(1f, matchHeightConstraintsFirst = true)
+                        .background(
+                            color = if (selectedDay == currentDay && inMonth)
+                                MaterialTheme.colorScheme.primary
+                            else
+                                Color.Transparent,
+                            RoundedCornerShape(24f)
+                        )
+                        .clickable {
+                            if (inMonth)
+                                setDay(currentDay)
+                        }
+                    ) {
+                        Text(
+                            text = "$currentDay",
+                            textAlign = TextAlign.Center,
+                            color =
+                            if (inMonth)
+                                if (selectedDay == currentDay)
+                                    Color.White
+                                else
+                                    MaterialTheme.colorScheme.onBackground
+                            else
+                                MaterialTheme.colorScheme.onBackground.copy(alpha = 0.2f),
+                            modifier = Modifier.align(Alignment.Center)
+                        )
+                    }
+                    dayIndex += 1
+                }
+            }
+        }
+    }
+
+}
+
+@Composable
+fun MonthPicker(
+    onPreviousMonth: () -> Unit,
+    onNextMonth: () -> Unit,
+    selectedMonth: Month,
+    selectedYear: Int
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        IconButton(onClick = onPreviousMonth) {
+            Icon(
+                painter = painterResource(id = R.drawable.outlined_non_lined_arrow_left_icon),
+                contentDescription = null
+            )
+        }
+        Text(text = "$selectedMonth $selectedYear")
+        IconButton(onClick = onNextMonth) {
+            Icon(
+                painter = painterResource(id = R.drawable.outlined_non_lined_arrow_right_icon),
+                contentDescription = null
+            )
+        }
+    }
 }
