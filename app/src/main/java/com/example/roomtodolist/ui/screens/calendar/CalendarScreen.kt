@@ -87,7 +87,8 @@ private fun Tasks(
                Spacer(modifier = Modifier)
                Text(
                    text = it.key.time.toString(),
-                   modifier = Modifier
+                   modifier = Modifier,
+                   color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f)
                )
                Box(modifier = Modifier
                    .size(width = 5.dp, height = 25.dp)

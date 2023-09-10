@@ -85,7 +85,7 @@ class CalendarViewModel(private val mainViewModel: MainViewModel) : ViewModel() 
         for (element in tasksPerColor) {
             var firstTask = tasks.first()
             for (taskIndex in 0 until tasks.size) {
-                if (tasks[taskIndex].date.isBefore(firstTask.date))
+                if (tasks[taskIndex].time.isBefore(firstTask.time))
                     firstTask = tasks[taskIndex]
             }
             returnValue[firstTask] = element.value
