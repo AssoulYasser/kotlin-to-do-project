@@ -10,7 +10,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.roomtodolist.data.folder.FolderTable
-import com.example.roomtodolist.ui.screens.MainViewModel
+import com.example.roomtodolist.domain.MainViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 

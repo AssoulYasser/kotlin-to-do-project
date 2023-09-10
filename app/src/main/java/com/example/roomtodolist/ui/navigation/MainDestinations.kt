@@ -1,5 +1,7 @@
 package com.example.roomtodolist.ui.navigation
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.ViewModel
 import com.example.roomtodolist.R
@@ -34,6 +36,7 @@ sealed class MainDestinations(
             TasksScreen(it as TasksViewModel)
         }
     )
+    @RequiresApi(Build.VERSION_CODES.O)
     object Calendar : MainDestinations(
         route = MainRoutes.CALENDAR,
         title = "Calendar",

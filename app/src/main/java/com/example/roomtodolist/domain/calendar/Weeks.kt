@@ -1,4 +1,4 @@
-package com.example.roomtodolist.ui.calendar
+package com.example.roomtodolist.domain.calendar
 
 enum class Weeks(val nextWeekIn: Long) {
     FIRST(nextWeekIn = 0),

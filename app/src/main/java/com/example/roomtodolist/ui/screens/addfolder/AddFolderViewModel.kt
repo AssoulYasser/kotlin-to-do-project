@@ -9,7 +9,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.lifecycle.ViewModel
 import com.example.roomtodolist.data.folder.FolderTable
-import com.example.roomtodolist.ui.screens.MainViewModel
+import com.example.roomtodolist.domain.MainViewModel
 
 class AddFolderViewModel(private val mainViewModel: MainViewModel) : ViewModel() {
     var uiState by mutableStateOf(AddFolderUiState())

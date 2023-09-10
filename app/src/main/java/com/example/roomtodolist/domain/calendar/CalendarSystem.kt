@@ -1,4 +1,4 @@
-package com.example.roomtodolist.ui.calendar
+package com.example.roomtodolist.domain.calendar
 
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -109,7 +109,7 @@ class CalendarSystem {
 
         val lastDateInTheWeek = firstDateInTheWeek.plusDays(7)
 
-        val weeklyCalendar = hashMapOf<Int, Days>()
+        val weeklyCalendar = linkedMapOf<Int, Days>()
 
         while (iterableDate.dayOfMonth.toLong() < lastDateInTheWeek.dayOfMonth.toLong()) {
 

@@ -1,7 +1,6 @@
 package com.example.roomtodolist.ui.screens.home
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -11,7 +10,7 @@ import com.example.roomtodolist.data.folder.FolderTable
 import com.example.roomtodolist.data.task.TaskTable
 import com.example.roomtodolist.ui.navigation.MainRoutes
 import com.example.roomtodolist.ui.navigation.NestedRoutes
-import com.example.roomtodolist.ui.screens.MainViewModel
+import com.example.roomtodolist.domain.MainViewModel
 import java.time.LocalDate
 
 @SuppressLint("NewApi")
@@ -38,6 +37,10 @@ class HomeViewModel(private val mainViewModel: MainViewModel) : ViewModel() {
 
     fun navigateToTasksScreen() {
         mainViewModel.navigateTo(MainRoutes.TASKS.name)
+    }
+
+    fun navigateToFoldersScreen() {
+        mainViewModel.navigateTo(NestedRoutes.FOLDERS.name)
     }
 
     fun setFolderToUpdate(folderTable: FolderTable) {

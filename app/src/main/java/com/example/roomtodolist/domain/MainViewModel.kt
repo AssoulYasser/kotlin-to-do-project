@@ -1,4 +1,4 @@
-package com.example.roomtodolist.ui.screens
+package com.example.roomtodolist.domain
 
 import android.os.Build
 import android.util.Log
@@ -14,7 +14,7 @@ import com.example.roomtodolist.data.Repository
 import com.example.roomtodolist.data.folder.FolderTable
 import com.example.roomtodolist.data.folder.folderColors
 import com.example.roomtodolist.data.task.TaskTable
-import com.example.roomtodolist.ui.calendar.CalendarSystem
+import com.example.roomtodolist.domain.calendar.CalendarSystem
 import com.example.roomtodolist.ui.navigation.NavigationSystem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

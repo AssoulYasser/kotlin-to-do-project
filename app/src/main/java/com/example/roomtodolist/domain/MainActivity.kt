@@ -15,14 +15,9 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
 import com.example.roomtodolist.data.Repository
-import com.example.roomtodolist.data.task.TaskPriority
-import com.example.roomtodolist.data.task.TaskTable
-import com.example.roomtodolist.ui.screens.MainActivityScreen
-import com.example.roomtodolist.ui.screens.MainViewModel
 import com.example.roomtodolist.ui.theme.RoomToDoListTheme
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.time.LocalDate
 
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 class MainActivity : ComponentActivity() {

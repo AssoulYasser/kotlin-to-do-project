@@ -1,4 +1,4 @@
-package com.example.roomtodolist.ui.calendar
+package com.example.roomtodolist.domain.calendar
 
 import android.os.Build
 import androidx.annotation.RequiresApi

@@ -24,7 +24,7 @@ import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.roomtodolist.ui.navigation.MainDestinations
 import com.example.roomtodolist.ui.navigation.navigationList
-import com.example.roomtodolist.ui.screens.MainViewModel
+import com.example.roomtodolist.domain.MainViewModel
 
 @Composable
 fun BottomBar(mainViewModel: MainViewModel) {

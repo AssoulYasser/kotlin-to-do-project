@@ -1,4 +1,4 @@
-package com.example.roomtodolist.ui.screens
+package com.example.roomtodolist.domain
 
 import com.example.roomtodolist.data.folder.FolderTable
 import com.example.roomtodolist.data.task.TaskTable

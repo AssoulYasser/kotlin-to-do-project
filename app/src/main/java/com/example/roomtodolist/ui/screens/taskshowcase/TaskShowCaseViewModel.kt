@@ -12,7 +12,7 @@ import com.example.roomtodolist.data.task.TaskPriority
 import com.example.roomtodolist.data.task.TaskTable
 import com.example.roomtodolist.ui.navigation.MainRoutes
 import com.example.roomtodolist.ui.navigation.NestedRoutes
-import com.example.roomtodolist.ui.screens.MainViewModel
+import com.example.roomtodolist.domain.MainViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.time.LocalDate

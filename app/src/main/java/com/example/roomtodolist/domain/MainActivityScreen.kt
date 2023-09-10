@@ -1,4 +1,4 @@
-package com.example.roomtodolist.ui.screens
+package com.example.roomtodolist.domain
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Box

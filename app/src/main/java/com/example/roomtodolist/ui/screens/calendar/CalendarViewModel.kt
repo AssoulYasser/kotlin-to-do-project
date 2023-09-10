@@ -9,8 +9,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import com.example.roomtodolist.data.task.TaskTable
-import com.example.roomtodolist.ui.calendar.Days
-import com.example.roomtodolist.ui.screens.MainViewModel
+import com.example.roomtodolist.domain.calendar.Days
+import com.example.roomtodolist.domain.MainViewModel
 import java.time.LocalDate
 import java.time.Month
 
@@ -66,7 +66,7 @@ class CalendarViewModel(private val mainViewModel: MainViewModel) : ViewModel() 
         uiState.selectedDay
     )
 
-    fun filterTasksByCurrentDay() : HashMap<TaskTable, Color> {
+    private fun filterTasksByCurrentDay() : HashMap<TaskTable, Color> {
         val tasksPerFolder = mainViewModel.uiState.tasksPerFolder
         val returnValue = HashMap<TaskTable, Color>()
         for ((folder, tasks) in tasksPerFolder) {

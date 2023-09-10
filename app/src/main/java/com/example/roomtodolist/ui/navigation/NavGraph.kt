@@ -1,5 +1,7 @@
 package com.example.roomtodolist.ui.navigation
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -7,10 +9,11 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import com.example.roomtodolist.ui.screens.MainViewModel
+import com.example.roomtodolist.domain.MainViewModel
 import com.example.roomtodolist.ui.screens.addfolder.AddFolderViewModel
 import com.example.roomtodolist.ui.screens.addtask.AddTaskViewModel
 import com.example.roomtodolist.ui.screens.calendar.CalendarViewModel
+import com.example.roomtodolist.ui.screens.folders.FoldersViewModel
 import com.example.roomtodolist.ui.screens.foldershowcase.FolderShowCaseViewModel
 import com.example.roomtodolist.ui.screens.home.HomeViewModel
 import com.example.roomtodolist.ui.screens.tasks.TasksViewModel
@@ -41,6 +44,7 @@ fun NavGraph(mainViewModel: MainViewModel) {
     )
     val calendarViewModel = viewModel<CalendarViewModel>(
         factory = object: ViewModelProvider.Factory {
+            @RequiresApi(Build.VERSION_CODES.O)
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
                 return CalendarViewModel(
                     mainViewModel = mainViewModel
@@ -87,6 +91,16 @@ fun NavGraph(mainViewModel: MainViewModel) {
         }
     )
 
+    val foldersViewModel = viewModel<FoldersViewModel>(
+        factory = object: ViewModelProvider.Factory{
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                return FoldersViewModel(
+                    mainViewModel = mainViewModel
+                ) as T
+            }
+        }
+    )
+
     val viewModels = hashMapOf<ScreenRoute, ViewModel?>(
         MainRoutes.HOME to homeViewModel,
         MainRoutes.TASKS to tasksViewModel,
@@ -94,7 +108,8 @@ fun NavGraph(mainViewModel: MainViewModel) {
         MainRoutes.ADD_TASK to addTaskViewModel,
         NestedRoutes.ADD_FOLDER to addFolderViewModel,
         NestedRoutes.TASK_SHOW_CASE to taskShowCaseViewModel,
-        NestedRoutes.FOLDER_SHOW_CASE to folderShowCaseViewModel
+        NestedRoutes.FOLDER_SHOW_CASE to folderShowCaseViewModel,
+        NestedRoutes.FOLDERS to foldersViewModel
     )
 
     NavHost(navController = navHostController, startDestination = Routes.Home.route.name) {

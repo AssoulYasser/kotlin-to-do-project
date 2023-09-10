@@ -10,7 +10,8 @@ sealed class Routes(
         mainDestination = MainDestinations.Home,
         nestedDestination = mutableListOf(
             NestedDestinations.AddFolder,
-            NestedDestinations.FolderShowCase
+            NestedDestinations.FolderShowCase,
+            NestedDestinations.Folders
         )
     )
     object Tasks : Routes(

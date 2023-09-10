@@ -45,7 +45,7 @@ import androidx.compose.ui.unit.sp
 import com.example.roomtodolist.R
 import com.example.roomtodolist.data.folder.FolderTable
 import com.example.roomtodolist.data.task.TaskTable
-import com.example.roomtodolist.ui.calendar.Days
+import com.example.roomtodolist.domain.calendar.Days
 import com.example.roomtodolist.ui.components.Container
 import com.example.roomtodolist.ui.components.EmptyElements
 import com.example.roomtodolist.ui.components.FolderCard
@@ -85,7 +85,8 @@ fun HomeScreen(
                 homeViewModel.setFolderToUpdate(it)
                 homeViewModel.navigateToFolderShowCase()
             },
-            addFolder = { homeViewModel.navigateToAddFolderScreen() }
+            addFolder = { homeViewModel.navigateToAddFolderScreen() },
+            seeAll = { homeViewModel.navigateToFoldersScreen() }
         )
         Tasks(
             tasksPerFolder = homeViewModel.getTasksPerFolderInSelectedDay(),
@@ -296,12 +297,15 @@ fun TitleWithSeeAll(
 private fun Folders(
     folders: List<FolderTable>,
     onClick: (FolderTable) -> Unit,
-    addFolder: () -> Unit
+    addFolder: () -> Unit,
+    seeAll: () -> Unit
 ) {
     Column(
         modifier = Modifier.fillMaxWidth()
     ) {
-        TitleWithSeeAll("FOLDERS") {}
+        TitleWithSeeAll("FOLDERS") {
+            seeAll()
+        }
         if (folders.isEmpty())
             Box(
                 modifier = Modifier

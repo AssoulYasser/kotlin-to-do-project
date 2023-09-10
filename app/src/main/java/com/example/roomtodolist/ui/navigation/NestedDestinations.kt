@@ -4,6 +4,8 @@ import androidx.compose.runtime.Composable
 import androidx.lifecycle.ViewModel
 import com.example.roomtodolist.ui.screens.addfolder.AddFolderScreen
 import com.example.roomtodolist.ui.screens.addfolder.AddFolderViewModel
+import com.example.roomtodolist.ui.screens.folders.FoldersScreen
+import com.example.roomtodolist.ui.screens.folders.FoldersViewModel
 import com.example.roomtodolist.ui.screens.foldershowcase.FolderShowCaseScreen
 import com.example.roomtodolist.ui.screens.foldershowcase.FolderShowCaseViewModel
 import com.example.roomtodolist.ui.screens.taskshowcase.TaskShowCaseScreen
@@ -26,6 +28,11 @@ sealed class NestedDestinations(
     object FolderShowCase : NestedDestinations(
         route = NestedRoutes.FOLDER_SHOW_CASE,
         screen = { viewModel -> FolderShowCaseScreen(viewModel as FolderShowCaseViewModel) }
+    )
+
+    object Folders: NestedDestinations(
+        route = NestedRoutes.FOLDERS,
+        screen = { viewModel -> FoldersScreen(viewModel as FoldersViewModel) }
     )
 }
 
