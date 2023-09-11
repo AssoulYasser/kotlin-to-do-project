@@ -1,4 +1,4 @@
-package com.example.roomtodolist.domain
+package com.example.roomtodolist.domain.main_activity
 
 import android.content.Context
 import android.os.Build
@@ -14,7 +14,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
-import com.example.roomtodolist.data.Repository
+import com.example.roomtodolist.data.DatabaseRepository
 import com.example.roomtodolist.ui.theme.RoomToDoListTheme
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -22,23 +22,18 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 class MainActivity : ComponentActivity() {
     private lateinit var context: Context
-    private lateinit var repository: Repository
+    private lateinit var databaseRepository: DatabaseRepository
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         context = this
-        repository = Repository(context)
-
-        lifecycleScope.launch(Dispatchers.IO) {
-            Log.d(TAG, "onCreate Tasks: ${repository.taskDao.getTasks()}")
-            Log.d(TAG, "onCreate Folders: ${repository.folderDao.getFolders()}")
-        }
+        databaseRepository = DatabaseRepository(context)
 
         setContent {
             val mainViewModel = viewModel<MainViewModel>(
                 factory = object: ViewModelProvider.Factory {
                     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                        return MainViewModel(repository = repository) as T
+                        return MainViewModel(databaseRepository = databaseRepository) as T
                     }
                 }
             )

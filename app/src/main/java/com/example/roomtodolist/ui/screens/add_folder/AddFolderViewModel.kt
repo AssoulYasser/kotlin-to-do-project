@@ -1,4 +1,4 @@
-package com.example.roomtodolist.ui.screens.addfolder
+package com.example.roomtodolist.ui.screens.add_folder
 
 import android.content.Context
 import android.widget.Toast
@@ -9,7 +9,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.lifecycle.ViewModel
 import com.example.roomtodolist.data.folder.FolderTable
-import com.example.roomtodolist.domain.MainViewModel
+import com.example.roomtodolist.domain.main_activity.MainViewModel
 
 class AddFolderViewModel(private val mainViewModel: MainViewModel) : ViewModel() {
     var uiState by mutableStateOf(AddFolderUiState())

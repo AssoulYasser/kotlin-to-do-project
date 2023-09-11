@@ -1,4 +1,4 @@
-package com.example.roomtodolist.ui.screens.addfolder
+package com.example.roomtodolist.ui.screens.add_folder
 
 import androidx.compose.ui.graphics.Color
 

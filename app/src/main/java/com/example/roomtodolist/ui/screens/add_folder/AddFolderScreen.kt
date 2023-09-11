@@ -1,8 +1,7 @@
-package com.example.roomtodolist.ui.screens.addfolder
+package com.example.roomtodolist.ui.screens.add_folder
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
-import com.example.roomtodolist.data.folder.folderColors
 import com.example.roomtodolist.ui.components.ActionBar
 import com.example.roomtodolist.ui.components.Container
 import com.example.roomtodolist.ui.components.FolderColorPicker

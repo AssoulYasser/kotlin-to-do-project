@@ -1,4 +1,4 @@
-package com.example.roomtodolist.ui.screens.foldershowcase
+package com.example.roomtodolist.ui.screens.folder_show_case
 
 import android.content.Context
 import android.widget.Toast
@@ -10,7 +10,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.roomtodolist.data.folder.FolderTable
-import com.example.roomtodolist.domain.MainViewModel
+import com.example.roomtodolist.domain.main_activity.MainViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 

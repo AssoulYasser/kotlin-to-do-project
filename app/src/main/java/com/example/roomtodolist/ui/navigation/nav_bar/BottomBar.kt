@@ -1,12 +1,12 @@
-package com.example.roomtodolist.ui.navigation.navbar
+package com.example.roomtodolist.ui.navigation.nav_bar
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -24,14 +24,15 @@ import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.roomtodolist.ui.navigation.MainDestinations
 import com.example.roomtodolist.ui.navigation.navigationList
-import com.example.roomtodolist.domain.MainViewModel
+import com.example.roomtodolist.domain.main_activity.MainViewModel
 
 @Composable
-fun SideBar(mainViewModel: MainViewModel) {
+fun BottomBar(mainViewModel: MainViewModel) {
+
     val navBackStackEntry by mainViewModel.getNavHostController().currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
-
-    SideNavLayout {
+    
+    BottomNavLayout {
         navigationList.forEach{ nav ->
             val navDestination = nav.mainDestination
             NavElement(
@@ -43,33 +44,32 @@ fun SideBar(mainViewModel: MainViewModel) {
             }
         }
     }
-
 }
 
 @Composable
-fun SideNavLayout(
+private fun BottomNavLayout(
     backgroundColor: Color = MaterialTheme.colorScheme.background,
-    navWidth: Dp = 50.dp,
+    navHeight: Dp = 50.dp,
     elevation: Dp = 8.dp,
-    content: @Composable ColumnScope.() -> Unit
+    content: @Composable RowScope.() -> Unit
 ) {
     Surface(
         color = backgroundColor,
         shadowElevation = elevation
     ) {
-        Column(
+        Row (
             modifier = Modifier
-                .width(navWidth)
-                .fillMaxHeight(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceEvenly,
+                .height(navHeight)
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceAround,
+            verticalAlignment = Alignment.CenterVertically,
             content = content
         )
     }
 }
 
 @Composable
-private fun ColumnScope.NavElement(
+private fun RowScope.NavElement(
     modifier: Modifier = Modifier,
     element: MainDestinations,
     isSelected: Boolean = false,
@@ -79,7 +79,7 @@ private fun ColumnScope.NavElement(
 ) {
     Box(modifier = modifier
         .weight(1f)
-        .fillMaxWidth()
+        .fillMaxHeight()
         .selectable(
             selected = true,
             enabled = true,

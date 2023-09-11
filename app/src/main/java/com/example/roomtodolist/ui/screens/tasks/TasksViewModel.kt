@@ -5,7 +5,7 @@ import com.example.roomtodolist.data.folder.FolderTable
 import com.example.roomtodolist.data.task.TaskTable
 import com.example.roomtodolist.ui.navigation.MainRoutes
 import com.example.roomtodolist.ui.navigation.NestedRoutes
-import com.example.roomtodolist.domain.MainViewModel
+import com.example.roomtodolist.domain.main_activity.MainViewModel
 
 class TasksViewModel(private val mainViewModel: MainViewModel) : ViewModel() {
 

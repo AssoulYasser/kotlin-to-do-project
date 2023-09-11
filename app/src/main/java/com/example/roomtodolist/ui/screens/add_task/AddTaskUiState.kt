@@ -1,4 +1,4 @@
-package com.example.roomtodolist.ui.screens.addtask
+package com.example.roomtodolist.ui.screens.add_task
 
 import com.example.roomtodolist.data.folder.FolderTable
 import com.example.roomtodolist.data.task.TaskPriority

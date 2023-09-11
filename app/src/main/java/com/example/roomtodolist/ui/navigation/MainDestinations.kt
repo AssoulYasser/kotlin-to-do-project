@@ -5,8 +5,8 @@ import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.ViewModel
 import com.example.roomtodolist.R
-import com.example.roomtodolist.ui.screens.addtask.AddTaskScreen
-import com.example.roomtodolist.ui.screens.addtask.AddTaskViewModel
+import com.example.roomtodolist.ui.screens.add_task.AddTaskScreen
+import com.example.roomtodolist.ui.screens.add_task.AddTaskViewModel
 import com.example.roomtodolist.ui.screens.calendar.CalendarScreen
 import com.example.roomtodolist.ui.screens.calendar.CalendarViewModel
 import com.example.roomtodolist.ui.screens.home.HomeScreen

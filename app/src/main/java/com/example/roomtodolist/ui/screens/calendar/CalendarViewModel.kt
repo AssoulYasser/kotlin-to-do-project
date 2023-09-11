@@ -10,7 +10,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import com.example.roomtodolist.data.task.TaskTable
 import com.example.roomtodolist.domain.calendar.Days
-import com.example.roomtodolist.domain.MainViewModel
+import com.example.roomtodolist.domain.main_activity.MainViewModel
 import java.time.LocalDate
 import java.time.Month
 

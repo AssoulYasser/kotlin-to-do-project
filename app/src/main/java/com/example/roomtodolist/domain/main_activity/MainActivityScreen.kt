@@ -1,4 +1,4 @@
-package com.example.roomtodolist.domain
+package com.example.roomtodolist.domain.main_activity
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Box
@@ -10,10 +10,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.roomtodolist.ui.navigation.navbar.BottomBar
-import com.example.roomtodolist.ui.navigation.navbar.ExpendedBar
+import com.example.roomtodolist.ui.navigation.nav_bar.BottomBar
+import com.example.roomtodolist.ui.navigation.nav_bar.ExpendedBar
 import com.example.roomtodolist.ui.navigation.NavGraph
-import com.example.roomtodolist.ui.navigation.navbar.SideBar
+import com.example.roomtodolist.ui.navigation.nav_bar.SideBar
 
 const val TAG = "DEBUGGING : "
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")

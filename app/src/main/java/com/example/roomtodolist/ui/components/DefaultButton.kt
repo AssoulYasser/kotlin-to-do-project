@@ -18,5 +18,5 @@ fun defaultButtonStroke(primary: Color = MaterialTheme.colorScheme.primary) =
 fun defaultOutlinedButtonColors() = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
 
 @Composable
-fun defaultFilledButtonColors(primary: Color = MaterialTheme.colorScheme.primary) =
-    ButtonDefaults.buttonColors(containerColor = primary, contentColor = MaterialTheme.colorScheme.background)
+fun defaultFilledButtonColors(color: Color = MaterialTheme.colorScheme.primary) =
+    ButtonDefaults.buttonColors(containerColor = color, contentColor = MaterialTheme.colorScheme.background)

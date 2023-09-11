@@ -1,4 +1,4 @@
-package com.example.roomtodolist.ui.screens.taskshowcase
+package com.example.roomtodolist.ui.screens.task_show_case
 
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.runtime.Composable

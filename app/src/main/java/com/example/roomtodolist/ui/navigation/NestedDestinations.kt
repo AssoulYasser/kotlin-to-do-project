@@ -2,14 +2,14 @@ package com.example.roomtodolist.ui.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.ViewModel
-import com.example.roomtodolist.ui.screens.addfolder.AddFolderScreen
-import com.example.roomtodolist.ui.screens.addfolder.AddFolderViewModel
+import com.example.roomtodolist.ui.screens.add_folder.AddFolderScreen
+import com.example.roomtodolist.ui.screens.add_folder.AddFolderViewModel
 import com.example.roomtodolist.ui.screens.folders.FoldersScreen
 import com.example.roomtodolist.ui.screens.folders.FoldersViewModel
-import com.example.roomtodolist.ui.screens.foldershowcase.FolderShowCaseScreen
-import com.example.roomtodolist.ui.screens.foldershowcase.FolderShowCaseViewModel
-import com.example.roomtodolist.ui.screens.taskshowcase.TaskShowCaseScreen
-import com.example.roomtodolist.ui.screens.taskshowcase.TaskShowCaseViewModel
+import com.example.roomtodolist.ui.screens.folder_show_case.FolderShowCaseScreen
+import com.example.roomtodolist.ui.screens.folder_show_case.FolderShowCaseViewModel
+import com.example.roomtodolist.ui.screens.task_show_case.TaskShowCaseScreen
+import com.example.roomtodolist.ui.screens.task_show_case.TaskShowCaseViewModel
 
 sealed class NestedDestinations(
     val route: NestedRoutes,

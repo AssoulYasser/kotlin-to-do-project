@@ -1,8 +1,7 @@
-package com.example.roomtodolist.ui.screens.taskshowcase
+package com.example.roomtodolist.ui.screens.task_show_case
 
 import com.example.roomtodolist.data.folder.FolderTable
 import com.example.roomtodolist.data.task.TaskPriority
-import com.example.roomtodolist.data.task.TaskTable
 import java.time.LocalDate
 import java.time.LocalTime
 

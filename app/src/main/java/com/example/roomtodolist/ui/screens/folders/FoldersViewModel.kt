@@ -4,7 +4,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.example.roomtodolist.data.folder.FolderTable
-import com.example.roomtodolist.domain.MainViewModel
+import com.example.roomtodolist.domain.main_activity.MainViewModel
 import com.example.roomtodolist.ui.navigation.NestedRoutes
 
 class FoldersViewModel(val mainViewModel: MainViewModel) : ViewModel() {

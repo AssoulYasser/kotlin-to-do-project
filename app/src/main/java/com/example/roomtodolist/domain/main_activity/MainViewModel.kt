@@ -1,4 +1,4 @@
-package com.example.roomtodolist.domain
+package com.example.roomtodolist.domain.main_activity
 
 import android.os.Build
 import android.util.Log
@@ -10,7 +10,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
-import com.example.roomtodolist.data.Repository
+import com.example.roomtodolist.data.DatabaseRepository
 import com.example.roomtodolist.data.folder.FolderTable
 import com.example.roomtodolist.data.folder.folderColors
 import com.example.roomtodolist.data.task.TaskTable
@@ -22,7 +22,7 @@ import java.time.LocalDate
 import java.time.Month
 
 class MainViewModel(
-    val repository: Repository,
+    val databaseRepository: DatabaseRepository,
 ) : ViewModel() {
 
     var uiState by mutableStateOf(MainUiState())
@@ -44,12 +44,12 @@ class MainViewModel(
         val tasks = hashMapOf<Long, TaskTable>()
         val tasksPerFolder = hashMapOf<FolderTable, MutableList<TaskTable>>()
         viewModelScope.launch(Dispatchers.IO) {
-            for (folder in repository.folderDao.getFolders()) {
+            for (folder in databaseRepository.folderDao.getFolders()) {
                 folders[folder.id!!] = folder
                 tasksPerFolder[folder] = mutableListOf()
-                tasksPerFolder[folder]!!.addAll(repository.taskDao.getTasksFromFolder(folder.id))
+                tasksPerFolder[folder]!!.addAll(databaseRepository.taskDao.getTasksFromFolder(folder.id))
             }
-            for (task in repository.taskDao.getTasks()) {
+            for (task in databaseRepository.taskDao.getTasks()) {
                 tasks[task.id!!] = task
             }
             uiState = uiState.copy(
@@ -88,7 +88,7 @@ class MainViewModel(
 
     fun addFolder(folder: FolderTable) {
         viewModelScope.launch(Dispatchers.IO) {
-            val id = repository.folderDao.addFolder(folder)
+            val id = databaseRepository.folderDao.addFolder(folder)
             val newFolder = folder.copy(id = id)
             updateFolderState(newFolder, Operation.ADD)
             updateTasksPerFolderKeyState(id, Operation.ADD)
@@ -99,7 +99,7 @@ class MainViewModel(
 
     fun updateFolder(folder: FolderTable) {
         viewModelScope.launch(Dispatchers.IO) {
-            repository.folderDao.updateFolder(folder)
+            databaseRepository.folderDao.updateFolder(folder)
             updateFolderState(folder, Operation.CHANGE)
             updateTasksPerFolderKeyState(folder.id!!, Operation.CHANGE)
         }
@@ -107,7 +107,7 @@ class MainViewModel(
 
     fun deleteFolder(folder: FolderTable) {
         viewModelScope.launch(Dispatchers.IO) {
-            repository.folderDao.deleteFolder(folder.id!!)
+            databaseRepository.folderDao.deleteFolder(folder.id!!)
             updateTasksPerFolderKeyState(folder.id, Operation.DELETE)
             updateFolderState(folder, Operation.DELETE)
         }
@@ -123,7 +123,7 @@ class MainViewModel(
 
     fun addTask(task: TaskTable) {
         viewModelScope.launch(Dispatchers.IO) {
-            val id = repository.taskDao.addTask(task)
+            val id = databaseRepository.taskDao.addTask(task)
             Log.d(TAG, "addTask: $id")
             val newTask = task.copy(id = id)
             updateTaskState(newTask, Operation.ADD)
@@ -133,7 +133,7 @@ class MainViewModel(
 
     fun updateTask(task: TaskTable) {
         viewModelScope.launch(Dispatchers.IO) {
-            repository.taskDao.updateTask(task)
+            databaseRepository.taskDao.updateTask(task)
             updateTaskState(task, Operation.CHANGE)
             updateTasksPerFolderValueState(task.id!!, Operation.CHANGE)
         }
@@ -141,7 +141,7 @@ class MainViewModel(
 
     fun deleteTask(task: TaskTable) {
         viewModelScope.launch {
-            repository.taskDao.deleteTask(taskId = task.id!!)
+            databaseRepository.taskDao.deleteTask(taskId = task.id!!)
             updateTasksPerFolderValueState(task.id, Operation.DELETE)
             updateTaskState(task, Operation.DELETE)
         }

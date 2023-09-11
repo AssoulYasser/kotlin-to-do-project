@@ -1,4 +1,4 @@
-package com.example.roomtodolist.domain
+package com.example.roomtodolist.domain.main_activity
 
 import com.example.roomtodolist.data.folder.FolderTable
 import com.example.roomtodolist.data.task.TaskTable

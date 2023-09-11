@@ -1,4 +1,4 @@
-package com.example.roomtodolist.ui.screens.addtask
+package com.example.roomtodolist.ui.screens.add_task
 
 import android.content.Context
 import android.widget.Toast
@@ -10,7 +10,7 @@ import com.example.roomtodolist.data.folder.FolderTable
 import com.example.roomtodolist.data.task.TaskPriority
 import com.example.roomtodolist.data.task.TaskTable
 import com.example.roomtodolist.ui.navigation.NestedRoutes
-import com.example.roomtodolist.domain.MainViewModel
+import com.example.roomtodolist.domain.main_activity.MainViewModel
 import java.time.LocalDate
 import java.time.LocalTime
 

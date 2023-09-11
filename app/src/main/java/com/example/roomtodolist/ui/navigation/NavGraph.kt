@@ -9,15 +9,15 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import com.example.roomtodolist.domain.MainViewModel
-import com.example.roomtodolist.ui.screens.addfolder.AddFolderViewModel
-import com.example.roomtodolist.ui.screens.addtask.AddTaskViewModel
+import com.example.roomtodolist.domain.main_activity.MainViewModel
+import com.example.roomtodolist.ui.screens.add_folder.AddFolderViewModel
+import com.example.roomtodolist.ui.screens.add_task.AddTaskViewModel
 import com.example.roomtodolist.ui.screens.calendar.CalendarViewModel
 import com.example.roomtodolist.ui.screens.folders.FoldersViewModel
-import com.example.roomtodolist.ui.screens.foldershowcase.FolderShowCaseViewModel
+import com.example.roomtodolist.ui.screens.folder_show_case.FolderShowCaseViewModel
 import com.example.roomtodolist.ui.screens.home.HomeViewModel
 import com.example.roomtodolist.ui.screens.tasks.TasksViewModel
-import com.example.roomtodolist.ui.screens.taskshowcase.TaskShowCaseViewModel
+import com.example.roomtodolist.ui.screens.task_show_case.TaskShowCaseViewModel
 
 @Composable
 fun NavGraph(mainViewModel: MainViewModel) {
