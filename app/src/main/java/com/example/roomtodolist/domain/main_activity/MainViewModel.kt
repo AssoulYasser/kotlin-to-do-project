@@ -1,5 +1,6 @@
 package com.example.roomtodolist.domain.main_activity
 
+import android.net.Uri
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
@@ -11,6 +12,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import com.example.roomtodolist.data.DatabaseRepository
+import com.example.roomtodolist.data.SharedPreferencesRepository
 import com.example.roomtodolist.data.folder.FolderTable
 import com.example.roomtodolist.data.folder.folderColors
 import com.example.roomtodolist.data.task.TaskTable
@@ -22,7 +24,8 @@ import java.time.LocalDate
 import java.time.Month
 
 class MainViewModel(
-    val databaseRepository: DatabaseRepository,
+    private val databaseRepository: DatabaseRepository,
+    private val sharedPreferencesRepository: SharedPreferencesRepository,
 ) : ViewModel() {
 
     var uiState by mutableStateOf(MainUiState())
@@ -221,6 +224,10 @@ class MainViewModel(
             }
         }
     }
+
+    fun getUsername() : String? = sharedPreferencesRepository.getUsername()
+
+    fun getProfilePicture() : Uri? = Uri.parse(sharedPreferencesRepository.getProfilePicture())
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun getDaysOfTheWeek() = calendarSystem.getWeeklyCalendar(LocalDate.now().year, LocalDate.now().month, LocalDate.now().dayOfMonth)

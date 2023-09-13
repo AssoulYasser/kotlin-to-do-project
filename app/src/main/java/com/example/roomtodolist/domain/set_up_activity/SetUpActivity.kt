@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.material3.Button
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.lifecycle.ViewModel
@@ -18,12 +17,14 @@ import com.example.roomtodolist.ui.theme.RoomToDoListTheme
 class SetUpActivity : ComponentActivity() {
     private lateinit var context: Context
     private lateinit var sharedPreferencesRepository: SharedPreferencesRepository
+    private lateinit var activity: SetUpActivity
 
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
 
         context = this
         sharedPreferencesRepository = SharedPreferencesRepository(context)
+        activity = this
 
         super.onCreate(savedInstanceState)
         setContent {
@@ -31,7 +32,8 @@ class SetUpActivity : ComponentActivity() {
                 factory = object: ViewModelProvider.Factory {
                     override fun <T : ViewModel> create(modelClass: Class<T>): T {
                         return SetUpViewModel(
-                            sharedPreferencesRepository = sharedPreferencesRepository
+                            sharedPreferencesRepository = sharedPreferencesRepository,
+                            activity = activity
                         ) as T
                     }
                 }
@@ -42,4 +44,10 @@ class SetUpActivity : ComponentActivity() {
             }
         }
     }
+
+    fun goToMainActivity() {
+        startActivity(Intent(context, MainActivity::class.java))
+        finish()
+    }
+
 }

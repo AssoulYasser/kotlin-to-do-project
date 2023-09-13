@@ -1,6 +1,7 @@
 package com.example.roomtodolist.ui.screens.home
 
 import android.annotation.SuppressLint
+import android.net.Uri
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -64,7 +65,9 @@ fun HomeScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(100.dp)
-                .padding(16.dp)
+                .padding(16.dp),
+            profilePicture = homeViewModel.getProfilePicture(),
+            username = homeViewModel.getUsername()
         )
     }) {
         Spacer(modifier = Modifier)
@@ -90,7 +93,7 @@ fun HomeScreen(
         )
         Tasks(
             tasksPerFolder = homeViewModel.getTasksPerFolderInSelectedDay(),
-            noTaskExists = homeViewModel.noTaskExists(),
+            noTaskExists = homeViewModel.noTaskExists() || homeViewModel.noTasksInCurrentDayExists(),
             seeAll = { homeViewModel.navigateToTasksScreen() },
             addTask = { homeViewModel.navigateToAddTaskScreen() },
             onClick = {
@@ -106,6 +109,8 @@ fun HomeScreen(
 @Composable
 private fun TopBar(
     modifier: Modifier = Modifier,
+    profilePicture: Uri?,
+    username: String?
 ) {
     Row(
         modifier = modifier,
@@ -114,14 +119,18 @@ private fun TopBar(
     ) {
         Row(
             modifier = Modifier,
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            ProfilePicture(modifier = Modifier
-                .size(75.dp)
+            ProfilePicture(
+                modifier = Modifier
+                    .size(60.dp),
+                picture = profilePicture
             )
             Welcoming(
                 modifier = Modifier
-                    .padding(horizontal = 5.dp)
+                    .padding(horizontal = 5.dp),
+                username = username
             )
         }
         Row(

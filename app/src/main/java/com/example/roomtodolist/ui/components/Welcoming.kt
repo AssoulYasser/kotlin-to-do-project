@@ -16,12 +16,12 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun Welcoming(
     modifier: Modifier = Modifier,
-    userName: String = "UNNAMED",
+    username: String?,
     spacer: Dp = 0.dp
 ) {
     Column(modifier, verticalArrangement = Arrangement.Center) {
         Text(text = "Good morning", fontWeight = FontWeight.Bold, color = Color.Gray, fontSize = 14.sp)
         Spacer(modifier = Modifier.height(spacer))
-        Text(text = userName, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+        Text(text = username ?: "UNNAMED", fontWeight = FontWeight.Bold, fontSize = 16.sp)
     }
 }

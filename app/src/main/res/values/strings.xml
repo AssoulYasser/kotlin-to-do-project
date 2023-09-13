@@ -1,4 +1,4 @@
 <resources>
-    <string name="app_name">RoomToDoList</string>
+    <string name="app_name">To Do</string>
     <string name="title_activity_set_up">SetUpActivity</string>
 </resources>

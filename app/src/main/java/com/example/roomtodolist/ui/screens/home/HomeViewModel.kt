@@ -1,6 +1,7 @@
 package com.example.roomtodolist.ui.screens.home
 
 import android.annotation.SuppressLint
+import android.net.Uri
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -87,6 +88,10 @@ class HomeViewModel(private val mainViewModel: MainViewModel) : ViewModel() {
 
         return returnValue
     }
+
+    fun getProfilePicture() : Uri? = mainViewModel.getProfilePicture()
+
+    fun getUsername() : String? = mainViewModel.getUsername()
 
 
 }

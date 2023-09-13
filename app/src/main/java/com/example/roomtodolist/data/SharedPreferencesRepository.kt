@@ -8,6 +8,7 @@ class SharedPreferencesRepository(private val context: Context) {
     companion object {
         private const val USER_SHARED_PREFERENCES = "USER"
         private const val FIRST_TIME_KEY = "FIRST_TIME_KEY"
+        private const val SET_UP_KEY = "SET_UP_KEY"
         private const val PROFILE_PICTURE_KEY = "PROFILE_PICTURE_KEY"
         private const val USERNAME_KEY = "USERNAME_KEY"
     }
@@ -20,6 +21,14 @@ class SharedPreferencesRepository(private val context: Context) {
     fun firstAccess() {
         editor.apply{
             putBoolean(FIRST_TIME_KEY, false)
+        }.apply()
+    }
+
+    fun hasUserSetUpProfile() : Boolean = sharedPreferences.getBoolean(SET_UP_KEY, false)
+
+    fun setUpUserProfile() {
+        editor.apply{
+            putBoolean(SET_UP_KEY, true)
         }.apply()
     }
 
