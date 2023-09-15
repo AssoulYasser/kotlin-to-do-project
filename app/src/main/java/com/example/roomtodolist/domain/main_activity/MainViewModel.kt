@@ -10,6 +10,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import com.example.roomtodolist.data.DatabaseRepository
 import com.example.roomtodolist.data.SharedPreferencesRepository
@@ -17,7 +18,7 @@ import com.example.roomtodolist.data.folder.FolderTable
 import com.example.roomtodolist.data.folder.folderColors
 import com.example.roomtodolist.data.task.TaskTable
 import com.example.roomtodolist.domain.calendar.CalendarSystem
-import com.example.roomtodolist.ui.navigation.NavigationSystem
+import com.example.roomtodolist.ui.navigation.MainRoutes
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -28,10 +29,11 @@ class MainViewModel(
     private val sharedPreferencesRepository: SharedPreferencesRepository,
 ) : ViewModel() {
 
+    private var navState by mutableStateOf(NavState())
+
     var uiState by mutableStateOf(MainUiState())
         private set
 
-    private lateinit var navigationSystem: NavigationSystem
     private val calendarSystem: CalendarSystem
 
     init {
@@ -72,17 +74,48 @@ class MainViewModel(
     }
 
     fun setNavHostController(navHostController: NavHostController) {
-        navigationSystem = NavigationSystem(navHostController)
+        navState = navState.copy(navHostController = navHostController)
     }
 
-    fun getNavHostController() = navigationSystem.navHostController
+    fun getNavHostController() = navState.navHostController
 
     fun navigateTo(destination: String) {
-        navigationSystem.navigateTo(destination)
+        if (navState.currentDestination == destination)
+            return
+
+        else if (destination == MainRoutes.HOME.name) {
+            navState.navigationStack.clear()
+            navState = navState.copy(currentDestination = destination)
+        }
+
+        else if (navState.navigationStack.contains(destination)) {
+            while (navState.navigationStack.contains(destination)) {
+                navState.navigationStack.pop()
+            }
+        }
+
+        else {
+            navState.navigationStack.push(navState.currentDestination)
+            navState = navState.copy(currentDestination = destination)
+        }
+
+        navigateTo()
     }
 
     fun navigateBack() {
-        navigationSystem.navigateBack()
+        if (navState.navigationStack.isNotEmpty())
+            navState = navState.copy(currentDestination = navState.navigationStack.pop())
+        navigateTo()
+    }
+
+    private fun navigateTo() {
+        navState.navHostController?.navigate(navState.currentDestination) {
+            popUpTo(navState.navHostController?.graph?.findStartDestination()!!.id) {
+                saveState = true
+            }
+            launchSingleTop = true
+            restoreState = true
+        }
     }
 
     fun setWindowSizeClass(windowSizeClass: WindowSizeClass) {

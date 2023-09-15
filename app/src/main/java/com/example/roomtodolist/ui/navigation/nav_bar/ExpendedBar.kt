@@ -34,7 +34,8 @@ import com.example.roomtodolist.domain.main_activity.MainViewModel
 @Composable
 fun ExpendedBar(mainViewModel: MainViewModel) {
 
-    val navBackStackEntry by mainViewModel.getNavHostController().currentBackStackEntryAsState()
+    val navController = mainViewModel.getNavHostController() ?: return
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
 
     ExpendedNavLayout {

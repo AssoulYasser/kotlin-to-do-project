@@ -33,7 +33,6 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val isDarkMode = sharedPreferencesRepository.isDarkMode()
-            Log.d(TAG, "onCreate: $isDarkMode")
             mainViewModel = viewModel(
                 factory = object: ViewModelProvider.Factory {
                     override fun <T : ViewModel> create(modelClass: Class<T>): T {

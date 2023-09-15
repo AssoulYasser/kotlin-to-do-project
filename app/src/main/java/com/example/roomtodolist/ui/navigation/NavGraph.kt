@@ -23,7 +23,7 @@ import com.example.roomtodolist.ui.screens.task_show_case.TaskShowCaseViewModel
 @Composable
 fun NavGraph(mainViewModel: MainViewModel) {
 
-    val navHostController = mainViewModel.getNavHostController()
+    val navHostController = mainViewModel.getNavHostController() ?: return
 
     val homeViewModel = viewModel<HomeViewModel>(
         factory = object: ViewModelProvider.Factory {
