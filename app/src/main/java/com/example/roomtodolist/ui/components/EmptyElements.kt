@@ -37,6 +37,7 @@ fun EmptyElements(
     modifier: Modifier = Modifier,
     elementName: String,
     showGif: Boolean = true,
+    isDark: Boolean,
     onCreateElement: () -> Unit = {}
 ) {
     val animationGif by rememberLottieComposition(
@@ -81,13 +82,13 @@ fun EmptyElements(
                 colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
                 border = BorderStroke(
                     2.dp,
-                    if (isSystemInDarkTheme()) MaterialTheme.colorScheme.onBackground else MaterialTheme.colorScheme.primary
+                    if (isDark) MaterialTheme.colorScheme.onBackground else MaterialTheme.colorScheme.primary
                 )
             ) {
                 Text(
                     text = "Create $elementName",
                     textAlign = TextAlign.Center,
-                    color = if (isSystemInDarkTheme()) MaterialTheme.colorScheme.onBackground else MaterialTheme.colorScheme.primary
+                    color = if (isDark) MaterialTheme.colorScheme.onBackground else MaterialTheme.colorScheme.primary
                 )
             }
         }

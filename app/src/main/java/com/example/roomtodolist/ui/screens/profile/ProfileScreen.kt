@@ -1,6 +1,7 @@
 package com.example.roomtodolist.ui.screens.profile
 
 import android.net.Uri
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -23,6 +24,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -74,13 +77,47 @@ fun ProfileScreen(profileViewModel: ProfileViewModel) {
                 profileViewModel.setUsername(it)
             }
         )
-        DarkLightModeEdit()
+        DarkLightModeEdit(
+            isDark = profileViewModel.isDarkMode(),
+            setMode = { profileViewModel.setLightDarkMode(it) }
+        )
     }
 }
 
 @Composable
-fun DarkLightModeEdit() {
-
+fun DarkLightModeEdit(isDark: Boolean, setMode: (Boolean) -> Unit) {
+    Box(modifier = Modifier
+        .fillMaxWidth()
+        .background(MaterialTheme.colorScheme.primaryContainer, defaultTextFieldShape())
+        .padding(horizontal = 25.dp, vertical = 2.5.dp)
+    ) {
+        Text(text = "Change mode", modifier = Modifier.align(Alignment.CenterStart), color = MaterialTheme.colorScheme.onBackground)
+        Switch(
+            checked = isDark,
+            onCheckedChange = {
+                setMode(it)
+            },
+            thumbContent = {
+                Icon(
+                    painter = painterResource(
+                        id = if (isDark) R.drawable.outlined_moon_icon else R.drawable.outlined_sun_icon
+                    ),
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.background,
+                    modifier = Modifier.padding(2.dp)
+                )
+            },
+            colors = SwitchDefaults.colors(
+                checkedThumbColor = MaterialTheme.colorScheme.onBackground,
+                uncheckedThumbColor = MaterialTheme.colorScheme.onBackground,
+                checkedTrackColor = MaterialTheme.colorScheme.background,
+                uncheckedTrackColor = MaterialTheme.colorScheme.background,
+                checkedBorderColor = Color.Transparent,
+                uncheckedBorderColor = Color.Transparent
+            ),
+            modifier = Modifier.align(Alignment.CenterEnd)
+        )
+    }
 }
 
 @Composable
@@ -130,7 +167,7 @@ fun UsernameEdit(
         Box(modifier = Modifier
             .fillMaxWidth()
             .background(MaterialTheme.colorScheme.primaryContainer, defaultTextFieldShape())
-            .padding(horizontal = 11.dp, vertical = 15.dp)
+            .padding(horizontal = 25.dp, vertical = 16.dp)
             .clickable { editMode = true }
         ) {
             Text(text = username ?: "UNNAMED", modifier = Modifier.align(Alignment.CenterStart), color = MaterialTheme.colorScheme.onBackground)

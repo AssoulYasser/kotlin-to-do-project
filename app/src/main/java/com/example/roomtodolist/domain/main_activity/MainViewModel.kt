@@ -37,6 +37,13 @@ class MainViewModel(
     init {
         @RequiresApi(Build.VERSION_CODES.O)
         calendarSystem = CalendarSystem()
+
+        uiState = uiState.copy(
+            profilePicture = Uri.parse(sharedPreferencesRepository.getProfilePicture()),
+            username = sharedPreferencesRepository.getUsername(),
+            isDarkTheme = sharedPreferencesRepository.isDarkMode()
+        )
+
     }
 
     lateinit var windowSizeClass: WindowSizeClass
@@ -46,11 +53,6 @@ class MainViewModel(
         val folders = hashMapOf<Long, FolderTable>()
         val tasks = hashMapOf<Long, TaskTable>()
         val tasksPerFolder = hashMapOf<FolderTable, MutableList<TaskTable>>()
-
-        uiState = uiState.copy(
-            profilePicture = Uri.parse(sharedPreferencesRepository.getProfilePicture()),
-            username = sharedPreferencesRepository.getUsername()
-        )
 
         viewModelScope.launch(Dispatchers.IO) {
             for (folder in databaseRepository.folderDao.getFolders()) {
@@ -243,6 +245,11 @@ class MainViewModel(
     fun setProfilePicture(uri: Uri?) {
         uiState = uiState.copy(profilePicture = uri)
         sharedPreferencesRepository.setProfilePicture(uri.toString())
+    }
+
+    fun setIsDarkMode(isDark: Boolean) {
+        uiState = uiState.copy(isDarkTheme = isDark)
+        sharedPreferencesRepository.setMode(isDark)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

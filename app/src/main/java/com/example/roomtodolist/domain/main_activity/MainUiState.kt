@@ -11,6 +11,6 @@ data class MainUiState(
     val taskToUpdate: TaskTable? = null,
     val folderToUpdate: FolderTable? = null,
     val profilePicture: Uri? = null,
-    val username: String? = null
-
+    val username: String? = null,
+    val isDarkTheme: Boolean = false
 )

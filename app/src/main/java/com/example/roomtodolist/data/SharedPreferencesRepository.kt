@@ -11,6 +11,7 @@ class SharedPreferencesRepository(private val context: Context) {
         private const val SET_UP_KEY = "SET_UP_KEY"
         private const val PROFILE_PICTURE_KEY = "PROFILE_PICTURE_KEY"
         private const val USERNAME_KEY = "USERNAME_KEY"
+        private const val IS_DARK_MODE = "IS_DARK_MODE"
     }
 
     private val sharedPreferences = context.getSharedPreferences(USER_SHARED_PREFERENCES, MODE_PRIVATE)
@@ -47,5 +48,13 @@ class SharedPreferencesRepository(private val context: Context) {
     }
 
     fun getUsername() : String? = sharedPreferences.getString(USERNAME_KEY, null)
+
+    fun setMode(isDark: Boolean) {
+        editor.apply {
+            putBoolean(IS_DARK_MODE, isDark)
+        }.apply()
+    }
+
+    fun isDarkMode() : Boolean = sharedPreferences.getBoolean(IS_DARK_MODE, false)
 
 }

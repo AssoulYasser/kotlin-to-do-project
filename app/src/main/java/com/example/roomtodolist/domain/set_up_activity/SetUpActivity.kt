@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.lifecycle.ViewModel
@@ -38,7 +39,9 @@ class SetUpActivity : ComponentActivity() {
                     }
                 }
             )
+
             setUpViewModel.setWindowSizeClass(calculateWindowSizeClass(activity = this))
+
             RoomToDoListTheme {
                 SetUpActivityScreen(setUpViewModel = setUpViewModel)
             }

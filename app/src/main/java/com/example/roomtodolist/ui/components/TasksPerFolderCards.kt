@@ -19,6 +19,7 @@ import com.example.roomtodolist.data.task.TaskTable
 fun TasksPerFolderCards(
     tasksPerFolder: HashMap<FolderTable, MutableList<TaskTable>>,
     noTaskExists: Boolean = true,
+    isDark: Boolean,
     addTask: () -> Unit,
     onClick: (TaskTable) -> Unit,
     onSelectTask: (TaskTable) -> Unit
@@ -38,7 +39,8 @@ fun TasksPerFolderCards(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 20.dp),
-                onCreateElement = addTask
+                onCreateElement = addTask,
+                isDark = isDark
             )
         }
     else {

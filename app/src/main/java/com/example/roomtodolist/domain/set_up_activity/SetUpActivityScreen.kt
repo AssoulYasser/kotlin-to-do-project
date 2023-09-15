@@ -8,6 +8,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -64,12 +65,17 @@ import kotlinx.coroutines.launch
 fun SetUpActivityScreen(
     setUpViewModel: SetUpViewModel
 ) {
-    if (setUpViewModel.uiState.isFirstAccess)
+    if (setUpViewModel.uiState.isFirstAccess) {
+
+        val isDarkMode = isSystemInDarkTheme()
+        setUpViewModel.setMode(isDarkMode)
+
         OnBoardingScreen(
             windowSizeClass = setUpViewModel.windowSizeClass,
             onBoardingDataList = setUpViewModel.onBoardingDataList,
             setFirstAccess = { setUpViewModel.setFirstAccess() }
         )
+    }
     else {
         SetProfileScreen(
             setProfilePicture = { setUpViewModel.setProfilePicture(it) },
@@ -285,7 +291,9 @@ private fun SetProfileScreen(
                     modifier = Modifier
                         .background(
                             color =
-                            if (i == pagerState.currentPage) MaterialTheme.colorScheme.onBackground else MaterialTheme.colorScheme.onBackground.copy(alpha = 0.2f),
+                            if (i == pagerState.currentPage) MaterialTheme.colorScheme.onBackground else MaterialTheme.colorScheme.onBackground.copy(
+                                alpha = 0.2f
+                            ),
                             shape = CircleShape
                         )
                         .size(10.dp)

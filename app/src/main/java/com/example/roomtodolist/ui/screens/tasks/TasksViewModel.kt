@@ -28,6 +28,8 @@ class TasksViewModel(private val mainViewModel: MainViewModel) : ViewModel() {
         mainViewModel.setTaskToUpdate(taskTable)
     }
 
+    fun isDarkMode() = mainViewModel.uiState.isDarkTheme
+
     fun getFolders() : List<FolderTable> = mainViewModel.uiState.folders.values.toList()
 
     fun noTaskExists() : Boolean = mainViewModel.uiState.tasks.isEmpty()

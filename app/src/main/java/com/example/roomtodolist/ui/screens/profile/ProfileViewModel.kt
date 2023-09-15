@@ -12,8 +12,14 @@ class ProfileViewModel(
 
     fun getUsername() = mainViewModel.getUsername()
 
+    fun isDarkMode() = mainViewModel.uiState.isDarkTheme
+
     fun setUsername(newUsername: String?) {
         mainViewModel.setUsername(newUsername)
+    }
+
+    fun setLightDarkMode(isDark: Boolean) {
+        mainViewModel.setIsDarkMode(isDark)
     }
 
     fun setProfilePicture(newProfilePicture: Uri?) {

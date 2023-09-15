@@ -80,6 +80,7 @@ fun HomeScreen(
             selectedDay = homeViewModel.uiState.selectedDayInCurrentDate,
             setSelectedDay = { homeViewModel.setSelectedDay(it) },
             days = homeViewModel.getDaysOfWeek(),
+            isDark = homeViewModel.isDarkMode(),
             isCompactWidth = homeViewModel.isCompactWidth()
         )
         SearchForTask(
@@ -93,6 +94,7 @@ fun HomeScreen(
                 homeViewModel.navigateToFolderShowCase()
             },
             addFolder = { homeViewModel.navigateToAddFolderScreen() },
+            isDark = homeViewModel.isDarkMode(),
             seeAll = { homeViewModel.navigateToFoldersScreen() }
         )
         Tasks(
@@ -104,6 +106,7 @@ fun HomeScreen(
                 homeViewModel.setTaskToUpdate(it)
                 homeViewModel.navigateToTaskShowCaseScreen()
             },
+            isDark = homeViewModel.isDarkMode(),
             onSelectTask = {}
         )
         Spacer(modifier = Modifier)
@@ -168,6 +171,7 @@ private fun WeekCalendar(
     days: HashMap<Int, Days>,
     isCompactWidth: Boolean,
     selectedDay: Int,
+    isDark: Boolean,
     setSelectedDay: (Int) -> Unit
 ) {
     Box(
@@ -194,7 +198,8 @@ private fun WeekCalendar(
                     dayName = dayName.toString(),
                     dayNumber = dayOfMonth,
                     selectedDay = selectedDay,
-                    setSelectedDay = setSelectedDay
+                    setSelectedDay = setSelectedDay,
+                    isDark = isDark
                 )
             }
         }
@@ -206,7 +211,8 @@ private fun RowScope.DayElement(
     selectedDay: Int,
     setSelectedDay: (Int) -> Unit,
     dayName: String,
-    dayNumber: Int
+    dayNumber: Int,
+    isDark: Boolean
 ) {
     Box(
         modifier = Modifier
@@ -237,13 +243,23 @@ private fun RowScope.DayElement(
         ) {
             Text(
                 text = dayName,
-                color = if (isSystemInDarkTheme()) MaterialTheme.colorScheme.onBackground else if (selectedDay == dayNumber) MaterialTheme.colorScheme.background else Color.Black,
+                color =
+                    if (isDark)
+                        MaterialTheme.colorScheme.onBackground
+                    else {
+                        if (selectedDay == dayNumber) Color.White else Color.Black
+                    },
                 fontSize = 11.sp,
                 fontWeight = FontWeight.Medium,
             )
             Text(
                 text = dayNumber.toString(),
-                color = if (isSystemInDarkTheme()) MaterialTheme.colorScheme.onBackground else if (selectedDay == dayNumber) MaterialTheme.colorScheme.background else Color.Black,
+                color =
+                    if (isDark)
+                        MaterialTheme.colorScheme.onBackground
+                    else {
+                        if (selectedDay == dayNumber) Color.White else Color.Black
+                    },
                 fontSize = 11.sp,
                 fontWeight = FontWeight.Medium,
             )
@@ -313,6 +329,7 @@ private fun Folders(
     folders: List<FolderTable>,
     onClick: (FolderTable) -> Unit,
     addFolder: () -> Unit,
+    isDark: Boolean,
     seeAll: () -> Unit
 ) {
     Column(
@@ -337,7 +354,8 @@ private fun Folders(
                     onCreateElement = addFolder,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 20.dp)
+                        .padding(vertical = 20.dp),
+                    isDark = isDark
                 )
             }
         else
@@ -360,6 +378,7 @@ fun Tasks(
     tasksPerFolder: HashMap<FolderTable, MutableList<TaskTable>>,
     noTaskExists: Boolean,
     seeAll: () -> Unit,
+    isDark: Boolean,
     addTask: () -> Unit,
     onClick: (TaskTable) -> Unit,
     onSelectTask: (TaskTable) -> Unit
@@ -376,7 +395,8 @@ fun Tasks(
             noTaskExists = noTaskExists,
             addTask = addTask,
             onClick = onClick,
-            onSelectTask = onSelectTask
+            onSelectTask = onSelectTask,
+            isDark = isDark
         )
 
     }

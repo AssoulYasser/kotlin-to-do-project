@@ -65,7 +65,7 @@ class HomeViewModel(private val mainViewModel: MainViewModel) : ViewModel() {
         uiState = uiState.copy(selectedDayInCurrentDate = day)
     }
 
-
+    fun isDarkMode() = mainViewModel.uiState.isDarkTheme
     fun isCompactWidth() = mainViewModel.windowSizeClass.widthSizeClass == WindowWidthSizeClass.Compact
     fun getDaysOfWeek() = mainViewModel.getDaysOfTheWeek()
     fun getFolders() : List<FolderTable> = mainViewModel.uiState.folders.values.toList()

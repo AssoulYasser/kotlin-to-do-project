@@ -42,6 +42,9 @@ class SetUpViewModel(
         sharedPreferencesRepository.firstAccess()
     }
 
+    fun setMode(isDark: Boolean) {
+        sharedPreferencesRepository.setMode(isDark)
+    }
 
     fun setProfilePicture(uri: String) {
         uiState = uiState.copy(profilePicture = uri)

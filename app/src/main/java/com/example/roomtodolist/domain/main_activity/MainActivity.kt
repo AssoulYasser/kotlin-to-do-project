@@ -3,6 +3,7 @@ package com.example.roomtodolist.domain.main_activity
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
@@ -31,7 +32,9 @@ class MainActivity : ComponentActivity() {
         sharedPreferencesRepository = SharedPreferencesRepository(context)
 
         setContent {
-            mainViewModel = viewModel<MainViewModel>(
+            val isDarkMode = sharedPreferencesRepository.isDarkMode()
+            Log.d(TAG, "onCreate: $isDarkMode")
+            mainViewModel = viewModel(
                 factory = object: ViewModelProvider.Factory {
                     override fun <T : ViewModel> create(modelClass: Class<T>): T {
                         return MainViewModel(
@@ -43,7 +46,7 @@ class MainActivity : ComponentActivity() {
             )
             mainViewModel.setNavHostController(rememberNavController())
             mainViewModel.setWindowSizeClass(calculateWindowSizeClass(activity = this))
-            RoomToDoListTheme {
+            RoomToDoListTheme(darkTheme = mainViewModel.uiState.isDarkTheme) {
                 MainActivityScreen(mainViewModel = mainViewModel)
             }
         }
