@@ -1,5 +1,6 @@
 package com.example.roomtodolist.ui.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -26,6 +27,7 @@ fun TasksPerFolderCard(
     folder: FolderTable,
     tasks: List<TaskTable>,
     onClick: (TaskTable) -> Unit,
+    onAdjustFolder: (FolderTable) -> Unit,
     onTaskSelect: (TaskTable) -> Unit
 ) {
     Surface(
@@ -51,7 +53,11 @@ fun TasksPerFolderCard(
                     painter = painterResource(id = R.drawable.outlined_double_line_setting_icon),
                     contentDescription = null,
                     tint = Color(folder.color),
-                    modifier = Modifier.align(Alignment.CenterEnd)
+                    modifier = Modifier
+                        .align(Alignment.CenterEnd)
+                        .clickable {
+                            onAdjustFolder(folder)
+                        }
                 )
             }
             Column {

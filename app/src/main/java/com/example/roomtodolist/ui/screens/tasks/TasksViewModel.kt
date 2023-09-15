@@ -20,12 +20,20 @@ class TasksViewModel(private val mainViewModel: MainViewModel) : ViewModel() {
         mainViewModel.navigateTo(NestedRoutes.TASK_SHOW_CASE.name)
     }
 
+    fun navigateToFolderShowCase() {
+        mainViewModel.navigateTo(NestedRoutes.FOLDER_SHOW_CASE.name)
+    }
+
     fun navigateBack() {
         mainViewModel.navigateBack()
     }
 
     fun setTaskToUpdate(taskTable: TaskTable) {
         mainViewModel.setTaskToUpdate(taskTable)
+    }
+
+    fun setFolderToUpdate(folderTable: FolderTable) {
+        mainViewModel.setFolderToUpdate(folderTable)
     }
 
     fun isDarkMode() = mainViewModel.uiState.isDarkTheme

@@ -22,6 +22,7 @@ fun TasksPerFolderCards(
     isDark: Boolean,
     addTask: () -> Unit,
     onClick: (TaskTable) -> Unit,
+    onAdjustFolder: (FolderTable) -> Unit,
     onSelectTask: (TaskTable) -> Unit
 ) {
     if (noTaskExists)
@@ -55,6 +56,7 @@ fun TasksPerFolderCards(
                         folder = folder,
                         tasks = tasksPerFolder[folder]!!,
                         onClick = onClick,
+                        onAdjustFolder = onAdjustFolder,
                         onTaskSelect = onSelectTask
                     )
                 }

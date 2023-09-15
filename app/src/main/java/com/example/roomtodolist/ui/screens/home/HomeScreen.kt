@@ -60,6 +60,17 @@ import com.example.roomtodolist.ui.components.defaultTextFieldColors
 fun HomeScreen(
     homeViewModel: HomeViewModel
 ) {
+
+    val tasksPerFolder = homeViewModel.getTasksPerFolderInSelectedDay()
+    var isEmpty = true
+
+    for (tasks in tasksPerFolder.values) {
+        if (tasks.isNotEmpty()){
+            isEmpty = false
+            break
+        }
+    }
+
     Container(actionBar = {
         TopBar(
             modifier = Modifier
@@ -97,9 +108,13 @@ fun HomeScreen(
             seeAll = { homeViewModel.navigateToFoldersScreen() }
         )
         Tasks(
-            tasksPerFolder = homeViewModel.getTasksPerFolderInSelectedDay(),
-            noTaskExists = homeViewModel.noTaskExists(),
+            tasksPerFolder = tasksPerFolder,
+            noTaskExists = isEmpty,
             seeAll = { homeViewModel.navigateToTasksScreen() },
+            adjustFolder = {
+                homeViewModel.setFolderToUpdate(it)
+                homeViewModel.navigateToFolderShowCase()
+            },
             addTask = { homeViewModel.navigateToAddTaskScreen() },
             onClick = {
                 homeViewModel.setTaskToUpdate(it)
@@ -381,7 +396,8 @@ fun Tasks(
     isDark: Boolean,
     addTask: () -> Unit,
     onClick: (TaskTable) -> Unit,
-    onSelectTask: (TaskTable) -> Unit
+    onSelectTask: (TaskTable) -> Unit,
+    adjustFolder: (FolderTable) -> Unit
 ) {
     Column(
         modifier = Modifier.fillMaxWidth()
@@ -396,6 +412,7 @@ fun Tasks(
             addTask = addTask,
             onClick = onClick,
             onSelectTask = onSelectTask,
+            onAdjustFolder = adjustFolder,
             isDark = isDark
         )
 

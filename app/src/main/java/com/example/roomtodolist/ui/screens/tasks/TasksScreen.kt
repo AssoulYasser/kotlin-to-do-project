@@ -41,6 +41,10 @@ fun TasksScreen(
             noTaskExists = tasksViewModel.noTaskExists(),
             addTask = { tasksViewModel.navigateToAddTaskScreen() },
             isDark = tasksViewModel.isDarkMode(),
+            onAdjustFolder = {
+                tasksViewModel.setFolderToUpdate(it)
+                tasksViewModel.navigateToFolderShowCase()
+            },
             onClick = {
                 tasksViewModel.setTaskToUpdate(it)
                 tasksViewModel.navigateToTaskShowCase()

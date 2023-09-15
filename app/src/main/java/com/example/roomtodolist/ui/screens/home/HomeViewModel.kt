@@ -69,14 +69,12 @@ class HomeViewModel(private val mainViewModel: MainViewModel) : ViewModel() {
     fun isCompactWidth() = mainViewModel.windowSizeClass.widthSizeClass == WindowWidthSizeClass.Compact
     fun getDaysOfWeek() = mainViewModel.getDaysOfTheWeek()
     fun getFolders() : List<FolderTable> = mainViewModel.uiState.folders.values.toList()
-    fun noTaskExists() : Boolean = mainViewModel.uiState.tasks.isEmpty()
     private fun getTasksPerFolder(): HashMap<FolderTable, MutableList<TaskTable>> = mainViewModel.uiState.tasksPerFolder
     private fun getSelectedDate() : LocalDate = LocalDate.of(
         LocalDate.now().year,
         LocalDate.now().month,
         uiState.selectedDayInCurrentDate
     )
-    fun noTasksInCurrentDayExists() = getTasksPerFolderInSelectedDay().isEmpty()
 
     fun getTasksPerFolderInSelectedDay(): HashMap<FolderTable, MutableList<TaskTable>> {
         val date = getSelectedDate()
