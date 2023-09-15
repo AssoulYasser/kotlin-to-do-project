@@ -55,3 +55,29 @@ fun ProfilePicture(
         }
     }
 }
+
+@Composable
+fun ProfilePicture(
+    modifier: Modifier = Modifier,
+    picture: Uri?,
+) {
+    if (picture == null) {
+        Icon(
+            imageVector = Icons.Filled.AccountCircle,
+            contentDescription = null,
+            modifier = modifier
+        )
+    }
+    else {
+        AsyncImage(
+            model = picture,
+            contentDescription = null,
+            modifier = Modifier
+                .clip(CircleShape)
+                .aspectRatio(1f)
+                .fillMaxSize(),
+            contentScale = ContentScale.Crop
+        )
+
+    }
+}

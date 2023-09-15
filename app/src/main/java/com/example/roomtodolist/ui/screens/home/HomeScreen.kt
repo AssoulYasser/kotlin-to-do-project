@@ -2,10 +2,8 @@ package com.example.roomtodolist.ui.screens.home
 
 import android.annotation.SuppressLint
 import android.net.Uri
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,13 +19,13 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.KeyboardArrowRight
 import androidx.compose.material.icons.outlined.Search
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -36,6 +34,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
@@ -68,7 +67,7 @@ fun HomeScreen(
                 .height(100.dp)
                 .padding(16.dp),
             profilePicture = homeViewModel.getProfilePicture(),
-            onProfilePictureClick = {
+            settingsOnClick = {
                 homeViewModel.navigateToProfileScreen()
             },
             username = homeViewModel.getUsername(),
@@ -118,7 +117,7 @@ private fun TopBar(
     modifier: Modifier = Modifier,
     profilePicture: Uri?,
     username: String?,
-    onProfilePictureClick: () -> Unit
+    settingsOnClick: () -> Unit
 ) {
     Row(
         modifier = modifier,
@@ -133,8 +132,7 @@ private fun TopBar(
             ProfilePicture(
                 modifier = Modifier
                     .size(60.dp),
-                picture = profilePicture,
-                onPictureClick = onProfilePictureClick
+                picture = profilePicture
             )
             Welcoming(
                 modifier = Modifier
@@ -156,7 +154,9 @@ private fun TopBar(
             )
             Icon(
                 modifier = Modifier
-                    .size(25.dp),
+                    .size(25.dp)
+                    .clip(CircleShape)
+                    .clickable { settingsOnClick() },
                 painter = painterResource(id = R.drawable.outlined_setting_icon),
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.onBackground
