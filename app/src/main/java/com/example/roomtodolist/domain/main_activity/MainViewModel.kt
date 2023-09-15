@@ -266,14 +266,10 @@ class MainViewModel(
         }
     }
 
-    fun getUsername() : String? = uiState.username
-
     fun setUsername(name: String?) {
         uiState = uiState.copy(username = name)
         sharedPreferencesRepository.setUsername(name ?: "UNNAMED")
     }
-
-    fun getProfilePicture() : Uri? = uiState.profilePicture
 
     fun setProfilePicture(uri: Uri?) {
         uiState = uiState.copy(profilePicture = uri)

@@ -32,7 +32,6 @@ class MainActivity : ComponentActivity() {
         sharedPreferencesRepository = SharedPreferencesRepository(context)
 
         setContent {
-            val isDarkMode = sharedPreferencesRepository.isDarkMode()
             mainViewModel = viewModel(
                 factory = object: ViewModelProvider.Factory {
                     override fun <T : ViewModel> create(modelClass: Class<T>): T {
@@ -45,7 +44,9 @@ class MainActivity : ComponentActivity() {
             )
             mainViewModel.setNavHostController(rememberNavController())
             mainViewModel.setWindowSizeClass(calculateWindowSizeClass(activity = this))
-            RoomToDoListTheme(darkTheme = mainViewModel.uiState.isDarkTheme) {
+            RoomToDoListTheme(
+                darkTheme = mainViewModel.uiState.isDarkTheme
+            ) {
                 MainActivityScreen(mainViewModel = mainViewModel)
             }
         }

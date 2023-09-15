@@ -94,9 +94,9 @@ class HomeViewModel(private val mainViewModel: MainViewModel) : ViewModel() {
         return returnValue
     }
 
-    fun getProfilePicture() : Uri? = mainViewModel.getProfilePicture()
+    fun getProfilePicture() : Uri? = mainViewModel.uiState.profilePicture
 
-    fun getUsername() : String? = mainViewModel.getUsername()
+    fun getUsername() : String? = mainViewModel.uiState.username
 
 
 }
