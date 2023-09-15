@@ -11,6 +11,8 @@ class NavigationSystem(val navHostController: NavHostController) {
     private var currentDestination = MainRoutes.HOME.name
 
     fun navigateTo(destination: String) {
+        Log.d(TAG, "navigateTo current: $currentDestination")
+        Log.d(TAG, "navigateTo: $navigationStack")
         if (currentDestination == destination)
             return
 
@@ -40,7 +42,6 @@ class NavigationSystem(val navHostController: NavHostController) {
     }
 
     private fun navigateTo() {
-        Log.d(TAG, "navigateTo: $navigationStack")
         navHostController.navigate(currentDestination) {
             popUpTo(navHostController.graph.findStartDestination().id) {
                 saveState = true

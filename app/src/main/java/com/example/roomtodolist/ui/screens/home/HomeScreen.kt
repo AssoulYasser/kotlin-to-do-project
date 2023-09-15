@@ -5,6 +5,7 @@ import android.net.Uri
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -67,7 +68,10 @@ fun HomeScreen(
                 .height(100.dp)
                 .padding(16.dp),
             profilePicture = homeViewModel.getProfilePicture(),
-            username = homeViewModel.getUsername()
+            onProfilePictureClick = {
+                homeViewModel.navigateToProfileScreen()
+            },
+            username = homeViewModel.getUsername(),
         )
     }) {
         Spacer(modifier = Modifier)
@@ -93,7 +97,7 @@ fun HomeScreen(
         )
         Tasks(
             tasksPerFolder = homeViewModel.getTasksPerFolderInSelectedDay(),
-            noTaskExists = homeViewModel.noTaskExists() || homeViewModel.noTasksInCurrentDayExists(),
+            noTaskExists = homeViewModel.noTaskExists(),
             seeAll = { homeViewModel.navigateToTasksScreen() },
             addTask = { homeViewModel.navigateToAddTaskScreen() },
             onClick = {
@@ -110,7 +114,8 @@ fun HomeScreen(
 private fun TopBar(
     modifier: Modifier = Modifier,
     profilePicture: Uri?,
-    username: String?
+    username: String?,
+    onProfilePictureClick: () -> Unit
 ) {
     Row(
         modifier = modifier,
@@ -125,7 +130,8 @@ private fun TopBar(
             ProfilePicture(
                 modifier = Modifier
                     .size(60.dp),
-                picture = profilePicture
+                picture = profilePicture,
+                onPictureClick = onProfilePictureClick
             )
             Welcoming(
                 modifier = Modifier
@@ -142,13 +148,15 @@ private fun TopBar(
                 modifier = Modifier
                     .size(25.dp),
                 painter = painterResource(id = R.drawable.outlined_notification_icon),
-                contentDescription = null
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onBackground
             )
             Icon(
                 modifier = Modifier
                     .size(25.dp),
                 painter = painterResource(id = R.drawable.outlined_setting_icon),
-                contentDescription = null
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onBackground
             )
         }
     }
@@ -162,7 +170,6 @@ private fun WeekCalendar(
     selectedDay: Int,
     setSelectedDay: (Int) -> Unit
 ) {
-    Log.d("DEBUGGING : ", "WeekCalendar: $days")
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -230,21 +237,20 @@ private fun RowScope.DayElement(
         ) {
             Text(
                 text = dayName,
-                color = if (selectedDay == dayNumber) MaterialTheme.colorScheme.background else Color.Black,
+                color = if (isSystemInDarkTheme()) MaterialTheme.colorScheme.onBackground else if (selectedDay == dayNumber) MaterialTheme.colorScheme.background else Color.Black,
                 fontSize = 11.sp,
-                fontWeight = FontWeight.Medium
+                fontWeight = FontWeight.Medium,
             )
             Text(
                 text = dayNumber.toString(),
-                color = if (selectedDay == dayNumber) MaterialTheme.colorScheme.background else Color.Black,
+                color = if (isSystemInDarkTheme()) MaterialTheme.colorScheme.onBackground else if (selectedDay == dayNumber) MaterialTheme.colorScheme.background else Color.Black,
                 fontSize = 11.sp,
-                fontWeight = FontWeight.Medium
+                fontWeight = FontWeight.Medium,
             )
         }
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchForTask(
     value: String,
@@ -284,7 +290,7 @@ fun TitleWithSeeAll(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(text = title, fontWeight = FontWeight.Black)
+        Text(text = title, fontWeight = FontWeight.Black, color = MaterialTheme.colorScheme.onBackground)
         TextButton(
             onClick = onSeeAll,
             contentPadding = PaddingValues(5.dp),

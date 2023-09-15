@@ -16,6 +16,7 @@ import com.example.roomtodolist.ui.screens.calendar.CalendarViewModel
 import com.example.roomtodolist.ui.screens.folders.FoldersViewModel
 import com.example.roomtodolist.ui.screens.folder_show_case.FolderShowCaseViewModel
 import com.example.roomtodolist.ui.screens.home.HomeViewModel
+import com.example.roomtodolist.ui.screens.profile.ProfileViewModel
 import com.example.roomtodolist.ui.screens.tasks.TasksViewModel
 import com.example.roomtodolist.ui.screens.task_show_case.TaskShowCaseViewModel
 
@@ -101,6 +102,16 @@ fun NavGraph(mainViewModel: MainViewModel) {
         }
     )
 
+    val profileViewModel = viewModel<ProfileViewModel>(
+        factory = object: ViewModelProvider.Factory {
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                return ProfileViewModel(
+                    mainViewModel = mainViewModel
+                ) as T
+            }
+        }
+    )
+
     val viewModels = hashMapOf<ScreenRoute, ViewModel?>(
         MainRoutes.HOME to homeViewModel,
         MainRoutes.TASKS to tasksViewModel,
@@ -109,7 +120,8 @@ fun NavGraph(mainViewModel: MainViewModel) {
         NestedRoutes.ADD_FOLDER to addFolderViewModel,
         NestedRoutes.TASK_SHOW_CASE to taskShowCaseViewModel,
         NestedRoutes.FOLDER_SHOW_CASE to folderShowCaseViewModel,
-        NestedRoutes.FOLDERS to foldersViewModel
+        NestedRoutes.FOLDERS to foldersViewModel,
+        NestedRoutes.PROFILE to profileViewModel
     )
 
     NavHost(navController = navHostController, startDestination = Routes.Home.route.name) {

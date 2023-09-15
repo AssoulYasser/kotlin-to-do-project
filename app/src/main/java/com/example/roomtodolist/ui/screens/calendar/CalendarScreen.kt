@@ -44,7 +44,6 @@ import java.time.Month
 fun CalendarScreen(
     calendarViewModel: CalendarViewModel
 ) {
-    val context = LocalContext.current
     Container(actionBar = {
         ActionBar(title = "Calendar") {
             calendarViewModel.navigateBack()
@@ -94,7 +93,11 @@ private fun Tasks(
                    .size(width = 5.dp, height = 25.dp)
                    .background(it.value)
                )
-               Text(text = it.key.title, modifier = Modifier.weight(4f))
+               Text(
+                   text = it.key.title,
+                   modifier = Modifier.weight(4f),
+                   color = MaterialTheme.colorScheme.onBackground
+               )
            }
            Spacer(modifier = Modifier.height(10.dp))
        }
@@ -170,7 +173,8 @@ fun CalendarGrid(
                         if (isCompactWidth) it.oneLetterAbbreviation.toString()
                         else it.threeLetterAbbreviation,
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
+                    color = MaterialTheme.colorScheme.onBackground
                 )
             }
         }
@@ -244,14 +248,19 @@ fun MonthPicker(
         IconButton(onClick = onPreviousMonth) {
             Icon(
                 painter = painterResource(id = R.drawable.outlined_non_lined_arrow_left_icon),
-                contentDescription = null
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onBackground
             )
         }
-        Text(text = "$selectedMonth $selectedYear")
+        Text(
+            text = "$selectedMonth $selectedYear",
+            color = MaterialTheme.colorScheme.onBackground
+        )
         IconButton(onClick = onNextMonth) {
             Icon(
                 painter = painterResource(id = R.drawable.outlined_non_lined_arrow_right_icon),
-                contentDescription = null
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onBackground
             )
         }
     }

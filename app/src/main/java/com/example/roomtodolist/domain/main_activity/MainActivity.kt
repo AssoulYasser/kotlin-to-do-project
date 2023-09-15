@@ -21,6 +21,8 @@ class MainActivity : ComponentActivity() {
     private lateinit var context: Context
     private lateinit var databaseRepository: DatabaseRepository
     private lateinit var sharedPreferencesRepository: SharedPreferencesRepository
+    private lateinit var mainViewModel: MainViewModel
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,7 +31,7 @@ class MainActivity : ComponentActivity() {
         sharedPreferencesRepository = SharedPreferencesRepository(context)
 
         setContent {
-            val mainViewModel = viewModel<MainViewModel>(
+            mainViewModel = viewModel<MainViewModel>(
                 factory = object: ViewModelProvider.Factory {
                     override fun <T : ViewModel> create(modelClass: Class<T>): T {
                         return MainViewModel(
@@ -45,6 +47,11 @@ class MainActivity : ComponentActivity() {
                 MainActivityScreen(mainViewModel = mainViewModel)
             }
         }
+    }
+
+    @Deprecated("Deprecated in Java")
+    override fun onBackPressed() {
+        mainViewModel.navigateBack()
     }
 
     companion object{

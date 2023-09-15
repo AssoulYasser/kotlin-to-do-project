@@ -26,7 +26,8 @@ import coil.compose.AsyncImage
 @Composable
 fun ProfilePicture(
     modifier: Modifier = Modifier,
-    picture: Uri?
+    picture: Uri?,
+    onPictureClick: () -> Unit
 ) {
     if (picture == null) {
         Icon(
@@ -38,9 +39,8 @@ fun ProfilePicture(
     else {
         Button(
             modifier = modifier.aspectRatio(1f),
-            onClick = {},
+            onClick = onPictureClick,
             border = BorderStroke(2.dp, MaterialTheme.colorScheme.onBackground),
-            enabled = false,
             contentPadding = PaddingValues(2.dp)
         ) {
             AsyncImage(

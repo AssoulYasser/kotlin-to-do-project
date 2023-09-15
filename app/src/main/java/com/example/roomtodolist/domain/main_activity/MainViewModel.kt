@@ -46,6 +46,12 @@ class MainViewModel(
         val folders = hashMapOf<Long, FolderTable>()
         val tasks = hashMapOf<Long, TaskTable>()
         val tasksPerFolder = hashMapOf<FolderTable, MutableList<TaskTable>>()
+
+        uiState = uiState.copy(
+            profilePicture = Uri.parse(sharedPreferencesRepository.getProfilePicture()),
+            username = sharedPreferencesRepository.getUsername()
+        )
+
         viewModelScope.launch(Dispatchers.IO) {
             for (folder in databaseRepository.folderDao.getFolders()) {
                 folders[folder.id!!] = folder
@@ -225,9 +231,19 @@ class MainViewModel(
         }
     }
 
-    fun getUsername() : String? = sharedPreferencesRepository.getUsername()
+    fun getUsername() : String? = uiState.username
 
-    fun getProfilePicture() : Uri? = Uri.parse(sharedPreferencesRepository.getProfilePicture())
+    fun setUsername(name: String?) {
+        uiState = uiState.copy(username = name)
+        sharedPreferencesRepository.setUsername(name ?: "UNNAMED")
+    }
+
+    fun getProfilePicture() : Uri? = uiState.profilePicture
+
+    fun setProfilePicture(uri: Uri?) {
+        uiState = uiState.copy(profilePicture = uri)
+        sharedPreferencesRepository.setProfilePicture(uri.toString())
+    }
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun getDaysOfTheWeek() = calendarSystem.getWeeklyCalendar(LocalDate.now().year, LocalDate.now().month, LocalDate.now().dayOfMonth)

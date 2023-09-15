@@ -2,6 +2,7 @@ package com.example.roomtodolist.ui.components
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
@@ -49,7 +50,9 @@ fun EmptyElements(
     ) {
         if (showGif)
             Surface(
-                modifier = Modifier.fillMaxWidth().aspectRatio(1f),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .aspectRatio(1f),
                 color = Color.Transparent
             ) {
                 LottieAnimation(composition = animationGif,
@@ -66,7 +69,8 @@ fun EmptyElements(
             fontSize = 14.sp,
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Center,
-            modifier = Modifier
+            modifier = Modifier,
+            color = MaterialTheme.colorScheme.onBackground
         )
 
         if (onCreateElement != {}) {
@@ -75,12 +79,15 @@ fun EmptyElements(
                 modifier = Modifier.fillMaxWidth(0.4f),
                 shape = RoundedCornerShape(24),
                 colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
-                border = BorderStroke(2.dp, MaterialTheme.colorScheme.primary)
+                border = BorderStroke(
+                    2.dp,
+                    if (isSystemInDarkTheme()) MaterialTheme.colorScheme.onBackground else MaterialTheme.colorScheme.primary
+                )
             ) {
                 Text(
                     text = "Create $elementName",
                     textAlign = TextAlign.Center,
-                    color = MaterialTheme.colorScheme.primary
+                    color = if (isSystemInDarkTheme()) MaterialTheme.colorScheme.onBackground else MaterialTheme.colorScheme.primary
                 )
             }
         }

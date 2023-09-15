@@ -19,4 +19,4 @@ fun defaultOutlinedButtonColors() = ButtonDefaults.buttonColors(containerColor =
 
 @Composable
 fun defaultFilledButtonColors(color: Color = MaterialTheme.colorScheme.primary) =
-    ButtonDefaults.buttonColors(containerColor = color, contentColor = MaterialTheme.colorScheme.background)
+    ButtonDefaults.buttonColors(containerColor = color, contentColor = Color.White)

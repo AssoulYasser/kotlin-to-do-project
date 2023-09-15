@@ -8,6 +8,8 @@ import com.example.roomtodolist.ui.screens.folders.FoldersScreen
 import com.example.roomtodolist.ui.screens.folders.FoldersViewModel
 import com.example.roomtodolist.ui.screens.folder_show_case.FolderShowCaseScreen
 import com.example.roomtodolist.ui.screens.folder_show_case.FolderShowCaseViewModel
+import com.example.roomtodolist.ui.screens.profile.ProfileScreen
+import com.example.roomtodolist.ui.screens.profile.ProfileViewModel
 import com.example.roomtodolist.ui.screens.task_show_case.TaskShowCaseScreen
 import com.example.roomtodolist.ui.screens.task_show_case.TaskShowCaseViewModel
 
@@ -33,6 +35,11 @@ sealed class NestedDestinations(
     object Folders: NestedDestinations(
         route = NestedRoutes.FOLDERS,
         screen = { viewModel -> FoldersScreen(viewModel as FoldersViewModel) }
+    )
+
+    object Profile: NestedDestinations(
+        route = NestedRoutes.PROFILE,
+        screen = { viewModel -> ProfileScreen(viewModel as ProfileViewModel) }
     )
 }
 

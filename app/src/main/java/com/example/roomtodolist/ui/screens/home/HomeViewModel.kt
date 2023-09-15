@@ -2,6 +2,7 @@ package com.example.roomtodolist.ui.screens.home
 
 import android.annotation.SuppressLint
 import android.net.Uri
+import android.util.Log
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -42,6 +43,10 @@ class HomeViewModel(private val mainViewModel: MainViewModel) : ViewModel() {
 
     fun navigateToFoldersScreen() {
         mainViewModel.navigateTo(NestedRoutes.FOLDERS.name)
+    }
+
+    fun navigateToProfileScreen() {
+        mainViewModel.navigateTo(NestedRoutes.PROFILE.name)
     }
 
     fun setFolderToUpdate(folderTable: FolderTable) {

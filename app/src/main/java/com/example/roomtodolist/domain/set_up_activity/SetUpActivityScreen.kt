@@ -79,7 +79,7 @@ fun SetUpActivityScreen(
 }
 
 @Composable
-fun BoxScope.UsernameScreen(username: MutableState<String?>) {
+private fun BoxScope.UsernameScreen(username: MutableState<String?>) {
     TextField(
         value = if (username.value == null) "" else username.value!!,
         onValueChange = { username.value = it },
@@ -103,17 +103,19 @@ fun BoxScope.UsernameScreen(username: MutableState<String?>) {
         Text(
             text = "Create your username",
             textAlign = TextAlign.Center,
+            color = MaterialTheme.colorScheme.onBackground
         )
         Text(
             text = "It is cool to know how we call you",
             textAlign = TextAlign.Center,
+            color = MaterialTheme.colorScheme.onBackground
         )
     }
 
 }
 
 @Composable
-fun BoxScope.ProfilePictureScreen(
+private fun BoxScope.ProfilePictureScreen(
     profilePicture: MutableState<String?>
 ) {
     val imageCropLauncher = rememberLauncherForActivityResult(CropImageContract()) { result ->
@@ -181,10 +183,12 @@ fun BoxScope.ProfilePictureScreen(
         Text(
             text = "Choose your picture",
             textAlign = TextAlign.Center,
+            color = MaterialTheme.colorScheme.onBackground
         )
         Text(
             text = "You can change your picture in Settings anytime",
             textAlign = TextAlign.Center,
+            color = MaterialTheme.colorScheme.onBackground
         )
     }
 
@@ -192,7 +196,7 @@ fun BoxScope.ProfilePictureScreen(
 }
 
 @Composable
-fun BoxScope.ExplainScreen() {
+private fun BoxScope.ExplainScreen() {
     Image(
         painter = painterResource(id = R.drawable.personal_settings_asset),
         contentDescription = null,
@@ -211,10 +215,12 @@ fun BoxScope.ExplainScreen() {
         Text(
             text = "Create your profile",
             textAlign = TextAlign.Center,
+            color = MaterialTheme.colorScheme.onBackground
         )
         Text(
             text = "Let's create your profile with a few easy steps",
             textAlign = TextAlign.Center,
+            color = MaterialTheme.colorScheme.onBackground
         )
     }
 
@@ -249,7 +255,7 @@ private fun SetProfileScreen(
             contentDescription = null,
             modifier = Modifier
                 .size(100.dp),
-            tint = Color.White
+            tint = MaterialTheme.colorScheme.onBackground
         )
         HorizontalPager(
             pageCount = pageCount,
@@ -279,7 +285,7 @@ private fun SetProfileScreen(
                     modifier = Modifier
                         .background(
                             color =
-                            if (i == pagerState.currentPage) Color.Black else Color.Black.copy(alpha = 0.2f),
+                            if (i == pagerState.currentPage) MaterialTheme.colorScheme.onBackground else MaterialTheme.colorScheme.onBackground.copy(alpha = 0.2f),
                             shape = CircleShape
                         )
                         .size(10.dp)
