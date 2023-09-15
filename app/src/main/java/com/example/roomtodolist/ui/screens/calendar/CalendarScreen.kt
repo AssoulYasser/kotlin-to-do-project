@@ -1,7 +1,6 @@
 package com.example.roomtodolist.ui.screens.calendar
 
 import android.os.Build
-import android.widget.Space
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -11,12 +10,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -28,7 +25,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -37,6 +33,7 @@ import com.example.roomtodolist.data.task.TaskTable
 import com.example.roomtodolist.domain.calendar.Days
 import com.example.roomtodolist.ui.components.ActionBar
 import com.example.roomtodolist.ui.components.Container
+import com.example.roomtodolist.ui.components.EmptyElements
 import java.time.Month
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -61,21 +58,35 @@ fun CalendarScreen(
             setDay = { calendarViewModel.setDay(it) }
         )
         Tasks(
-            tasksPerColor = calendarViewModel.orderTasksByTime()
+            tasksPerColor = calendarViewModel.orderTasksByTime(),
+            isDark = calendarViewModel.isDarkMode(),
+            onCreateTask = { calendarViewModel.navigateToAddTaskScreen() }
         )
     }
 }
 
 @Composable
 private fun Tasks(
-    tasksPerColor: HashMap<TaskTable, Color>
+    tasksPerColor: HashMap<TaskTable, Color>,
+    isDark: Boolean,
+    onCreateTask: () -> Unit
 ) {
-   Column(
+
+    if (tasksPerColor.isEmpty())
+        EmptyElements(elementName = "today's tasks", isDark = isDark,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 20.dp),
+            showGif = false,
+            onCreateElement = onCreateTask
+        )
+
+    Column(
        modifier = Modifier
            .fillMaxWidth(),
        horizontalAlignment = Alignment.CenterHorizontally,
        verticalArrangement = Arrangement.spacedBy(16.dp)
-   ) {
+    ) {
        tasksPerColor.forEach {
            Row(
                modifier = Modifier
@@ -101,7 +112,7 @@ private fun Tasks(
            }
            Spacer(modifier = Modifier.height(10.dp))
        }
-   }
+    }
 }
 
 @Composable

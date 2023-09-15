@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModel
 import com.example.roomtodolist.data.task.TaskTable
 import com.example.roomtodolist.domain.calendar.Days
 import com.example.roomtodolist.domain.main_activity.MainViewModel
+import com.example.roomtodolist.ui.navigation.MainRoutes
 import java.time.LocalDate
 import java.time.Month
 
@@ -19,6 +20,10 @@ class CalendarViewModel(private val mainViewModel: MainViewModel) : ViewModel() 
 
     var uiState by mutableStateOf(CalendarUiState())
         private set
+
+    fun navigateToAddTaskScreen() {
+        mainViewModel.navigateTo(MainRoutes.ADD_TASK.name)
+    }
 
     fun navigateBack() {
         mainViewModel.navigateBack()
@@ -51,6 +56,8 @@ class CalendarViewModel(private val mainViewModel: MainViewModel) : ViewModel() 
     fun setDay(dayOfMonth: Int) {
         uiState = uiState.copy(selectedDay = dayOfMonth)
     }
+
+    fun isDarkMode(): Boolean = mainViewModel.uiState.isDarkTheme
 
     fun getDaysOfTheWeek() = Days.values()
 
