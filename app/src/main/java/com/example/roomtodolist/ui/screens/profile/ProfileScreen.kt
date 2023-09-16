@@ -115,8 +115,8 @@ fun DarkLightModeEdit(isDark: Boolean, setMode: (Boolean) -> Unit) {
                 uncheckedThumbColor = MaterialTheme.colorScheme.onBackground,
                 checkedTrackColor = MaterialTheme.colorScheme.background,
                 uncheckedTrackColor = MaterialTheme.colorScheme.background,
-                checkedBorderColor = Color.Transparent,
-                uncheckedBorderColor = Color.Transparent
+                checkedBorderColor = MaterialTheme.colorScheme.background,
+                uncheckedBorderColor = MaterialTheme.colorScheme.background
             ),
             modifier = Modifier.align(Alignment.CenterEnd)
         )

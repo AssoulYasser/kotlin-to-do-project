@@ -4,7 +4,7 @@ import androidx.navigation.NavHostController
 import com.example.roomtodolist.ui.navigation.MainRoutes
 import java.util.Stack
 
-data class NavState(
+data class MainNavState(
     val navHostController: NavHostController? = null,
     val navigationStack: Stack<String> = Stack<String>(),
     val currentDestination: String = MainRoutes.HOME.name

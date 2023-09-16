@@ -29,7 +29,7 @@ class MainViewModel(
     private val sharedPreferencesRepository: SharedPreferencesRepository,
 ) : ViewModel() {
 
-    private var navState by mutableStateOf(NavState())
+    private var navState by mutableStateOf(MainNavState())
 
     var uiState by mutableStateOf(MainUiState())
         private set
@@ -58,9 +58,12 @@ class MainViewModel(
 
         viewModelScope.launch(Dispatchers.IO) {
             for (folder in databaseRepository.folderDao.getFolders()) {
-                folders[folder.id!!] = folder
+                val tasksInCurrentFolder =
+                    databaseRepository.taskDao.getTasksFromFolder(folder.id!!)
+                folder.taskCounts = tasksInCurrentFolder.count()
+                folders[folder.id] = folder
                 tasksPerFolder[folder] = mutableListOf()
-                tasksPerFolder[folder]!!.addAll(databaseRepository.taskDao.getTasksFromFolder(folder.id))
+                tasksPerFolder[folder]!!.addAll(tasksInCurrentFolder)
             }
             for (task in databaseRepository.taskDao.getTasks()) {
                 tasks[task.id!!] = task
