@@ -378,9 +378,7 @@ private fun Folders(
                 items(items = folders) {
                     FolderCard(
                         folder = it,
-                        modifier = Modifier.clickable {
-                            onClick(it)
-                        }
+                        onFolderClick = onClick
                     )
                 }
             }

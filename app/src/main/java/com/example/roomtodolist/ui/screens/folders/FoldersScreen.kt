@@ -30,12 +30,10 @@ fun FoldersScreen(
     fun RowScope.Folder(index: Int) {
         FolderCard(
             folder = folders[index],
-            modifier = Modifier
-                .weight(1f)
-                .clickable {
-                    foldersViewModel.setFolderToUpdate(folders[index])
-                    foldersViewModel.navigateToFolderShowCase()
-                },
+            onFolderClick = {
+                foldersViewModel.setFolderToUpdate(folders[index])
+                foldersViewModel.navigateToFolderShowCase()
+            },
             showArrowIcon = false,
             border = BorderStroke(1.dp, MaterialTheme.colorScheme.primaryContainer)
         )

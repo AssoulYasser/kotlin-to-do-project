@@ -26,14 +26,10 @@ fun FoldersCard(
 ) {
 
     @Composable
-    fun RowScope.Folder(index: Int) {
+    fun Folder(index: Int) {
         FolderCard(
             folder = folders[index],
-            modifier = Modifier
-                .weight(1f)
-                .clickable {
-                    onSelectFolder(folders[index])
-                },
+            onFolderClick = onSelectFolder,
             showArrowIcon = false,
             color =
             if (selectedFolder == folders[index])
