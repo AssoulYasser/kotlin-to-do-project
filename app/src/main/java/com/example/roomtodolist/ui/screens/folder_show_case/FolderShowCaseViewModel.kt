@@ -25,6 +25,11 @@ class FolderShowCaseViewModel(private val mainViewModel: MainViewModel): ViewMod
             if (originalFolder != null) {
                 uiState.folderName = originalFolder!!.name
                 uiState.folderColor = Color(originalFolder!!.color)
+                uiState.folderAsset =
+                    if (originalFolder!!.asset == 0)
+                        mainViewModel.getFolderAssets().keys.first()
+                    else
+                        originalFolder!!.asset
             }
         }
     }
@@ -41,6 +46,10 @@ class FolderShowCaseViewModel(private val mainViewModel: MainViewModel): ViewMod
         uiState = uiState.copy(folderColor = color)
     }
 
+    fun updateAsset(asset: Int) {
+        uiState = uiState.copy(folderAsset = asset)
+    }
+
     private fun getFolderTable() = FolderTable(
         id = originalFolder!!.id,
         name = uiState.folderName,
@@ -50,6 +59,8 @@ class FolderShowCaseViewModel(private val mainViewModel: MainViewModel): ViewMod
 
     fun getFolderColors() = mainViewModel.getFolderColors()
 
+    fun getFolderAssets() = mainViewModel.getFolderAssets().keys.toList()
+
     fun isReadyToSave() = uiState.folderColor != null && uiState.folderName != ""
 
     fun showErrorMessage(context: Context) {
@@ -58,6 +69,9 @@ class FolderShowCaseViewModel(private val mainViewModel: MainViewModel): ViewMod
 
         else if (uiState.folderColor == null)
             Toast.makeText(context, "choose color please", Toast.LENGTH_SHORT).show()
+
+        else if (uiState.folderAsset == 0)
+            Toast.makeText(context, "choose asset please", Toast.LENGTH_SHORT).show()
 
     }
 

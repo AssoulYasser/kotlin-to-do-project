@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import com.example.roomtodolist.ui.components.ActionBar
 import com.example.roomtodolist.ui.components.Container
+import com.example.roomtodolist.ui.components.FolderAssetPicker
 import com.example.roomtodolist.ui.components.FolderColorPicker
 import com.example.roomtodolist.ui.components.FolderNameTextField
 import com.example.roomtodolist.ui.components.UpdatingValidationButtons
@@ -27,6 +28,13 @@ fun FolderShowCaseScreen(
             colors = folderShowCaseViewModel.getFolderColors(),
             setFolderColor = { folderShowCaseViewModel.updateColor(it) },
             selectedColor = folderShowCaseViewModel.uiState.folderColor
+        )
+        FolderAssetPicker(
+            assets = folderShowCaseViewModel.getFolderAssets(),
+            selectedAsset = folderShowCaseViewModel.uiState.folderAsset,
+            setFolderAsset = {
+                folderShowCaseViewModel.updateAsset(it)
+            }
         )
         UpdatingValidationButtons(
             onUpdate = {

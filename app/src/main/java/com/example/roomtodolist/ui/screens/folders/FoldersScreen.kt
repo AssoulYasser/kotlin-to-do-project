@@ -1,12 +1,16 @@
 package com.example.roomtodolist.ui.screens.folders
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -41,40 +45,45 @@ fun FoldersScreen(
             foldersViewModel.navigateBack()
         }
     }) {
-        for (folderIndex in folders.indices step 2) {
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(5.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Folder(index = folderIndex)
-                if (folderIndex + 1 < folders.size)
-                    Folder(index = folderIndex + 1)
-                else
-                    AddFolderCard(
-                        modifier = Modifier
-                            .weight(1f)
-                            .padding(vertical = 25.dp)
-                    ) {
-                        foldersViewModel.navigateToAddFolderScreen()
-                    }
-            }
-        }
-        if (folders.size % 2 == 0)
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth(0.5f)
-                    .align(Alignment.Start),
-                horizontalArrangement = Arrangement.spacedBy(5.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
                 AddFolderCard(
                     modifier = Modifier
-                        .weight(0.5f)
-                        .padding(vertical = 25.dp)
+                        .weight(1f)
+                        .aspectRatio(1f)
+                        .background(
+                            MaterialTheme.colorScheme.primary.copy(alpha = 0.25f),
+                            RoundedCornerShape(24f)
+                        )
                 ) {
                     foldersViewModel.navigateToAddFolderScreen()
                 }
+                if (folders.isNotEmpty())
+                    Folder(index = 0)
             }
+            for (folderIndex in 1 until folders.size step 2) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(5.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    if (folderIndex + 1 < folders.size) {
+                        Folder(index = folderIndex)
+                        Folder(index = folderIndex + 1)
+                    }
+                    else {
+                        Folder(index = folderIndex)
+                    }
+                }
+            }
+        }
     }
 }
