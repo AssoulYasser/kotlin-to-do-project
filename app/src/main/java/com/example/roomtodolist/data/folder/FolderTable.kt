@@ -9,7 +9,8 @@ data class FolderTable(
     @PrimaryKey(autoGenerate = true)
     val id: Long? = null,
     val name: String,
-    val color: Int
+    val color: Int,
+    val asset: Int
 ) {
     @Ignore
     var taskCounts = 0

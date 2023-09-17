@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -28,19 +27,18 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import com.example.roomtodolist.R
 import com.example.roomtodolist.data.folder.FolderTable
+import com.example.roomtodolist.data.folder.folderAssets
 
 @Composable
 fun FolderCard(
     folder: FolderTable,
-    folderPrimaryAsset: Int = R.drawable.cooking_asset_primary,
-    folderSecondaryAsset: Int = R.drawable.cooking_asset_secondary,
-    showArrowIcon: Boolean = true,
+    folderAsset: Int = R.drawable.cooking_asset_primary,
     color: Color = MaterialTheme.colorScheme.primaryContainer,
     border: BorderStroke? = null,
     onFolderClick: (FolderTable) -> Unit
@@ -52,12 +50,24 @@ fun FolderCard(
     val cardHeight = cardWidth.times(0.9F)
     val assetHeight = cardHeight.div(2.75F)
 
-    val assetBitmap = getBitmapFromImage(
-        context = context,
-        primaryAsset = folderSecondaryAsset,
-        secondaryAsset = folderPrimaryAsset,
-        color = folder.color
-    )
+    val topAsset = folderAssets[folderAsset]
+
+    val assetBitmap =
+        if (topAsset != null)
+            getBitmapFromImage(
+                context = context,
+                primaryAsset = folderAsset,
+                secondaryAsset = topAsset!!,
+                color = folder.color
+            )
+        else
+            getBitmapFromImage(
+                context = context,
+                primaryAsset = folderAssets.keys.first(),
+                secondaryAsset = folderAssets.values.first(),
+                color = folder.color
+            )
+
 
     Surface(
         modifier = Modifier
@@ -89,17 +99,20 @@ fun FolderCard(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column(
-                    horizontalAlignment = if (showArrowIcon) Alignment.Start else Alignment.CenterHorizontally
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text(text = folder.name, color = Color(folder.color))
-                    Text(text = "${folder.taskCounts} Tasks", color = MaterialTheme.colorScheme.onBackground)
-                }
-                if (showArrowIcon)
-                    Icon(
-                        painter = painterResource(id = R.drawable.outlined_arrow_right_icon),
-                        contentDescription = null,
-                        tint = Color(folder.color)
+                    Text(
+                        text = folder.name,
+                        color = Color(folder.color),
+                        textAlign = TextAlign.Center
                     )
+                    Text(
+                        text = "${folder.taskCounts} Tasks",
+                        color = MaterialTheme.colorScheme.onBackground,
+                        textAlign = TextAlign.Center
+                    )
+                }
             }
         }
 

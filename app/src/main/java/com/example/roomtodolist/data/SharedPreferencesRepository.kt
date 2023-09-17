@@ -33,7 +33,7 @@ class SharedPreferencesRepository(private val context: Context) {
         }.apply()
     }
 
-    fun setProfilePicture(base64Image: String) {
+    fun setProfilePicture(base64Image: String?) {
         editor.apply{
             putString(PROFILE_PICTURE_KEY, base64Image)
         }.apply()
@@ -41,7 +41,7 @@ class SharedPreferencesRepository(private val context: Context) {
 
     fun getProfilePicture() : String? = sharedPreferences.getString(PROFILE_PICTURE_KEY, null)
 
-    fun setUsername(username: String) {
+    fun setUsername(username: String?) {
         editor.apply{
             putString(USERNAME_KEY, username)
         }.apply()

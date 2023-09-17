@@ -21,7 +21,6 @@ fun FolderColorPicker(
     setFolderColor: (Color) -> Unit,
     selectedColor: Color?
 ) {
-
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,

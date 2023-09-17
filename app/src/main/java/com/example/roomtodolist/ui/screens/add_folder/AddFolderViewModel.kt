@@ -17,6 +17,8 @@ class AddFolderViewModel(private val mainViewModel: MainViewModel) : ViewModel()
 
     fun getFolderColors() = mainViewModel.getFolderColors()
 
+    fun getFolderAssets() = mainViewModel.getFolderAssets().keys.toList()
+
     fun setFolderName(name: String) {
         uiState = uiState.copy(folderName = name)
     }
@@ -25,7 +27,14 @@ class AddFolderViewModel(private val mainViewModel: MainViewModel) : ViewModel()
         uiState = uiState.copy(folderColor = color)
     }
 
-    fun isReadyToSave() = uiState.folderColor != null && uiState.folderName != ""
+    fun setFolderAsset(asset: Int) {
+        uiState = uiState.copy(folderAsset = asset)
+    }
+
+    fun isReadyToSave() =
+        uiState.folderColor != null &&
+        uiState.folderName != "" &&
+        uiState.folderAsset != 0
 
     fun showErrorMessage(context: Context) {
         if (uiState.folderName == "")
@@ -34,6 +43,8 @@ class AddFolderViewModel(private val mainViewModel: MainViewModel) : ViewModel()
         else if (uiState.folderColor == null)
             Toast.makeText(context, "choose color please", Toast.LENGTH_SHORT).show()
 
+        else if (uiState.folderAsset == 0)
+            Toast.makeText(context, "choose asset please", Toast.LENGTH_SHORT).show()
     }
 
     fun showSuccessMessage(context: Context) {
@@ -44,7 +55,8 @@ class AddFolderViewModel(private val mainViewModel: MainViewModel) : ViewModel()
         mainViewModel.addFolder(
             FolderTable(
                 name = uiState.folderName,
-                color = uiState.folderColor!!.toArgb()
+                color = uiState.folderColor!!.toArgb(),
+                asset = uiState.folderAsset
             )
         )
     }

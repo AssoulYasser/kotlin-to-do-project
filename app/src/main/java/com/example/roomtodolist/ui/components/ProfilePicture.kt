@@ -3,6 +3,7 @@ package com.example.roomtodolist.ui.components
 import android.net.Uri
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.aspectRatio
@@ -33,7 +34,8 @@ fun ProfilePicture(
         Icon(
             imageVector = Icons.Filled.AccountCircle,
             contentDescription = null,
-            modifier = modifier
+            modifier = modifier.clip(CircleShape).clickable { onPictureClick() },
+            tint = MaterialTheme.colorScheme.onBackground
         )
     }
     else {
@@ -65,6 +67,7 @@ fun ProfilePicture(
         Icon(
             imageVector = Icons.Filled.AccountCircle,
             contentDescription = null,
+            tint = MaterialTheme.colorScheme.onBackground,
             modifier = modifier
         )
     }

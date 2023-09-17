@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import com.example.roomtodolist.ui.components.ActionBar
 import com.example.roomtodolist.ui.components.Container
+import com.example.roomtodolist.ui.components.FolderAssetPicker
 import com.example.roomtodolist.ui.components.FolderColorPicker
 import com.example.roomtodolist.ui.components.FolderNameTextField
 import com.example.roomtodolist.ui.components.SavingValidationButtons
@@ -31,6 +32,14 @@ fun AddFolderScreen(
             selectedColor = addFolderViewModel.uiState.folderColor,
             setFolderColor = {
                 addFolderViewModel.setFolderColor(it)
+            }
+        )
+
+        FolderAssetPicker(
+            assets = addFolderViewModel.getFolderAssets(),
+            selectedAsset = addFolderViewModel.uiState.folderAsset,
+            setFolderAsset = {
+                addFolderViewModel.setFolderAsset(it)
             }
         )
 

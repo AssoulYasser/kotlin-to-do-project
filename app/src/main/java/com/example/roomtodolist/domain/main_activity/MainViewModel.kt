@@ -15,6 +15,7 @@ import androidx.navigation.NavHostController
 import com.example.roomtodolist.data.DatabaseRepository
 import com.example.roomtodolist.data.SharedPreferencesRepository
 import com.example.roomtodolist.data.folder.FolderTable
+import com.example.roomtodolist.data.folder.folderAssets
 import com.example.roomtodolist.data.folder.folderColors
 import com.example.roomtodolist.data.task.TaskTable
 import com.example.roomtodolist.domain.calendar.CalendarSystem
@@ -41,7 +42,8 @@ class MainViewModel(
         calendarSystem = CalendarSystem()
 
         uiState = uiState.copy(
-            profilePicture = Uri.parse(sharedPreferencesRepository.getProfilePicture()),
+            profilePicture = if (sharedPreferencesRepository.getProfilePicture() == null) null
+                            else Uri.parse(sharedPreferencesRepository.getProfilePicture()),
             username = sharedPreferencesRepository.getUsername(),
             isDarkTheme = sharedPreferencesRepository.isDarkMode()
         )
@@ -143,6 +145,8 @@ class MainViewModel(
     }
 
     fun getFolderColors() = folderColors
+
+    fun getFolderAssets() = folderAssets
 
     fun updateFolder(folder: FolderTable) {
         viewModelScope.launch(Dispatchers.IO) {

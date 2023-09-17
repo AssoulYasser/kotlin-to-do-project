@@ -59,8 +59,8 @@ class SetUpViewModel(
     }
 
     fun setUpProfile() {
-        sharedPreferencesRepository.setUsername(uiState.username!!)
-        sharedPreferencesRepository.setProfilePicture(uiState.profilePicture!!)
+        sharedPreferencesRepository.setUsername(uiState.username)
+        sharedPreferencesRepository.setProfilePicture(uiState.profilePicture)
         sharedPreferencesRepository.setUpUserProfile()
         startMainActivity()
     }

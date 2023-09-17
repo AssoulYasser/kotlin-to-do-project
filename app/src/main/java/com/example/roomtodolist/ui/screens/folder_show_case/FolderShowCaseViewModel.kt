@@ -45,6 +45,7 @@ class FolderShowCaseViewModel(private val mainViewModel: MainViewModel): ViewMod
         id = originalFolder!!.id,
         name = uiState.folderName,
         color = uiState.folderColor!!.toArgb(),
+        asset = uiState.folderAsset,
     )
 
     fun getFolderColors() = mainViewModel.getFolderColors()

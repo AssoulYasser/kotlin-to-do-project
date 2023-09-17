@@ -4,5 +4,6 @@ import androidx.compose.ui.graphics.Color
 
 data class FolderShowCaseUiState(
     var folderName: String = "",
-    var folderColor: Color? = null
+    var folderColor: Color? = null,
+    var folderAsset: Int = 0
 )

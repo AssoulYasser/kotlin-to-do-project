@@ -324,7 +324,7 @@ private fun SetProfileScreen(
             else {
                 Button(
                     onClick = {
-
+                        finish()
                     },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color.White,

@@ -4,5 +4,6 @@ import androidx.compose.ui.graphics.Color
 
 data class AddFolderUiState(
     val folderName: String = "",
-    val folderColor: Color? = null
+    val folderColor: Color? = null,
+    val folderAsset: Int = 0
 )
