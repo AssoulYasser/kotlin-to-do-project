@@ -101,7 +101,8 @@ class MainViewModel(
 
         else if (navState.navigationStack.contains(destination)) {
             while (navState.navigationStack.contains(destination)) {
-                navState.navigationStack.pop()
+                val newDestination = navState.navigationStack.pop()
+                navState = navState.copy(currentDestination = newDestination)
             }
         }
 
@@ -109,7 +110,8 @@ class MainViewModel(
             navState.navigationStack.push(navState.currentDestination)
             navState = navState.copy(currentDestination = destination)
         }
-
+        Log.d(TAG, "navigateTo: ${navState.currentDestination}")
+        Log.d(TAG, "navigateTo: ${navState.navigationStack}")
         navigateTo()
     }
 
