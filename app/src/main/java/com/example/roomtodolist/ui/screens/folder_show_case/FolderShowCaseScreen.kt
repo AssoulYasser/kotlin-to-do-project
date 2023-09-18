@@ -1,6 +1,7 @@
 package com.example.roomtodolist.ui.screens.folder_show_case
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import com.example.roomtodolist.ui.components.ActionBar
 import com.example.roomtodolist.ui.components.Container
@@ -21,17 +22,17 @@ fun FolderShowCaseScreen(
         }
     }) {
         FolderNameTextField(
-            folderName = folderShowCaseViewModel.uiState.folderName,
+            folderName = { folderShowCaseViewModel.uiState.folderName },
             onFolderNameChange = { folderShowCaseViewModel.updateName(it) }
         )
         FolderColorPicker(
             colors = folderShowCaseViewModel.getFolderColors(),
+            selectedColor = { folderShowCaseViewModel.uiState.folderColor?.toArgb() ?: 0 },
             setFolderColor = { folderShowCaseViewModel.updateColor(it) },
-            selectedColor = folderShowCaseViewModel.uiState.folderColor
         )
         FolderAssetPicker(
             assets = folderShowCaseViewModel.getFolderAssets(),
-            selectedAsset = folderShowCaseViewModel.uiState.folderAsset,
+            selectedAsset = { folderShowCaseViewModel.uiState.folderAsset },
             setFolderAsset = {
                 folderShowCaseViewModel.updateAsset(it)
             }

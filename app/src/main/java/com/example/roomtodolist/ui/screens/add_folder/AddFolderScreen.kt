@@ -1,6 +1,8 @@
 package com.example.roomtodolist.ui.screens.add_folder
 
+import android.util.Log
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import com.example.roomtodolist.ui.components.ActionBar
 import com.example.roomtodolist.ui.components.Container
@@ -23,13 +25,14 @@ fun AddFolderScreen(
         }
     }) {
         FolderNameTextField(
-            folderName = addFolderViewModel.uiState.folderName,
+            folderName = { addFolderViewModel.nameState },
             onFolderNameChange = { addFolderViewModel.setFolderName(it) }
         )
+        Log.d(TAG, "AddFolderScreen: RECOMPOSED")
 
         FolderColorPicker(
             colors = addFolderViewModel.getFolderColors(),
-            selectedColor = addFolderViewModel.uiState.folderColor,
+            selectedColor = { addFolderViewModel.colorState?.toArgb() ?: 0 },
             setFolderColor = {
                 addFolderViewModel.setFolderColor(it)
             }
@@ -37,7 +40,7 @@ fun AddFolderScreen(
 
         FolderAssetPicker(
             assets = addFolderViewModel.getFolderAssets(),
-            selectedAsset = addFolderViewModel.uiState.folderAsset,
+            selectedAsset = { addFolderViewModel.assetState },
             setFolderAsset = {
                 addFolderViewModel.setFolderAsset(it)
             }

@@ -8,11 +8,12 @@ import androidx.compose.ui.Modifier
 
 @Composable
 fun FolderNameTextField(
-    folderName: String,
+    folderName: () -> String,
     onFolderNameChange: (String) -> Unit
 ) {
+
     TextField(
-        value = folderName,
+        value = folderName(),
         onValueChange = onFolderNameChange,
         shape = defaultTextFieldShape(),
         colors = defaultTextFieldColors(),

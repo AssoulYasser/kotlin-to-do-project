@@ -11,43 +11,53 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import com.maxkeppeker.sheets.core.views.Grid
 
 
 @Composable
 fun FolderAssetPicker(
     assets: List<Int>,
-    selectedAsset: Int,
+    selectedAsset: () -> Int,
     setFolderAsset: (Int) -> Unit
 ) {
 
     @Composable
-    fun RowScope.Asset(assetIndex: Int) {
+    fun Asset(asset: Int) {
+        val isSelected by remember {
+            derivedStateOf{ selectedAsset() == asset }
+        }
+
         Surface(
             modifier = Modifier
-                .weight(1f)
                 .aspectRatio(1f)
                 .padding(horizontal = 5.dp),
-            color = if (selectedAsset == assets[assetIndex])
-                        MaterialTheme.colorScheme.primaryContainer
-                    else
-                        Color.Transparent,
+            color = if (isSelected)
+                MaterialTheme.colorScheme.primaryContainer
+            else
+                Color.Transparent,
             border = BorderStroke(1.dp, MaterialTheme.colorScheme.primaryContainer),
             shape = RoundedCornerShape(24f),
             onClick = {
-                setFolderAsset(assets[assetIndex])
+                setFolderAsset(asset)
             }
         ) {
             Image(
-                painter = painterResource(id = assets[assetIndex]),
+                painter = painterResource(id = asset),
                 contentDescription = null,
                 modifier = Modifier
                     .padding(25.dp)
@@ -55,23 +65,13 @@ fun FolderAssetPicker(
         }
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+    Grid(
+        modifier = Modifier.fillMaxWidth(),
+        items = assets,
+        columns = 2,
+        rowSpacing = 12.dp,
+        columnSpacing = 12.dp
     ) {
-        for (assetIndex in assets.indices step 2) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Asset(assetIndex = assetIndex)
-                if (assetIndex + 1 < assets.size)
-                    Asset(assetIndex = assetIndex + 1)
-            }
-        }
+        Asset(asset = it)
     }
 }

@@ -122,13 +122,7 @@ class MainViewModel(
     }
 
     private fun navigateTo() {
-        navState.navHostController?.navigate(navState.currentDestination) {
-            popUpTo(navState.navHostController?.graph?.findStartDestination()!!.id) {
-                saveState = true
-            }
-            launchSingleTop = true
-            restoreState = true
-        }
+        navState.navHostController?.navigate(navState.currentDestination)
     }
 
     fun setWindowSizeClass(windowSizeClass: WindowSizeClass) {
