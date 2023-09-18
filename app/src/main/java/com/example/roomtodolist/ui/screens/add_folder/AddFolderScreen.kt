@@ -46,7 +46,7 @@ fun AddFolderScreen(
         SavingValidationButtons(
             onSave = {
                 if (addFolderViewModel.isReadyToSave()) {
-                    addFolderViewModel.save()
+                    addFolderViewModel.save(context)
                     addFolderViewModel.navigateBack()
                     addFolderViewModel.showSuccessMessage(context = context)
                     addFolderViewModel.clear()

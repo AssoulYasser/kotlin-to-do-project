@@ -39,7 +39,7 @@ fun FolderShowCaseScreen(
         UpdatingValidationButtons(
             onUpdate = {
                 if (folderShowCaseViewModel.isReadyToSave()){
-                    folderShowCaseViewModel.save()
+                    folderShowCaseViewModel.save(context)
                     folderShowCaseViewModel.navigateBack()
                     folderShowCaseViewModel.showSuccessMessage(context = context)
                     folderShowCaseViewModel.clear()
@@ -48,7 +48,7 @@ fun FolderShowCaseScreen(
                     folderShowCaseViewModel.showErrorMessage(context = context)
             },
             onDelete = {
-                folderShowCaseViewModel.delete()
+                folderShowCaseViewModel.delete(context)
                 folderShowCaseViewModel.clear()
                 folderShowCaseViewModel.navigateBack()
             },

@@ -33,7 +33,6 @@ fun FoldersCard(
             FolderCard(
                 folder = folders[index],
                 onFolderClick = onSelectFolder,
-                folderAsset = folders[index].asset,
                 color =
                 if (selectedFolder == folders[index])
                     MaterialTheme.colorScheme.primaryContainer

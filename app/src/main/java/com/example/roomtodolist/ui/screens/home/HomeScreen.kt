@@ -380,7 +380,6 @@ private fun Folders(
                     Spacer(modifier = Modifier.width(6.dp))
                     FolderCard(
                         folder = it,
-                        folderAsset = it.asset,
                         onFolderClick = onClick
                     )
                     Spacer(modifier = Modifier.width(6.dp))

@@ -1,9 +1,12 @@
 package com.example.roomtodolist.data
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.room.TypeConverter
 import com.example.roomtodolist.data.task.TaskPriority
+import java.io.ByteArrayOutputStream
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -40,6 +43,18 @@ class Converters {
             TaskPriority.MEDIUM -> 2
             TaskPriority.LOW -> 3
         }
+    }
+
+    @TypeConverter
+    fun getByteArrayFromBitmap(bitmap: Bitmap): ByteArray {
+        val outputStream = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+        return outputStream.toByteArray()
+    }
+
+    @TypeConverter
+    fun getBitmapFromByteArray(byteArray: ByteArray): Bitmap{
+        return BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
     }
 
 }

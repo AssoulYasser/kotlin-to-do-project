@@ -1,5 +1,9 @@
 package com.example.roomtodolist.domain.main_activity
 
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build
 import android.util.Log
@@ -8,6 +12,8 @@ import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.DrawableCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -296,6 +302,48 @@ class MainViewModel(
         year = year,
         month = month
     )
+
+    fun getBitmap(context: Context, drawable: Int, color: Int) : Bitmap {
+
+        if (drawable == 0) return colorizeBitmap(context, folderAssets.values.first(), folderAssets.keys.first(), color)
+
+        val primaryAsset = folderAssets[drawable]
+        return if (primaryAsset == null) {
+            colorizeBitmap(context, folderAssets.values.first(), folderAssets.keys.first(), color)
+        } else {
+            colorizeBitmap(context, drawable, primaryAsset, color)
+        }
+
+    }
+
+    private fun colorizeBitmap(context: Context, primaryAsset: Int, secondaryAsset: Int, color: Int): Bitmap {
+        // Load the XML drawables into Drawable objects
+        val primaryDrawable: Drawable? = ContextCompat.getDrawable(context, primaryAsset)
+        val secondaryDrawable: Drawable? = ContextCompat.getDrawable(context, secondaryAsset)
+
+        val wrappedDrawable = secondaryDrawable?.let { DrawableCompat.wrap(it) }
+        wrappedDrawable?.setTint(color)
+
+        // Define the width and height of the resulting bitmap
+        val width = primaryDrawable?.intrinsicWidth ?: (0 + secondaryDrawable?.intrinsicWidth!!)
+        val height = primaryDrawable?.intrinsicHeight ?: (0 + secondaryDrawable?.intrinsicHeight!!)
+
+        // Create a Bitmap with the specified width and height
+        val combinedBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+
+        // Create a Canvas to draw on the Bitmap
+        val canvas = Canvas(combinedBitmap)
+
+        // Draw the first drawable onto the canvas
+        primaryDrawable?.setBounds(0, 0, primaryDrawable.intrinsicWidth, primaryDrawable.intrinsicHeight)
+        primaryDrawable?.draw(canvas)
+
+        // Draw the second drawable onto the canvas, below the first one
+        secondaryDrawable?.setBounds(0, 0, secondaryDrawable.intrinsicWidth, height)
+        secondaryDrawable?.draw(canvas)
+
+        return combinedBitmap
+    }
 
     private enum class Operation {
         ADD,

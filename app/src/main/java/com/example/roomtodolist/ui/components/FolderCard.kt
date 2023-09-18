@@ -1,9 +1,5 @@
 package com.example.roomtodolist.ui.components
 
-import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.drawable.Drawable
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -29,16 +25,11 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.core.content.ContextCompat
-import androidx.core.graphics.drawable.DrawableCompat
-import com.example.roomtodolist.R
 import com.example.roomtodolist.data.folder.FolderTable
-import com.example.roomtodolist.data.folder.folderAssets
 
 @Composable
 fun FolderCard(
     folder: FolderTable,
-    folderAsset: Int = R.drawable.cooking_asset_primary,
     color: Color = MaterialTheme.colorScheme.primaryContainer,
     border: BorderStroke? = null,
     onFolderClick: (FolderTable) -> Unit
@@ -49,24 +40,6 @@ fun FolderCard(
     val cardWidth = screenWidth.div(2F)
     val cardHeight = cardWidth.times(0.9F)
     val assetHeight = cardHeight.div(2.75F)
-
-    val topAsset = folderAssets[folderAsset]
-
-    val assetBitmap =
-        if (topAsset != null)
-            getBitmapFromImage(
-                context = context,
-                primaryAsset = folderAsset,
-                secondaryAsset = topAsset!!,
-                color = folder.color
-            )
-        else
-            getBitmapFromImage(
-                context = context,
-                primaryAsset = folderAssets.keys.first(),
-                secondaryAsset = folderAssets.values.first(),
-                color = folder.color
-            )
 
 
     Surface(
@@ -86,7 +59,7 @@ fun FolderCard(
         ) {
             Box(modifier = Modifier.height(assetHeight)) {
                 Image(
-                    bitmap = assetBitmap.asImageBitmap(),
+                    bitmap = folder.asset.asImageBitmap(),
                     modifier = Modifier,
                     contentDescription = null,
                     contentScale = ContentScale.Inside,
@@ -117,33 +90,4 @@ fun FolderCard(
         }
 
     }
-}
-
-fun getBitmapFromImage(context: Context, primaryAsset: Int, secondaryAsset: Int, color: Int): Bitmap {
-    // Load the XML drawables into Drawable objects
-    val primaryDrawable: Drawable? = ContextCompat.getDrawable(context, primaryAsset)
-    val secondaryDrawable: Drawable? = ContextCompat.getDrawable(context, secondaryAsset)
-
-    val wrappedDrawable = secondaryDrawable?.let { DrawableCompat.wrap(it) }
-    wrappedDrawable?.setTint(color)
-
-    // Define the width and height of the resulting bitmap
-    val width = primaryDrawable?.intrinsicWidth ?: (0 + secondaryDrawable?.intrinsicWidth!!)
-    val height = primaryDrawable?.intrinsicHeight ?: (0 + secondaryDrawable?.intrinsicHeight!!)
-
-    // Create a Bitmap with the specified width and height
-    val combinedBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-
-    // Create a Canvas to draw on the Bitmap
-    val canvas = Canvas(combinedBitmap)
-
-    // Draw the first drawable onto the canvas
-    primaryDrawable?.setBounds(0, 0, primaryDrawable.intrinsicWidth, primaryDrawable.intrinsicHeight)
-    primaryDrawable?.draw(canvas)
-
-    // Draw the second drawable onto the canvas, below the first one
-    secondaryDrawable?.setBounds(0, 0, secondaryDrawable.intrinsicWidth, height)
-    secondaryDrawable?.draw(canvas)
-
-    return combinedBitmap
 }

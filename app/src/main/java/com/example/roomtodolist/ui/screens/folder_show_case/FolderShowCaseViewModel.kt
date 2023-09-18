@@ -25,11 +25,7 @@ class FolderShowCaseViewModel(private val mainViewModel: MainViewModel): ViewMod
             if (originalFolder != null) {
                 uiState.folderName = originalFolder!!.name
                 uiState.folderColor = Color(originalFolder!!.color)
-                uiState.folderAsset =
-                    if (originalFolder!!.asset == 0)
-                        mainViewModel.getFolderAssets().keys.first()
-                    else
-                        originalFolder!!.asset
+                uiState.folderAsset = 0
             }
         }
     }
@@ -50,11 +46,11 @@ class FolderShowCaseViewModel(private val mainViewModel: MainViewModel): ViewMod
         uiState = uiState.copy(folderAsset = asset)
     }
 
-    private fun getFolderTable() = FolderTable(
+    private fun getFolderTable(context: Context) = FolderTable(
         id = originalFolder!!.id,
         name = uiState.folderName,
         color = uiState.folderColor!!.toArgb(),
-        asset = uiState.folderAsset,
+        asset = mainViewModel.getBitmap(context, uiState.folderAsset, uiState.folderColor!!.toArgb()),
     )
 
     fun getFolderColors() = mainViewModel.getFolderColors()
@@ -80,12 +76,12 @@ class FolderShowCaseViewModel(private val mainViewModel: MainViewModel): ViewMod
     }
 
 
-    fun save() {
-        mainViewModel.updateFolder(getFolderTable())
+    fun save(context: Context) {
+        mainViewModel.updateFolder(getFolderTable(context))
     }
 
-    fun delete() {
-        mainViewModel.deleteFolder(getFolderTable())
+    fun delete(context: Context) {
+        mainViewModel.deleteFolder(getFolderTable(context))
     }
 
     fun clear() {

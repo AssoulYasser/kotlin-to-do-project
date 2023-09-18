@@ -31,7 +31,6 @@ fun FoldersScreen(
         Box(modifier = Modifier.weight(1f)) {
             FolderCard(
                 folder = folders[index],
-                folderAsset = folders[index].asset,
                 onFolderClick = {
                     foldersViewModel.setFolderToUpdate(folders[index])
                     foldersViewModel.navigateToFolderShowCase()

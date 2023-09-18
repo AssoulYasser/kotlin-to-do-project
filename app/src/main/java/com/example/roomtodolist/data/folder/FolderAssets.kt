@@ -11,6 +11,6 @@ val folderAssets = hashMapOf(
     R.drawable.nature_asset to R.drawable.nature_asset_primary,
     R.drawable.choosing_asset to R.drawable.choosing_asset_primary,
     R.drawable.familly_asset to R.drawable.familly_asset_primary,
-    R.drawable.diversity_asset to R.drawable.diy_asset_primary,
+    R.drawable.diversity_asset to R.drawable.diversity_asset_primary,
     R.drawable.homework_asset to R.drawable.homework_asset_primary,
 )

@@ -51,12 +51,12 @@ class AddFolderViewModel(private val mainViewModel: MainViewModel) : ViewModel()
         Toast.makeText(context, "the folder ${uiState.folderName} has been saved successfully", Toast.LENGTH_SHORT).show()
     }
 
-    fun save() {
+    fun save(context: Context) {
         mainViewModel.addFolder(
             FolderTable(
                 name = uiState.folderName,
                 color = uiState.folderColor!!.toArgb(),
-                asset = uiState.folderAsset
+                asset = mainViewModel.getBitmap(context, uiState.folderAsset, uiState.folderColor!!.toArgb())
             )
         )
     }
