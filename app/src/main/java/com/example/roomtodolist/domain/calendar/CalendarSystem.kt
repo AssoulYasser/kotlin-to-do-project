@@ -1,6 +1,7 @@
 package com.example.roomtodolist.domain.calendar
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import java.time.DayOfWeek
 import java.time.LocalDate
@@ -31,13 +32,13 @@ class CalendarSystem {
     fun getMonthlyCalendar(
         year: Int,
         month: Month
-    ) : List<Int> {
+    ) : List<DayOfCalendar> {
 
         val firstDateInMonth = LocalDate.of(year, month, 1)
 
         val daysInMonth = firstDateInMonth.lengthOfMonth()
 
-        val monthlyCalendar = mutableListOf<Int>()
+        val monthlyCalendar = mutableListOf<DayOfCalendar>()
 
         val firstDateInCalendar = if (firstDateInMonth.dayOfWeek != DayOfWeek.MONDAY){
             val distanceBetweenFirstDayAndStartOfWeek =
@@ -48,6 +49,8 @@ class CalendarSystem {
 
         var iteratorDate = firstDateInCalendar
 
+        var isInside = false
+
         var lastDateInCalendar = firstDateInMonth
             .plusDays(daysInMonth.toLong())
 
@@ -55,10 +58,16 @@ class CalendarSystem {
             lastDateInCalendar = lastDateInCalendar.plusDays(1)
 
         while (iteratorDate.isBefore(lastDateInCalendar)) {
-            monthlyCalendar.add(iteratorDate.dayOfMonth)
+            if (iteratorDate.dayOfMonth == 1) isInside = !isInside
+            monthlyCalendar.add(
+                DayOfCalendar(
+                    day = iteratorDate.dayOfMonth,
+                    month = iteratorDate.month,
+                    inMonth = isInside
+                )
+            )
             iteratorDate = iteratorDate.plusDays(1)
         }
-
         return monthlyCalendar
     }
 

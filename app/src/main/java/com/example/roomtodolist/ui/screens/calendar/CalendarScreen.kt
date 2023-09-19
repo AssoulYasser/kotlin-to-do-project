@@ -1,6 +1,7 @@
 package com.example.roomtodolist.ui.screens.calendar
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -20,8 +21,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -30,6 +29,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.roomtodolist.R
 import com.example.roomtodolist.data.task.TaskTable
+import com.example.roomtodolist.domain.calendar.DayOfCalendar
 import com.example.roomtodolist.domain.calendar.Days
 import com.example.roomtodolist.ui.components.ActionBar
 import com.example.roomtodolist.ui.components.Container
@@ -49,14 +49,13 @@ fun CalendarScreen(
         CalendarUi(
             onPreviousMonth = { calendarViewModel.setPreviousMonth() },
             onNextMonth = { calendarViewModel.setNextMonth() },
-            selectedMonth = calendarViewModel.uiState.selectedMonth,
-            selectedYear = calendarViewModel.uiState.selectedYear,
+            selectedMonth = { calendarViewModel.selectedMonth },
+            selectedYear = { calendarViewModel.selectedYear },
             isCompactWidth = calendarViewModel.isCompactWidth(),
-            daysOfTheWeek = calendarViewModel.getDaysOfTheWeek(),
+            daysOfTheWeek = { calendarViewModel.getDaysOfTheWeek() },
             monthlyCalendar = calendarViewModel.getMonthlyCalendar(),
-            selectedDay = calendarViewModel.uiState.selectedDay,
-            setDay = { calendarViewModel.setDay(it) }
-        )
+            selectedDay = { calendarViewModel.selectedDay }
+        ) { calendarViewModel.setDay(it) }
         Tasks(
             tasksPerColor = calendarViewModel.orderTasksByTime(),
             isDark = calendarViewModel.isDarkMode(),
@@ -119,12 +118,12 @@ private fun Tasks(
 private fun CalendarUi(
     onPreviousMonth: () -> Unit,
     onNextMonth: () -> Unit,
-    selectedMonth: Month,
-    selectedYear: Int,
+    selectedMonth: () -> Month,
+    selectedYear: () -> Int,
     isCompactWidth: Boolean,
-    daysOfTheWeek: Array<Days>,
-    monthlyCalendar: List<Int>,
-    selectedDay: Int,
+    daysOfTheWeek: () -> Array<Days>,
+    monthlyCalendar: List<DayOfCalendar>,
+    selectedDay: () -> Int,
     setDay: (Int) -> Unit
 ) {
     Column(
@@ -141,14 +140,14 @@ private fun CalendarUi(
         MonthPicker(
             onPreviousMonth = onPreviousMonth,
             onNextMonth = onNextMonth,
-            selectedMonth = selectedMonth,
-            selectedYear = selectedYear,
+            selectedMonth = selectedMonth(),
+            selectedYear = selectedYear(),
         )
         CalendarGrid(
             isCompactWidth = isCompactWidth,
-            daysOfTheWeek = daysOfTheWeek,
-            monthlyCalendar = monthlyCalendar,
-            selectedDay = selectedDay,
+            daysOfTheWeek = { daysOfTheWeek() },
+            monthlyCalendar = { monthlyCalendar },
+            selectedDay = { selectedDay() },
             setDay = setDay
         )
     }
@@ -157,15 +156,11 @@ private fun CalendarUi(
 @Composable
 fun CalendarGrid(
     isCompactWidth: Boolean,
-    daysOfTheWeek: Array<Days>,
-    monthlyCalendar: List<Int>,
-    selectedDay: Int,
+    daysOfTheWeek: () -> Array<Days>,
+    monthlyCalendar: () -> List<DayOfCalendar>,
+    selectedDay: () -> Int,
     setDay: (Int) -> Unit
 ) {
-    val currentDateInsideCurrentMonth = remember {
-        mutableStateOf(false)
-    }
-
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -178,11 +173,11 @@ fun CalendarGrid(
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            daysOfTheWeek.forEach {
+            daysOfTheWeek().forEach {
                 Text(
                     text =
-                        if (isCompactWidth) it.oneLetterAbbreviation.toString()
-                        else it.threeLetterAbbreviation,
+                    if (isCompactWidth) it.oneLetterAbbreviation.toString()
+                    else it.threeLetterAbbreviation,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.weight(1f),
                     color = MaterialTheme.colorScheme.onBackground
@@ -190,49 +185,43 @@ fun CalendarGrid(
             }
         }
         var dayIndex = 0
-        while (dayIndex < monthlyCalendar.size) {
+        while (dayIndex < monthlyCalendar().size) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 for (dayOfWeek in 0 until 7) {
-                    if (dayIndex > monthlyCalendar.size)
+                    if (dayIndex == monthlyCalendar().size)
                         break
 
-                    val currentDay = monthlyCalendar[dayIndex]
-
-                    if (currentDay == 1)
-                        currentDateInsideCurrentMonth.value = !currentDateInsideCurrentMonth.value
-
-                    val inMonth = currentDateInsideCurrentMonth.value
+                    val currentDay = monthlyCalendar()[dayIndex]
 
                     Box(modifier = Modifier
                         .weight(1f)
                         .aspectRatio(1f, matchHeightConstraintsFirst = true)
                         .background(
-                            color = if (selectedDay == currentDay && inMonth)
+                            color = if (selectedDay() == currentDay.day && currentDay.inMonth)
                                 MaterialTheme.colorScheme.primary
                             else
                                 Color.Transparent,
                             RoundedCornerShape(24f)
                         )
                         .clickable {
-                            if (inMonth)
-                                setDay(currentDay)
+                            if (currentDay.inMonth)
+                                setDay(currentDay.day)
                         }
                     ) {
                         Text(
-                            text = "$currentDay",
+                            text = "${currentDay.day}",
                             textAlign = TextAlign.Center,
-                            color =
-                            if (inMonth)
-                                if (selectedDay == currentDay)
-                                    Color.White
-                                else
-                                    MaterialTheme.colorScheme.onBackground
-                            else
-                                MaterialTheme.colorScheme.onBackground.copy(alpha = 0.2f),
+                            color = if (currentDay.inMonth)
+                                        if (selectedDay() == currentDay.day)
+                                            Color.White
+                                        else
+                                            MaterialTheme.colorScheme.onBackground
+                                    else
+                                        MaterialTheme.colorScheme.onBackground.copy(alpha = 0.2f),
                             modifier = Modifier.align(Alignment.Center)
                         )
                     }

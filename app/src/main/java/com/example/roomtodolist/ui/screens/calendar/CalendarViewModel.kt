@@ -18,7 +18,12 @@ import java.time.Month
 @RequiresApi(Build.VERSION_CODES.O)
 class CalendarViewModel(private val mainViewModel: MainViewModel) : ViewModel() {
 
-    var uiState by mutableStateOf(CalendarUiState())
+
+    var selectedDay by mutableStateOf(LocalDate.now().dayOfMonth)
+        private set
+    var selectedMonth: Month by mutableStateOf(LocalDate.now().month)
+        private set
+    var selectedYear by mutableStateOf(LocalDate.now().year)
         private set
 
     fun navigateToAddTaskScreen() {
@@ -30,31 +35,28 @@ class CalendarViewModel(private val mainViewModel: MainViewModel) : ViewModel() 
     }
 
     fun setNextMonth() {
-        uiState = uiState.copy(
-            selectedDay = 1,
-            selectedMonth = uiState.selectedMonth.plus(1),
-            selectedYear =
-                if (uiState.selectedMonth == Month.DECEMBER)
-                    uiState.selectedYear + 1
-                else
-                    uiState.selectedYear
-        )
+        selectedDay = 1
+        selectedMonth = selectedMonth.plus(1)
+        selectedYear =
+            if (selectedMonth == Month.DECEMBER)
+                selectedYear + 1
+            else
+                selectedYear
+
     }
 
     fun setPreviousMonth() {
-        uiState = uiState.copy(
-            selectedDay = 1,
-            selectedMonth = uiState.selectedMonth.minus(1),
-            selectedYear =
-            if (uiState.selectedMonth == Month.JANUARY)
-                uiState.selectedYear + -1
+        selectedDay = 1
+        selectedMonth = selectedMonth.minus(1)
+        selectedYear =
+            if (selectedMonth == Month.JANUARY)
+                selectedYear - 1
             else
-                uiState.selectedYear
-        )
+                selectedYear
     }
 
     fun setDay(dayOfMonth: Int) {
-        uiState = uiState.copy(selectedDay = dayOfMonth)
+        selectedDay = dayOfMonth
     }
 
     fun isDarkMode(): Boolean = mainViewModel.uiState.isDarkTheme
@@ -65,12 +67,12 @@ class CalendarViewModel(private val mainViewModel: MainViewModel) : ViewModel() 
         mainViewModel.windowSizeClass.widthSizeClass == WindowWidthSizeClass.Compact
 
     fun getMonthlyCalendar() =
-        mainViewModel.getMonthForFiveWeeks(uiState.selectedMonth, uiState.selectedYear).toList()
+        mainViewModel.getMonthForFiveWeeks(selectedMonth, selectedYear)
 
     private fun getSelectedDate() = LocalDate.of(
-        uiState.selectedYear,
-        uiState.selectedMonth,
-        uiState.selectedDay
+        selectedYear,
+        selectedMonth,
+        selectedDay
     )
 
     private fun filterTasksByCurrentDay() : HashMap<TaskTable, Color> {
