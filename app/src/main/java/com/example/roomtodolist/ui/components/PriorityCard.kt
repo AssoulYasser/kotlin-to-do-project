@@ -20,18 +20,18 @@ import com.example.roomtodolist.data.task.TaskPriority
 
 @Composable
 fun PriorityCard(
-    selectedPriority: TaskPriority,
+    selectedPriority: () -> TaskPriority,
     onSelectPriority: (TaskPriority) -> Unit
 ) {
     val onBackground = MaterialTheme.colorScheme.onBackground
     fun getContainerColor(selectedButton: TaskPriority) : Color {
-        return if (selectedButton == selectedPriority)
-            selectedPriority.getPriorityColor()
+        return if (selectedButton == selectedPriority())
+            selectedPriority().getPriorityColor()
         else
             Color.Transparent
     }
     fun getContentColor(selectedButton: TaskPriority) : Color
-            = if (selectedPriority == selectedButton) Color.White else onBackground
+            = if (selectedPriority() == selectedButton) Color.White else onBackground
     ExpandableCard(icon = R.drawable.outlined_document_favorite_icon, title = "Set Priority") {
         Row(
             modifier = Modifier.fillMaxWidth(),

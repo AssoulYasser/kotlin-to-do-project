@@ -8,11 +8,11 @@ import androidx.compose.ui.Modifier
 
 @Composable
 fun TaskTitle(
-    value: String,
+    value: () -> String,
     onValueChange: (String) -> Unit
 ) {
     TextField(
-        value = value,
+        value = value(),
         onValueChange = onValueChange,
         colors = defaultTextFieldColors(),
         shape = defaultTextFieldShape(),

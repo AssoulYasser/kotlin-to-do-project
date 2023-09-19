@@ -25,14 +25,14 @@ fun AddFolderScreen(
         }
     }) {
         FolderNameTextField(
-            folderName = { addFolderViewModel.nameState },
+            folderName = { addFolderViewModel.folderNameState },
             onFolderNameChange = { addFolderViewModel.setFolderName(it) }
         )
         Log.d(TAG, "AddFolderScreen: RECOMPOSED")
 
         FolderColorPicker(
             colors = addFolderViewModel.getFolderColors(),
-            selectedColor = { addFolderViewModel.colorState?.toArgb() ?: 0 },
+            selectedColor = { addFolderViewModel.folderColorState?.toArgb() ?: 0 },
             setFolderColor = {
                 addFolderViewModel.setFolderColor(it)
             }
@@ -40,7 +40,7 @@ fun AddFolderScreen(
 
         FolderAssetPicker(
             assets = addFolderViewModel.getFolderAssets(),
-            selectedAsset = { addFolderViewModel.assetState },
+            selectedAsset = { addFolderViewModel.folderAssetState },
             setFolderAsset = {
                 addFolderViewModel.setFolderAsset(it)
             }

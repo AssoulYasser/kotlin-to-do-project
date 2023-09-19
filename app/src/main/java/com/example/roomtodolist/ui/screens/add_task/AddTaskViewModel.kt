@@ -15,27 +15,35 @@ import java.time.LocalDate
 import java.time.LocalTime
 
 class AddTaskViewModel(private val mainViewModel: MainViewModel) : ViewModel() {
-    var uiState by mutableStateOf(AddTaskUiState())
+    var taskTitleState by mutableStateOf("")
+        private set
+    var taskPriorityState by mutableStateOf(TaskPriority.UNSPECIFIED)
+        private set
+    var taskDateState by mutableStateOf<LocalDate?>(null)
+        private set
+    var taskTimeState by mutableStateOf<LocalTime?>(null)
+        private set
+    var taskFolderState by mutableStateOf<FolderTable?>(null)
         private set
 
     fun setTaskTitle(title: String) {
-        uiState = uiState.copy(taskTitle = title)
+        taskTitleState = title
     }
 
     fun setPriority(priority: TaskPriority) {
-        uiState = uiState.copy(taskPriority = priority)
+        taskPriorityState = priority
     }
 
     fun setDate(date: LocalDate) {
-        uiState = uiState.copy(taskDate = date)
+        taskDateState = date
     }
 
     fun setTime(time: LocalTime) {
-        uiState = uiState.copy(taskTime = time)
+        taskTimeState = time
     }
 
     fun setFolder(folder: FolderTable) {
-        uiState = uiState.copy(taskFolder = folder)
+        taskFolderState = folder
     }
 
     fun getFolders() : List<FolderTable> = mainViewModel.uiState.folders.values.toList()
@@ -48,26 +56,26 @@ class AddTaskViewModel(private val mainViewModel: MainViewModel) : ViewModel() {
         mainViewModel.navigateBack()
     }
 
-    fun isReadyToSave() = uiState.taskTitle != "" &&
-                uiState.taskPriority != TaskPriority.UNSPECIFIED &&
-                uiState.taskDate != null &&
-                uiState.taskTime != null &&
-                uiState.taskFolder != null
+    fun isReadyToSave() = taskTitleState != "" &&
+                taskPriorityState != TaskPriority.UNSPECIFIED &&
+                taskDateState != null &&
+                taskTimeState != null &&
+                taskFolderState != null
 
     fun showErrorMessage(context: Context) {
-        if (uiState.taskTitle == "")
+        if (taskTitleState == "")
             Toast.makeText(context, "insert title please", Toast.LENGTH_SHORT).show()
 
-        else if (uiState.taskPriority == TaskPriority.UNSPECIFIED)
+        else if (taskPriorityState == TaskPriority.UNSPECIFIED)
             Toast.makeText(context, "choose priority please", Toast.LENGTH_SHORT).show()
 
-        else if (uiState.taskDate == null)
+        else if (taskDateState == null)
             Toast.makeText(context, "choose date please", Toast.LENGTH_SHORT).show()
 
-        else if (uiState.taskTime == null)
+        else if (taskTimeState == null)
             Toast.makeText(context, "choose time please", Toast.LENGTH_SHORT).show()
 
-        else if (uiState.taskFolder == null)
+        else if (taskFolderState == null)
             Toast.makeText(context, "choose folder please", Toast.LENGTH_SHORT).show()
 
         else
@@ -76,22 +84,26 @@ class AddTaskViewModel(private val mainViewModel: MainViewModel) : ViewModel() {
     }
 
     fun showSuccessMessage(context: Context) {
-        Toast.makeText(context, "the task ${uiState.taskTitle} has been saved successfully", Toast.LENGTH_SHORT).show()
+        Toast.makeText(context, "the task ${taskTitleState} has been saved successfully", Toast.LENGTH_SHORT).show()
     }
 
     fun save() {
         mainViewModel.addTask(
             TaskTable(
-                title = uiState.taskTitle,
-                date = uiState.taskDate!!,
-                time = uiState.taskTime!!,
-                priority = uiState.taskPriority,
-                folder = uiState.taskFolder!!.id!!
+                title = taskTitleState,
+                date = taskDateState!!,
+                time = taskTimeState!!,
+                priority = taskPriorityState,
+                folder = taskFolderState!!.id!!
             )
         )
     }
 
     fun clear() {
-        uiState = AddTaskUiState()
+        taskTitleState = ""
+        taskPriorityState = TaskPriority.UNSPECIFIED
+        taskDateState = null
+        taskTimeState = null
+        taskFolderState = null
     }
 }

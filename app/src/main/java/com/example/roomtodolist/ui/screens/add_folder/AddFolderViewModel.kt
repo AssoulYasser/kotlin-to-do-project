@@ -12,63 +12,65 @@ import com.example.roomtodolist.data.folder.FolderTable
 import com.example.roomtodolist.domain.main_activity.MainViewModel
 
 class AddFolderViewModel(private val mainViewModel: MainViewModel) : ViewModel() {
-//    var uiState by mutableStateOf(AddFolderUiState())
-//        private set
+    var folderNameState by mutableStateOf("")
+        private set
 
-    var nameState by mutableStateOf("")
+    var folderColorState by mutableStateOf<Color?>(null)
+        private set
 
-    var colorState by mutableStateOf<Color?>(null)
-
-    var assetState by mutableStateOf(0)
+    var folderAssetState by mutableStateOf(0)
+        private set
 
     fun getFolderColors() = mainViewModel.getFolderColors()
 
     fun getFolderAssets() = mainViewModel.getFolderAssets().keys.toList()
 
     fun setFolderName(name: String) {
-        nameState = name
+        folderNameState = name
     }
 
     fun setFolderColor(color: Color) {
-        colorState = color
+        folderColorState = color
     }
 
     fun setFolderAsset(asset: Int) {
-        assetState = asset
+        folderAssetState = asset
     }
 
     fun isReadyToSave() =
-        colorState != null &&
-        nameState != "" &&
-        assetState != 0
+        folderColorState != null &&
+        folderNameState != "" &&
+        folderAssetState != 0
 
     fun showErrorMessage(context: Context) {
-        if (nameState == "")
+        if (folderNameState == "")
             Toast.makeText(context, "insert name please", Toast.LENGTH_SHORT).show()
 
-        else if (colorState == null)
+        else if (folderColorState == null)
             Toast.makeText(context, "choose color please", Toast.LENGTH_SHORT).show()
 
-        else if (assetState == 0)
+        else if (folderAssetState == 0)
             Toast.makeText(context, "choose asset please", Toast.LENGTH_SHORT).show()
     }
 
     fun showSuccessMessage(context: Context) {
-        Toast.makeText(context, "the folder $nameState has been saved successfully", Toast.LENGTH_SHORT).show()
+        Toast.makeText(context, "the folder $folderNameState has been saved successfully", Toast.LENGTH_SHORT).show()
     }
 
     fun save(context: Context) {
         mainViewModel.addFolder(
             FolderTable(
-                name = nameState,
-                color = colorState!!.toArgb(),
-                asset = mainViewModel.getBitmap(context, assetState, colorState!!.toArgb())
+                name = folderNameState,
+                color = folderColorState!!.toArgb(),
+                asset = mainViewModel.getBitmap(context, folderAssetState, folderColorState!!.toArgb())
             )
         )
     }
 
     fun clear() {
-
+        folderNameState = ""
+        folderColorState = null
+        folderAssetState = 0
     }
 
     fun navigateBack() {

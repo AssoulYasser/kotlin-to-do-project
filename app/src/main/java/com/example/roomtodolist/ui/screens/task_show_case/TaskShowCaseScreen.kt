@@ -25,25 +25,22 @@ fun TaskShowCaseScreen(
     }) {
         Spacer(modifier = Modifier)
         TaskTitle(
-            value = taskShowCaseViewModel.uiState.taskTitle,
-            onValueChange = { taskShowCaseViewModel.updateTaskTitle(it) }
-        )
+            value = { taskShowCaseViewModel.uiState.taskTitle }
+        ) { taskShowCaseViewModel.updateTaskTitle(it) }
         PriorityCard(
-            selectedPriority = taskShowCaseViewModel.uiState.taskPriority,
-            onSelectPriority = { taskShowCaseViewModel.updatePriority(it) }
-        )
+            selectedPriority = { taskShowCaseViewModel.uiState.taskPriority }
+        ) { taskShowCaseViewModel.updatePriority(it) }
         DateCard(
-            date = taskShowCaseViewModel.uiState.taskDate,
-            time = taskShowCaseViewModel.uiState.taskTime,
+            date = { taskShowCaseViewModel.uiState.taskDate },
+            time = { taskShowCaseViewModel.uiState.taskTime },
             onDateChange = {
                 taskShowCaseViewModel.updateDate(it)
-            },
-            onTimeChange = {
-                taskShowCaseViewModel.updateTime(it)
             }
-        )
+        ) {
+            taskShowCaseViewModel.updateTime(it)
+        }
         FoldersCard(
-            selectedFolder = taskShowCaseViewModel.uiState.taskFolder,
+            selectedFolder = { taskShowCaseViewModel.uiState.taskFolder },
             folders = taskShowCaseViewModel.getFolders(),
             onAddFolder = { taskShowCaseViewModel.navigateToAddFolderScreen() },
             onSelectFolder = { taskShowCaseViewModel.updateFolder(it) }

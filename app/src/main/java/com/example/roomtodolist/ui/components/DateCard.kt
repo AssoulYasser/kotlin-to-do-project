@@ -39,49 +39,49 @@ import java.time.LocalTime
 
 @Composable
 fun DateCard(
-    date: LocalDate?,
-    time: LocalTime?,
+    date: () -> LocalDate?,
+    time: () -> LocalTime?,
     onDateChange: (LocalDate) -> Unit,
     onTimeChange: (LocalTime) -> Unit
 ) {
     val isCalendarVisible = remember { mutableStateOf(false) }
     val isClockVisible = remember { mutableStateOf(false) }
-    MyCalendarDialog(setDate = onDateChange, time = time, isVisible = isCalendarVisible)
-    MyClockDialog(setTime = onTimeChange, date = date, isVisible = isClockVisible)
+    MyCalendarDialog(setDate = onDateChange, time = time(), isVisible = isCalendarVisible)
+    MyClockDialog(setTime = onTimeChange, date = date(), isVisible = isClockVisible)
 
     val dateUi = remember { mutableStateOf("--/--/----") }
 
     dateUi.value = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O)
-        date?.toString() ?: "yyyy/mm/dd"
+        date()?.toString() ?: "yyyy/mm/dd"
     else
-        if (date == null)
+        if (date() == null)
             "--/--/----"
         else
-            "${date.dayOfMonth}/" +
-                    "${date.monthValue}/" +
-                    "${date.year}"
+            "${date()!!.dayOfMonth}/" +
+                    "${date()!!.monthValue}/" +
+                    "${date()!!.year}"
 
     val timeUi = remember { mutableStateOf("--:--") }
 
     timeUi.value =
 
-        if (time == null)
+        if (time() == null)
             "--:--"
         else {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O)
                 time.toString()
 
-            else if (time.hour/10 > 0 && time.minute /10 >0)
-                "${time.hour}:${time.minute}"
+            else if (time()!!.hour/10 > 0 && time()!!.minute /10 >0)
+                "${time()!!.hour}:${time()!!.minute}"
 
-            else if (time.hour /10 > 0)
-                "${time.hour}:0${time.minute}"
+            else if (time()!!.hour /10 > 0)
+                "${time()!!.hour}:0${time()!!.minute}"
 
-            else if (time.minute /10 > 0)
-                "0${time.hour}:${time.minute}"
+            else if (time()!!.minute /10 > 0)
+                "0${time()!!.hour}:${time()!!.minute}"
 
             else
-                "0${time.hour}:0${time.minute}"
+                "0${time()!!.hour}:0${time()!!.minute}"
         }
 
     ExpandableCard(icon = R.drawable.outlined_calendar_add_icon, title = "Set Date") {

@@ -25,25 +25,22 @@ fun AddTaskScreen(
     }) {
         Spacer(modifier = Modifier)
         TaskTitle(
-            value = addTaskViewModel.uiState.taskTitle,
-            onValueChange = { addTaskViewModel.setTaskTitle(it) }
-        )
+            value = { addTaskViewModel.taskTitleState }
+        ) { addTaskViewModel.setTaskTitle(it) }
         PriorityCard(
-            selectedPriority = addTaskViewModel.uiState.taskPriority,
-            onSelectPriority = { addTaskViewModel.setPriority(it) }
-        )
+            selectedPriority = { addTaskViewModel.taskPriorityState }
+        ) { addTaskViewModel.setPriority(it) }
         DateCard(
-            date = addTaskViewModel.uiState.taskDate,
-            time = addTaskViewModel.uiState.taskTime,
+            date = { addTaskViewModel.taskDateState },
+            time = { addTaskViewModel.taskTimeState },
             onDateChange = {
                 addTaskViewModel.setDate(it)
-            },
-            onTimeChange = {
-                addTaskViewModel.setTime(it)
             }
-        )
+        ) {
+            addTaskViewModel.setTime(it)
+        }
         FoldersCard(
-            selectedFolder = addTaskViewModel.uiState.taskFolder,
+            selectedFolder = { addTaskViewModel.taskFolderState },
             folders = addTaskViewModel.getFolders(),
             onAddFolder = { addTaskViewModel.navigateToAddFolderScreen() },
             onSelectFolder = { addTaskViewModel.setFolder(it) }

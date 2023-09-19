@@ -24,7 +24,7 @@ fun FoldersCard(
     folders: List<FolderTable>,
     onAddFolder: () -> Unit,
     onSelectFolder: (FolderTable) -> Unit,
-    selectedFolder: FolderTable?
+    selectedFolder: () -> FolderTable?
 ) {
 
     @Composable
@@ -34,7 +34,7 @@ fun FoldersCard(
                 folder = folders[index],
                 onFolderClick = onSelectFolder,
                 color =
-                if (selectedFolder == folders[index])
+                if (selectedFolder() == folders[index])
                     MaterialTheme.colorScheme.primaryContainer
                 else
                     Color.Transparent,
