@@ -22,17 +22,17 @@ fun FolderShowCaseScreen(
         }
     }) {
         FolderNameTextField(
-            folderName = { folderShowCaseViewModel.uiState.folderName },
+            folderName = { folderShowCaseViewModel.folderNameState },
             onFolderNameChange = { folderShowCaseViewModel.updateName(it) }
         )
         FolderColorPicker(
             colors = folderShowCaseViewModel.getFolderColors(),
-            selectedColor = { folderShowCaseViewModel.uiState.folderColor?.toArgb() ?: 0 },
+            selectedColor = { folderShowCaseViewModel.folderColorState?.toArgb() ?: 0 },
             setFolderColor = { folderShowCaseViewModel.updateColor(it) },
         )
         FolderAssetPicker(
             assets = folderShowCaseViewModel.getFolderAssets(),
-            selectedAsset = { folderShowCaseViewModel.uiState.folderAsset },
+            selectedAsset = { folderShowCaseViewModel.folderAssetState },
             setFolderAsset = {
                 folderShowCaseViewModel.updateAsset(it)
             }

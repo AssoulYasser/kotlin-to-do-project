@@ -15,17 +15,23 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class FolderShowCaseViewModel(private val mainViewModel: MainViewModel): ViewModel() {
-    var uiState by mutableStateOf(FolderShowCaseUiState())
-        private set
+
     private var originalFolder : FolderTable? = null
+
+    var folderNameState by mutableStateOf("")
+        private set
+    var folderColorState by mutableStateOf<Color?>(null)
+        private set
+    var folderAssetState by mutableStateOf(0)
+        private set
 
     fun start() {
         originalFolder = mainViewModel.uiState.folderToUpdate
         viewModelScope.launch(Dispatchers.IO) {
             if (originalFolder != null) {
-                uiState.folderName = originalFolder!!.name
-                uiState.folderColor = Color(originalFolder!!.color)
-                uiState.folderAsset = 0
+                folderNameState = originalFolder!!.name
+                folderColorState = Color(originalFolder!!.color)
+                folderAssetState = 0
             }
         }
     }
@@ -35,44 +41,44 @@ class FolderShowCaseViewModel(private val mainViewModel: MainViewModel): ViewMod
     }
 
     fun updateName(name: String) {
-        uiState = uiState.copy(folderName = name)
+        folderNameState = name
     }
 
     fun updateColor(color: Color) {
-        uiState = uiState.copy(folderColor = color)
+        folderColorState = color
     }
 
     fun updateAsset(asset: Int) {
-        uiState = uiState.copy(folderAsset = asset)
+        folderAssetState = asset
     }
 
     private fun getFolderTable(context: Context) = FolderTable(
         id = originalFolder!!.id,
-        name = uiState.folderName,
-        color = uiState.folderColor!!.toArgb(),
-        asset = mainViewModel.getBitmap(context, uiState.folderAsset, uiState.folderColor!!.toArgb()),
+        name = folderNameState,
+        color = folderColorState!!.toArgb(),
+        asset = mainViewModel.getBitmap(context, folderAssetState, folderColorState!!.toArgb()),
     )
 
     fun getFolderColors() = mainViewModel.getFolderColors()
 
     fun getFolderAssets() = mainViewModel.getFolderAssets().keys.toList()
 
-    fun isReadyToSave() = uiState.folderColor != null && uiState.folderName != ""
+    fun isReadyToSave() = folderColorState != null && folderNameState != ""
 
     fun showErrorMessage(context: Context) {
-        if (uiState.folderName == "")
+        if (folderNameState == "")
             Toast.makeText(context, "insert name please", Toast.LENGTH_SHORT).show()
 
-        else if (uiState.folderColor == null)
+        else if (folderColorState == null)
             Toast.makeText(context, "choose color please", Toast.LENGTH_SHORT).show()
 
-        else if (uiState.folderAsset == 0)
+        else if (folderAssetState == 0)
             Toast.makeText(context, "choose asset please", Toast.LENGTH_SHORT).show()
 
     }
 
     fun showSuccessMessage(context: Context) {
-        Toast.makeText(context, "the folder ${uiState.folderName} has been saved successfully", Toast.LENGTH_SHORT).show()
+        Toast.makeText(context, "the folder ${folderNameState} has been saved successfully", Toast.LENGTH_SHORT).show()
     }
 
 
@@ -85,7 +91,6 @@ class FolderShowCaseViewModel(private val mainViewModel: MainViewModel): ViewMod
     }
 
     fun clear() {
-        uiState = FolderShowCaseUiState()
         mainViewModel.clearFolderToUpdate()
     }
 
