@@ -17,7 +17,7 @@ import com.example.roomtodolist.data.task.TaskTable
 
 @Composable
 fun TasksPerFolderCards(
-    tasksPerFolder: HashMap<FolderTable, MutableList<TaskTable>>,
+    tasksPerFolder: Map<FolderTable, MutableList<TaskTable>>,
     noTaskExists: Boolean = true,
     isDark: Boolean,
     addTask: () -> Unit,

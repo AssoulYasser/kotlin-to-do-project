@@ -42,7 +42,6 @@ class TasksViewModel(private val mainViewModel: MainViewModel) : ViewModel() {
 
     fun noTaskExists() : Boolean = mainViewModel.tasks.isEmpty()
 
-    //TODO
-    fun getTasksPerFolder(): HashMap<FolderTable, MutableList<TaskTable>> = hashMapOf()
+    fun getTasksPerFolder(): Map<FolderTable, MutableList<TaskTable>> = mainViewModel.tasksPerFolder
 
 }

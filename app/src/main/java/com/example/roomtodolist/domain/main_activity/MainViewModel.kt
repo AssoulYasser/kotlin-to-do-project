@@ -3,34 +3,29 @@ package com.example.roomtodolist.domain.main_activity
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
-import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
-import com.example.roomtodolist.R
 import com.example.roomtodolist.data.DatabaseRepository
 import com.example.roomtodolist.data.SharedPreferencesRepository
 import com.example.roomtodolist.data.folder.FolderTable
 import com.example.roomtodolist.data.folder.folderAssets
-import com.example.roomtodolist.data.folder.folderColors
 import com.example.roomtodolist.data.task.TaskTable
 import com.example.roomtodolist.domain.calendar.CalendarSystem
 import com.example.roomtodolist.ui.navigation.MainRoutes
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.lang.Exception
 import java.time.LocalDate
 import java.time.Month
 
@@ -44,15 +39,35 @@ class MainViewModel(
     var uiState by mutableStateOf(MainUiState())
         private set
 
-    val folders = mutableStateMapOf<Long, FolderTable>()
+    private val tasksManager = TasksManager(databaseRepository.taskDao)
+    private val folderManager = FoldersManager(databaseRepository.folderDao)
+    private val tasksPerFolderManager = TasksPerFolderManager()
+    private val calendarSystem: CalendarSystem
 
-    val tasks = mutableStateMapOf<Long, TaskTable>()
+    val tasks : Map<Long, TaskTable>
+        get() = try {
+            tasksManager.tasks.toMap()
+        } catch (e: Exception) {
+            mapOf()
+        }
 
-    val tasksPerFolder = mutableStateMapOf<FolderTable, MutableList<TaskTable>>()
+    val folders : Map<Long, FolderTable>
+        get() = try {
+            folderManager.folders.toMap()
+        } catch (e: Exception) {
+            mapOf()
+        }
+
+    val tasksPerFolder : Map<FolderTable, MutableList<TaskTable>>
+        get() = try {
+            tasksPerFolderManager.tasksPerFolder.toMap()
+        } catch (e: Exception) {
+            mapOf()
+        }
 
     var isDarkTheme by mutableStateOf(false)
 
-    private val calendarSystem: CalendarSystem
+
 
     init {
         @RequiresApi(Build.VERSION_CODES.O)
@@ -73,16 +88,22 @@ class MainViewModel(
 
     fun start() {
         viewModelScope.launch(Dispatchers.IO) {
-            for (folder in databaseRepository.folderDao.getFolders()) {
-                val tasksInCurrentFolder =
-                    databaseRepository.taskDao.getTasksFromFolder(folder.id!!)
-                folder.taskCounts = tasksInCurrentFolder.count()
-                folders[folder.id] = folder
-                tasksPerFolder[folder] = mutableListOf()
-                tasksPerFolder[folder]!!.addAll(tasksInCurrentFolder)
-            }
-            for (task in databaseRepository.taskDao.getTasks()) {
-                tasks[task.id!!] = task
+            folderManager.start()
+            tasksManager.start()
+            if (!tasksPerFolderManager.isInitialized) {
+                for (folder in folders) {
+                    tasksPerFolderManager.updateTasksPerFolderKeyState(folder.value, Operation.ADD)
+                }
+                for (task in tasks) {
+                    folders[task.value.folder]?.let {
+                        tasksPerFolderManager.updateTasksPerFolderValueState(
+                            task.value,
+                            it,
+                            Operation.ADD
+                        )
+                    }
+                }
+                tasksPerFolderManager.isInitialized = true
             }
         }
     }
@@ -113,8 +134,6 @@ class MainViewModel(
             navState.navigationStack.push(navState.currentDestination)
             navState = navState.copy(currentDestination = destination)
         }
-        Log.d(TAG, "navigateTo: ${navState.currentDestination}")
-        Log.d(TAG, "navigateTo: ${navState.navigationStack}")
         navigateTo()
     }
 
@@ -140,32 +159,55 @@ class MainViewModel(
         uiState = uiState.copy(folderToUpdate = null)
     }
 
-    fun addFolder(folder: FolderTable) {
+    fun getFolderColors() = folderManager.colors
+
+    fun getFolderAssets() = folderManager.assets
+
+    fun addTask(task: TaskTable) {
         viewModelScope.launch(Dispatchers.IO) {
-            val id = databaseRepository.folderDao.addFolder(folder)
-            val newFolder = folder.copy(id = id)
-            updateFolderState(newFolder, Operation.ADD)
-            updateTasksPerFolderKeyState(id, Operation.ADD)
+            tasksManager.addTask(task)
+            val folder = folders[task.folder]
+            if (folder != null)
+                tasksPerFolderManager.updateTasksPerFolderValueState(task, folder, Operation.ADD)
         }
     }
 
-    fun getFolderColors() = folderColors
+    fun updateTask(task: TaskTable) {
+        viewModelScope.launch(Dispatchers.IO) {
+            tasksManager.updateTask(task)
+            val folder = folders[task.folder]
+            if (folder != null)
+                tasksPerFolderManager.updateTasksPerFolderValueState(task, folder, Operation.CHANGE)
+        }
+    }
 
-    fun getFolderAssets() = folderAssets
+    fun deleteTask(task: TaskTable) {
+        viewModelScope.launch(Dispatchers.IO) {
+            tasksManager.deleteTask(task)
+            val folder = folders[task.folder]
+            if (folder != null)
+                tasksPerFolderManager.updateTasksPerFolderValueState(task, folder, Operation.DELETE)
+        }
+    }
+
+    fun addFolder(folder: FolderTable) {
+        viewModelScope.launch(Dispatchers.IO) {
+            folderManager.addFolder(folder)
+            tasksPerFolderManager.updateTasksPerFolderKeyState(folder, Operation.ADD)
+        }
+    }
 
     fun updateFolder(folder: FolderTable) {
         viewModelScope.launch(Dispatchers.IO) {
-            databaseRepository.folderDao.updateFolder(folder)
-            updateFolderState(folder, Operation.CHANGE)
-            updateTasksPerFolderKeyState(folder.id!!, Operation.CHANGE)
+            folderManager.updateFolder(folder)
+            tasksPerFolderManager.updateTasksPerFolderKeyState(folder, Operation.CHANGE)
         }
     }
 
     fun deleteFolder(folder: FolderTable) {
         viewModelScope.launch(Dispatchers.IO) {
-            databaseRepository.folderDao.deleteFolder(folder.id!!)
-            updateTasksPerFolderKeyState(folder.id, Operation.DELETE)
-            updateFolderState(folder, Operation.DELETE)
+            folderManager.deleteFolder(folder)
+            tasksPerFolderManager.updateTasksPerFolderKeyState(folder, Operation.DELETE)
         }
     }
 
@@ -175,107 +217,6 @@ class MainViewModel(
 
     fun clearTaskToUpdate() {
         uiState = uiState.copy(taskToUpdate = null)
-    }
-
-    fun addTask(task: TaskTable) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val id = databaseRepository.taskDao.addTask(task)
-            Log.d(TAG, "addTask: $id")
-            val newTask = task.copy(id = id)
-            updateTaskState(newTask, Operation.ADD)
-            updateTasksPerFolderValueState(taskId = newTask.id!!, operation = Operation.ADD)
-        }
-    }
-
-    fun updateTask(task: TaskTable) {
-        viewModelScope.launch(Dispatchers.IO) {
-            databaseRepository.taskDao.updateTask(task)
-            updateTaskState(task, Operation.CHANGE)
-            updateTasksPerFolderValueState(task.id!!, Operation.CHANGE)
-        }
-    }
-
-    fun deleteTask(task: TaskTable) {
-        viewModelScope.launch {
-            databaseRepository.taskDao.deleteTask(taskId = task.id!!)
-            updateTasksPerFolderValueState(task.id, Operation.DELETE)
-            updateTaskState(task, Operation.DELETE)
-        }
-    }
-
-    private fun updateTaskState(task: TaskTable, operation: Operation) {
-        if (task.id == null)
-            throw Exception("TASK ID SHOULD NOT BE NULL")
-        when (operation) {
-            Operation.ADD, Operation.CHANGE -> {
-                tasks[task.id] = task
-            }
-            Operation.DELETE -> {
-                tasks.remove(task.id)
-            }
-        }
-    }
-
-    private fun updateFolderState(folder: FolderTable, operation: Operation) {
-        if (folder.id == null)
-            throw Exception("FOLDER ID SHOULD NOT BE NULL")
-        when (operation) {
-            Operation.ADD, Operation.CHANGE -> {
-                folders[folder.id] = folder
-            }
-            Operation.DELETE -> {
-                folders.remove(folder.id)
-            }
-        }
-    }
-
-    private fun updateTasksPerFolderKeyState(folderId: Long, operation: Operation) {
-        val folder = folders[folderId] ?: throw Exception("FOLDER $folderId DO NOT EXISTS")
-        when (operation) {
-            Operation.ADD -> {
-                tasksPerFolder[folder] = mutableListOf()
-            }
-            Operation.CHANGE -> {
-                for (eachFolder in tasksPerFolder.keys) {
-                    if (eachFolder.id == folderId) {
-                        val list = tasksPerFolder[eachFolder]!!
-                        tasksPerFolder.remove(eachFolder)
-                        tasksPerFolder[folder] = list
-                        return
-                    }
-                }
-            }
-            Operation.DELETE -> {
-                tasksPerFolder.remove(folder)
-            }
-        }
-    }
-
-    private fun updateTasksPerFolderValueState(taskId: Long, operation: Operation) {
-        val task = tasks[taskId] ?: throw Exception("TASK $taskId DO NOT EXISTS")
-        val folder = folders[task.folder] ?: throw Exception("FOLDER ${task.folder} DO NOT EXISTS")
-        when (operation) {
-            Operation.ADD -> {
-                tasksPerFolder[folder]!!.add(task)
-            }
-            Operation.CHANGE -> {
-                val list = tasksPerFolder[folder]!!
-                for (index in list.indices) {
-                    if (list[index].id == task.id) {
-                        if (list[index].folder == task.folder)
-                            tasksPerFolder[folder]!![index] = task
-                        else
-                            tasksPerFolder[folder]!!.remove(list[index])
-
-                        return
-                    }
-                }
-                tasksPerFolder[folder]!!.add(task)
-            }
-            Operation.DELETE -> {
-                tasksPerFolder[folder]!!.remove(task)
-            }
-        }
     }
 
     fun setUsername(name: String?) {
@@ -342,12 +283,6 @@ class MainViewModel(
         secondaryDrawable?.draw(canvas)
 
         return combinedBitmap
-    }
-
-    private enum class Operation {
-        ADD,
-        CHANGE,
-        DELETE
     }
 
 }
