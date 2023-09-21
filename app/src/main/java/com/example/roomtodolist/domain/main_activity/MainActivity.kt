@@ -45,9 +45,10 @@ class MainActivity : ComponentActivity() {
             mainViewModel.setNavHostController(rememberNavController())
             mainViewModel.setWindowSizeClass(calculateWindowSizeClass(activity = this))
             RoomToDoListTheme(
-                darkTheme = mainViewModel.uiState.isDarkTheme
+                darkTheme = mainViewModel.isDarkTheme
             ) {
                 MainActivityScreen(mainViewModel = mainViewModel)
+                Log.d(TAG, "onCreate tasks: ${mainViewModel.tasksPerFolder.toMap()}")
             }
         }
     }

@@ -3,6 +3,7 @@ package com.example.roomtodolist.domain.main_activity
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build
@@ -10,6 +11,7 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.core.content.ContextCompat
@@ -18,6 +20,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
+import com.example.roomtodolist.R
 import com.example.roomtodolist.data.DatabaseRepository
 import com.example.roomtodolist.data.SharedPreferencesRepository
 import com.example.roomtodolist.data.folder.FolderTable
@@ -41,17 +44,26 @@ class MainViewModel(
     var uiState by mutableStateOf(MainUiState())
         private set
 
+    val folders = mutableStateMapOf<Long, FolderTable>()
+
+    val tasks = mutableStateMapOf<Long, TaskTable>()
+
+    val tasksPerFolder = mutableStateMapOf<FolderTable, MutableList<TaskTable>>()
+
+    var isDarkTheme by mutableStateOf(false)
+
     private val calendarSystem: CalendarSystem
 
     init {
         @RequiresApi(Build.VERSION_CODES.O)
         calendarSystem = CalendarSystem()
 
+        isDarkTheme = sharedPreferencesRepository.isDarkMode()
+
         uiState = uiState.copy(
             profilePicture = if (sharedPreferencesRepository.getProfilePicture() == null) null
                             else Uri.parse(sharedPreferencesRepository.getProfilePicture()),
-            username = sharedPreferencesRepository.getUsername(),
-            isDarkTheme = sharedPreferencesRepository.isDarkMode()
+            username = sharedPreferencesRepository.getUsername()
         )
 
     }
@@ -60,10 +72,6 @@ class MainViewModel(
         private set
 
     fun start() {
-        val folders = hashMapOf<Long, FolderTable>()
-        val tasks = hashMapOf<Long, TaskTable>()
-        val tasksPerFolder = hashMapOf<FolderTable, MutableList<TaskTable>>()
-
         viewModelScope.launch(Dispatchers.IO) {
             for (folder in databaseRepository.folderDao.getFolders()) {
                 val tasksInCurrentFolder =
@@ -76,11 +84,6 @@ class MainViewModel(
             for (task in databaseRepository.taskDao.getTasks()) {
                 tasks[task.id!!] = task
             }
-            uiState = uiState.copy(
-                folders = folders,
-                tasks = tasks,
-                tasksPerFolder = tasksPerFolder
-            )
         }
     }
 
@@ -205,10 +208,10 @@ class MainViewModel(
             throw Exception("TASK ID SHOULD NOT BE NULL")
         when (operation) {
             Operation.ADD, Operation.CHANGE -> {
-                uiState.tasks[task.id] = task
+                tasks[task.id] = task
             }
             Operation.DELETE -> {
-                uiState.tasks.remove(task.id)
+                tasks.remove(task.id)
             }
         }
     }
@@ -218,59 +221,59 @@ class MainViewModel(
             throw Exception("FOLDER ID SHOULD NOT BE NULL")
         when (operation) {
             Operation.ADD, Operation.CHANGE -> {
-                uiState.folders[folder.id] = folder
+                folders[folder.id] = folder
             }
             Operation.DELETE -> {
-                uiState.folders.remove(folder.id)
+                folders.remove(folder.id)
             }
         }
     }
 
     private fun updateTasksPerFolderKeyState(folderId: Long, operation: Operation) {
-        val folder = uiState.folders[folderId] ?: throw Exception("FOLDER $folderId DO NOT EXISTS")
+        val folder = folders[folderId] ?: throw Exception("FOLDER $folderId DO NOT EXISTS")
         when (operation) {
             Operation.ADD -> {
-                uiState.tasksPerFolder[folder] = mutableListOf()
+                tasksPerFolder[folder] = mutableListOf()
             }
             Operation.CHANGE -> {
-                for (eachFolder in uiState.tasksPerFolder.keys) {
+                for (eachFolder in tasksPerFolder.keys) {
                     if (eachFolder.id == folderId) {
-                        val list = uiState.tasksPerFolder[eachFolder]!!
-                        uiState.tasksPerFolder.remove(eachFolder)
-                        uiState.tasksPerFolder[folder] = list
+                        val list = tasksPerFolder[eachFolder]!!
+                        tasksPerFolder.remove(eachFolder)
+                        tasksPerFolder[folder] = list
                         return
                     }
                 }
             }
             Operation.DELETE -> {
-                uiState.tasksPerFolder.remove(folder)
+                tasksPerFolder.remove(folder)
             }
         }
     }
 
     private fun updateTasksPerFolderValueState(taskId: Long, operation: Operation) {
-        val task = uiState.tasks[taskId] ?: throw Exception("TASK $taskId DO NOT EXISTS")
-        val folder = uiState.folders[task.folder] ?: throw Exception("FOLDER ${task.folder} DO NOT EXISTS")
+        val task = tasks[taskId] ?: throw Exception("TASK $taskId DO NOT EXISTS")
+        val folder = folders[task.folder] ?: throw Exception("FOLDER ${task.folder} DO NOT EXISTS")
         when (operation) {
             Operation.ADD -> {
-                uiState.tasksPerFolder[folder]!!.add(task)
+                tasksPerFolder[folder]!!.add(task)
             }
             Operation.CHANGE -> {
-                val list = uiState.tasksPerFolder[folder]!!
+                val list = tasksPerFolder[folder]!!
                 for (index in list.indices) {
                     if (list[index].id == task.id) {
                         if (list[index].folder == task.folder)
-                            uiState.tasksPerFolder[folder]!![index] = task
+                            tasksPerFolder[folder]!![index] = task
                         else
-                            uiState.tasksPerFolder[folder]!!.remove(list[index])
+                            tasksPerFolder[folder]!!.remove(list[index])
 
                         return
                     }
                 }
-                uiState.tasksPerFolder[folder]!!.add(task)
+                tasksPerFolder[folder]!!.add(task)
             }
             Operation.DELETE -> {
-                uiState.tasksPerFolder[folder]!!.remove(task)
+                tasksPerFolder[folder]!!.remove(task)
             }
         }
     }
@@ -286,7 +289,7 @@ class MainViewModel(
     }
 
     fun setIsDarkMode(isDark: Boolean) {
-        uiState = uiState.copy(isDarkTheme = isDark)
+        isDarkTheme = isDark
         sharedPreferencesRepository.setMode(isDark)
     }
 

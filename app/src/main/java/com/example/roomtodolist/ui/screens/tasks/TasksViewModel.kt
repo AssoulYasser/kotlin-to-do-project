@@ -36,12 +36,13 @@ class TasksViewModel(private val mainViewModel: MainViewModel) : ViewModel() {
         mainViewModel.setFolderToUpdate(folderTable)
     }
 
-    fun isDarkMode() = mainViewModel.uiState.isDarkTheme
+    fun isDarkMode() = mainViewModel.isDarkTheme
 
-    fun getFolders() : List<FolderTable> = mainViewModel.uiState.folders.values.toList()
+    fun getFolders() : List<FolderTable> = mainViewModel.folders.values.toList()
 
-    fun noTaskExists() : Boolean = mainViewModel.uiState.tasks.isEmpty()
+    fun noTaskExists() : Boolean = mainViewModel.tasks.isEmpty()
 
-    fun getTasksPerFolder(): HashMap<FolderTable, MutableList<TaskTable>> = mainViewModel.uiState.tasksPerFolder
+    //TODO
+    fun getTasksPerFolder(): HashMap<FolderTable, MutableList<TaskTable>> = hashMapOf()
 
 }

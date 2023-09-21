@@ -46,7 +46,7 @@ class AddTaskViewModel(private val mainViewModel: MainViewModel) : ViewModel() {
         taskFolderState = folder
     }
 
-    fun getFolders() : List<FolderTable> = mainViewModel.uiState.folders.values.toList()
+    fun getFolders() : List<FolderTable> = mainViewModel.folders.values.toList()
 
     fun navigateToAddFolderScreen() {
         mainViewModel.navigateTo(NestedRoutes.ADD_FOLDER.name)

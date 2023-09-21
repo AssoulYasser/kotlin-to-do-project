@@ -12,7 +12,7 @@ class ProfileViewModel(
 
     fun getUsername() = mainViewModel.uiState.username
 
-    fun isDarkMode() = mainViewModel.uiState.isDarkTheme
+    fun isDarkMode() = mainViewModel.isDarkTheme
 
     fun setUsername(newUsername: String?) {
         mainViewModel.setUsername(newUsername)
