@@ -1,6 +1,5 @@
 package com.example.roomtodolist.domain.main_activity
 
-import android.util.Log
 import androidx.compose.runtime.mutableStateMapOf
 import com.example.roomtodolist.data.folder.FolderDAO
 import com.example.roomtodolist.data.folder.FolderTable
@@ -9,24 +8,29 @@ import com.example.roomtodolist.data.folder.folderColors
 
 class FoldersManager(private val folderDAO: FolderDAO) {
 
-    var hasInitialized = false
+    private var hasInitialized = false
     val folders = mutableStateMapOf<Long, FolderTable>()
     val colors = folderColors
     val assets = folderAssets
 
-    suspend fun start()  {
-        if (!hasInitialized) {
-            for (folder in folderDAO.getFolders()) {
-                folders[folder.id!!] = folder
-            }
-            hasInitialized = true
+    suspend fun initFolders(onFinish: (Map<Long, FolderTable>) -> Unit) : Map<Long, FolderTable> {
+        if (hasInitialized)
+            return mapOf()
+
+        hasInitialized = true
+
+        for (folder in folderDAO.getFolders()) {
+            folders[folder.id!!] = folder
         }
+        onFinish(folders.toMap())
+        return folders.toMap()
     }
 
-    suspend fun addFolder(folder: FolderTable) {
+    suspend fun addFolder(folder: FolderTable) : FolderTable {
         val id = folderDAO.addFolder(folder)
         val newFolder = folder.copy(id = id)
         updateFolderState(newFolder, Operation.ADD)
+        return newFolder
     }
 
     suspend fun updateFolder(folder: FolderTable) {

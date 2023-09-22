@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -17,6 +18,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -31,23 +36,39 @@ import com.example.roomtodolist.data.task.TaskTable
 fun TaskCard(
     taskTable: TaskTable,
     color: Color = MaterialTheme.colorScheme.onBackground,
-    selected: Boolean = false,
     onClick: (TaskTable) -> Unit,
     onSelect: (TaskTable) -> Unit
 ) {
+    var isCompleted by remember {
+        mutableStateOf(false)
+    }
     Row(
-        modifier = Modifier.fillMaxWidth().padding(vertical = 10.dp).clickable { onClick(taskTable) },
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 10.dp)
+            .clickable { onClick(taskTable) },
         horizontalArrangement = Arrangement.spacedBy(10.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Surface(
             shape = CircleShape,
             border = BorderStroke(1.2.dp, color),
-            color = if (selected) color else Color.Transparent,
+            color = if (isCompleted) color else Color.Transparent,
             modifier = Modifier
                 .size(16.dp)
-                .clickable { onSelect(taskTable) },
-            content = {}
+                .clickable {
+                    isCompleted = !isCompleted
+                    onSelect(taskTable)
+                },
+            content = {
+                if (isCompleted)
+                    Icon(
+                        painter = painterResource(id = R.drawable.check_icon),
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.background,
+                        modifier = Modifier.fillMaxSize().padding(5.dp)
+                    )
+            }
         )
 
         Column(

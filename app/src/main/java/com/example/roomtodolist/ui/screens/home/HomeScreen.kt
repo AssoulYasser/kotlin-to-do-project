@@ -111,7 +111,7 @@ fun HomeScreen(
                 homeViewModel.navigateToTaskShowCaseScreen()
             },
             isDark = homeViewModel.isDarkMode(),
-            onSelectTask = {}
+            onSelectTask = { homeViewModel.selectTask(it) }
         )
         Spacer(modifier = Modifier)
     }

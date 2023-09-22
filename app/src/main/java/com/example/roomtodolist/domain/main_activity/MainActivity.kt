@@ -48,7 +48,7 @@ class MainActivity : ComponentActivity() {
                 darkTheme = mainViewModel.isDarkTheme
             ) {
                 MainActivityScreen(mainViewModel = mainViewModel)
-                Log.d(TAG, "onCreate: ${mainViewModel.tasksPerFolder.values}")
+                Log.d(TAG, "onCreate: ${mainViewModel.tasksPerFolder}")
             }
         }
     }

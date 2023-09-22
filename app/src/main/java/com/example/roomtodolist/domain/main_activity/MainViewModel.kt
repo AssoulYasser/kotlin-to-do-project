@@ -6,6 +6,7 @@ import android.graphics.Canvas
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.getValue
@@ -24,6 +25,8 @@ import com.example.roomtodolist.data.task.TaskTable
 import com.example.roomtodolist.domain.calendar.CalendarSystem
 import com.example.roomtodolist.ui.navigation.MainRoutes
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
 import java.lang.Exception
 import java.time.LocalDate
@@ -44,30 +47,13 @@ class MainViewModel(
     private val tasksPerFolderManager = TasksPerFolderManager()
     private val calendarSystem: CalendarSystem
 
-    val tasks : Map<Long, TaskTable>
-        get() = try {
-            tasksManager.tasks.toMap()
-        } catch (e: Exception) {
-            mapOf()
-        }
+    val tasks : Map<Long, TaskTable> = tasksManager.tasks
 
-    val folders : Map<Long, FolderTable>
-        get() = try {
-            folderManager.folders.toMap()
-        } catch (e: Exception) {
-            mapOf()
-        }
+    val folders : Map<Long, FolderTable> = folderManager.folders
 
-    val tasksPerFolder : Map<FolderTable, MutableList<TaskTable>>
-        get() = try {
-            tasksPerFolderManager.tasksPerFolder.toMap()
-        } catch (e: Exception) {
-            mapOf()
-        }
+    val tasksPerFolder : Map<FolderTable, MutableList<TaskTable>> = tasksPerFolderManager.tasksPerFolder
 
     var isDarkTheme by mutableStateOf(false)
-
-
 
     init {
         @RequiresApi(Build.VERSION_CODES.O)
@@ -88,22 +74,12 @@ class MainViewModel(
 
     fun start() {
         viewModelScope.launch(Dispatchers.IO) {
-            folderManager.start()
-            tasksManager.start()
-            if (!tasksPerFolderManager.isInitialized) {
-                for (folder in folders) {
-                    tasksPerFolderManager.updateTasksPerFolderKeyState(folder.value, Operation.ADD)
-                }
-                for (task in tasks) {
-                    folders[task.value.folder]?.let {
-                        tasksPerFolderManager.updateTasksPerFolderValueState(
-                            task.value,
-                            it,
-                            Operation.ADD
-                        )
+            folderManager.initFolders { initialFolders ->
+                viewModelScope.launch(Dispatchers.IO) {
+                    tasksManager.initTasks { initialTasks ->
+                        tasksPerFolderManager.initTasksPerFolder(initialFolders, initialTasks)
                     }
                 }
-                tasksPerFolderManager.isInitialized = true
             }
         }
     }
@@ -165,10 +141,10 @@ class MainViewModel(
 
     fun addTask(task: TaskTable) {
         viewModelScope.launch(Dispatchers.IO) {
-            tasksManager.addTask(task)
+            val newTask = tasksManager.addTask(task)
             val folder = folders[task.folder]
             if (folder != null)
-                tasksPerFolderManager.updateTasksPerFolderValueState(task, folder, Operation.ADD)
+                tasksPerFolderManager.updateTasksPerFolderValueState(newTask, folder, Operation.ADD)
         }
     }
 
@@ -190,10 +166,20 @@ class MainViewModel(
         }
     }
 
+    fun selectTask(taskTable: TaskTable) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val folder = folders[taskTable.folder]!!
+            if (tasksManager.selectTask(taskTable, this.coroutineContext.job)) {
+                Log.d(TAG, "selectTask: ")
+                tasksPerFolderManager.updateTasksPerFolderValueState(taskTable, folder, Operation.DELETE)
+            }
+        }
+    }
+
     fun addFolder(folder: FolderTable) {
         viewModelScope.launch(Dispatchers.IO) {
-            folderManager.addFolder(folder)
-            tasksPerFolderManager.updateTasksPerFolderKeyState(folder, Operation.ADD)
+            val newFolder = folderManager.addFolder(folder)
+            tasksPerFolderManager.updateTasksPerFolderKeyState(newFolder, Operation.ADD)
         }
     }
 

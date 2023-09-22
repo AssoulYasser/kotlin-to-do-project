@@ -67,6 +67,10 @@ class HomeViewModel(private val mainViewModel: MainViewModel) : ViewModel() {
         selectedDayInCurrentDateState = day
     }
 
+    fun selectTask(taskTable: TaskTable) {
+        mainViewModel.selectTask(taskTable)
+    }
+
     fun isDarkMode() = mainViewModel.isDarkTheme
     fun isCompactWidth() = mainViewModel.windowSizeClass.widthSizeClass == WindowWidthSizeClass.Compact
     fun getDaysOfWeek() = mainViewModel.getDaysOfTheWeek()
