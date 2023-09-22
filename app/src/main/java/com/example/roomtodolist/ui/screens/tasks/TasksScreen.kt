@@ -36,7 +36,7 @@ fun TasksScreen(
         Spacer(modifier = Modifier)
         AddTaskButton { tasksViewModel.navigateToAddTaskScreen() }
         TasksPerFolderCards(
-            tasksPerFolder = tasksViewModel.getTasksPerFolder(),
+            tasksPerFolder = { tasksViewModel.getTasksPerFolder() },
             noTaskExists = tasksViewModel.noTaskExists(),
             addTask = { tasksViewModel.navigateToAddTaskScreen() },
             isDark = tasksViewModel.isDarkMode(),

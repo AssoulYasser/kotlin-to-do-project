@@ -17,7 +17,7 @@ import com.example.roomtodolist.data.task.TaskTable
 
 @Composable
 fun TasksPerFolderCards(
-    tasksPerFolder: Map<FolderTable, MutableList<TaskTable>>,
+    tasksPerFolder: () -> Map<FolderTable, MutableList<TaskTable>>,
     noTaskExists: Boolean = true,
     isDark: Boolean,
     addTask: () -> Unit,
@@ -50,11 +50,11 @@ fun TasksPerFolderCards(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            for (folder in tasksPerFolder.keys) {
-                if (tasksPerFolder.containsKey(folder) && tasksPerFolder[folder]!!.isNotEmpty()) {
+            for (folder in tasksPerFolder().keys) {
+                if (tasksPerFolder().containsKey(folder) && tasksPerFolder()[folder]!!.isNotEmpty()) {
                     TasksPerFolderCard(
                         folder = folder,
-                        tasks = tasksPerFolder[folder]!!,
+                        tasks = tasksPerFolder()[folder]!!,
                         onClick = onClick,
                         onAdjustFolder = onAdjustFolder,
                         onTaskSelect = onSelectTask

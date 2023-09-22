@@ -62,16 +62,6 @@ fun HomeScreen(
     homeViewModel: HomeViewModel
 ) {
 
-    val tasksPerFolder = homeViewModel.getTasksPerFolderInSelectedDay()
-    var isEmpty = true
-
-    for (tasks in tasksPerFolder.values) {
-        if (tasks.isNotEmpty()){
-            isEmpty = false
-            break
-        }
-    }
-
     Container(actionBar = {
         TopBar(
             modifier = Modifier
@@ -88,14 +78,14 @@ fun HomeScreen(
         Spacer(modifier = Modifier)
 
         WeekCalendar(
-            selectedDay = homeViewModel.uiState.selectedDayInCurrentDate,
+            selectedDay = { homeViewModel.selectedDayInCurrentDateState },
             setSelectedDay = { homeViewModel.setSelectedDay(it) },
             days = homeViewModel.getDaysOfWeek(),
             isDark = homeViewModel.isDarkMode(),
             isCompactWidth = homeViewModel.isCompactWidth()
         )
         SearchForTask(
-            value = homeViewModel.uiState.search,
+            value = { homeViewModel.searchState },
             onValueChange = { homeViewModel.setSearch(it) }
         )
         Folders(
@@ -109,8 +99,7 @@ fun HomeScreen(
             seeAll = { homeViewModel.navigateToFoldersScreen() }
         )
         Tasks(
-            tasksPerFolder = tasksPerFolder,
-            noTaskExists = isEmpty,
+            tasksPerFolder = { homeViewModel.getTasksPerFolderInSelectedDay() },
             seeAll = { homeViewModel.navigateToTasksScreen() },
             adjustFolder = {
                 homeViewModel.setFolderToUpdate(it)
@@ -186,7 +175,7 @@ private fun TopBar(
 private fun WeekCalendar(
     days: HashMap<Int, Days>,
     isCompactWidth: Boolean,
-    selectedDay: Int,
+    selectedDay: () -> Int,
     isDark: Boolean,
     setSelectedDay: (Int) -> Unit
 ) {
@@ -224,7 +213,7 @@ private fun WeekCalendar(
 
 @Composable
 private fun RowScope.DayElement(
-    selectedDay: Int,
+    selectedDay: () -> Int,
     setSelectedDay: (Int) -> Unit,
     dayName: String,
     dayNumber: Int,
@@ -235,14 +224,14 @@ private fun RowScope.DayElement(
             .weight(1f)
             .padding(vertical = 12.dp)
             .background(
-                if (selectedDay == dayNumber)
+                if (selectedDay() == dayNumber)
                     MaterialTheme.colorScheme.secondary
                 else
                     Color.Transparent,
                 shape = RoundedCornerShape(20f)
             )
             .selectable(
-                selected = selectedDay == dayNumber,
+                selected = selectedDay() == dayNumber,
                 enabled = true,
                 role = Role.Tab,
                 onClick = {
@@ -263,7 +252,7 @@ private fun RowScope.DayElement(
                     if (isDark)
                         MaterialTheme.colorScheme.onBackground
                     else {
-                        if (selectedDay == dayNumber) Color.White else Color.Black
+                        if (selectedDay() == dayNumber) Color.White else Color.Black
                     },
                 fontSize = 11.sp,
                 fontWeight = FontWeight.Medium,
@@ -274,7 +263,7 @@ private fun RowScope.DayElement(
                     if (isDark)
                         MaterialTheme.colorScheme.onBackground
                     else {
-                        if (selectedDay == dayNumber) Color.White else Color.Black
+                        if (selectedDay() == dayNumber) Color.White else Color.Black
                     },
                 fontSize = 11.sp,
                 fontWeight = FontWeight.Medium,
@@ -285,12 +274,12 @@ private fun RowScope.DayElement(
 
 @Composable
 fun SearchForTask(
-    value: String,
+    value: () -> String,
     onValueChange: (String) -> Unit
 ) {
     val focusManager = LocalFocusManager.current
     TextField(
-        value = value,
+        value = value(),
         onValueChange = onValueChange,
         modifier = Modifier
             .fillMaxWidth(),
@@ -391,8 +380,7 @@ private fun Folders(
 
 @Composable
 fun Tasks(
-    tasksPerFolder: HashMap<FolderTable, MutableList<TaskTable>>,
-    noTaskExists: Boolean,
+    tasksPerFolder: () -> HashMap<FolderTable, MutableList<TaskTable>>,
     seeAll: () -> Unit,
     isDark: Boolean,
     addTask: () -> Unit,
@@ -400,6 +388,14 @@ fun Tasks(
     onSelectTask: (TaskTable) -> Unit,
     adjustFolder: (FolderTable) -> Unit
 ) {
+    var isEmpty = true
+
+    for (tasks in tasksPerFolder().values) {
+        if (tasks.isNotEmpty()){
+            isEmpty = false
+            break
+        }
+    }
     Column(
         modifier = Modifier.fillMaxWidth()
     ) {
@@ -409,7 +405,7 @@ fun Tasks(
 
         TasksPerFolderCards(
             tasksPerFolder = tasksPerFolder,
-            noTaskExists = noTaskExists,
+            noTaskExists = isEmpty,
             addTask = addTask,
             onClick = onClick,
             onSelectTask = onSelectTask,
