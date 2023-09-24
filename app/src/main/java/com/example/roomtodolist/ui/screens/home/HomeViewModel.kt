@@ -68,8 +68,8 @@ class HomeViewModel(private val mainViewModel: MainViewModel) : ViewModel() {
     fun isDarkMode() = mainViewModel.uiState.isDarkTheme
     fun isCompactWidth() = mainViewModel.windowSizeClass.widthSizeClass == WindowWidthSizeClass.Compact
     fun getDaysOfWeek() = mainViewModel.getDaysOfTheWeek()
-    fun getFolders() : List<FolderTable> = mainViewModel.uiState.folders.values.toList()
-    private fun getTasksPerFolder(): HashMap<FolderTable, MutableList<TaskTable>> = mainViewModel.uiState.tasksPerFolder
+    fun getFolders() : List<FolderTable> = mainViewModel.folders.values.toList()
+    private fun getTasksPerFolder(): Map<FolderTable, MutableList<TaskTable>> = mainViewModel.tasksPerFolder
     private fun getSelectedDate() : LocalDate = LocalDate.of(
         LocalDate.now().year,
         LocalDate.now().month,

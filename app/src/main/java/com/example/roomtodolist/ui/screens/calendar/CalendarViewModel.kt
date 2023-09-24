@@ -76,7 +76,7 @@ class CalendarViewModel(private val mainViewModel: MainViewModel) : ViewModel() 
     )
 
     private fun filterTasksByCurrentDay() : HashMap<TaskTable, Color> {
-        val tasksPerFolder = mainViewModel.uiState.tasksPerFolder
+        val tasksPerFolder = mainViewModel.tasksPerFolder
         val returnValue = HashMap<TaskTable, Color>()
         for ((folder, tasks) in tasksPerFolder) {
             for(task in tasks) {

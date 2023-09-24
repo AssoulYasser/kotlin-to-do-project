@@ -27,7 +27,7 @@ class TaskShowCaseViewModel(val mainViewModel: MainViewModel) : ViewModel() {
         originalTask = mainViewModel.uiState.taskToUpdate
         viewModelScope.launch(Dispatchers.IO) {
             if (originalTask != null) {
-                val folder = mainViewModel.uiState.folders[originalTask!!.folder]
+                val folder = mainViewModel.folders[originalTask!!.folder]
                 uiState.taskTitle = originalTask!!.title
                 uiState.taskPriority = originalTask!!.priority
                 uiState.taskDate = originalTask!!.date
@@ -78,7 +78,7 @@ class TaskShowCaseViewModel(val mainViewModel: MainViewModel) : ViewModel() {
         uiState = uiState.copy(taskFolder = folder)
     }
 
-    fun getFolders() = mainViewModel.uiState.folders.values.toList()
+    fun getFolders() = mainViewModel.folders.values.toList()
 
     fun isReadyToSave() = uiState.taskTitle != "" &&
             uiState.taskPriority != TaskPriority.UNSPECIFIED &&

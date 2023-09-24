@@ -27,6 +27,6 @@ class FoldersViewModel(val mainViewModel: MainViewModel) : ViewModel() {
         mainViewModel.setFolderToUpdate(folder)
     }
 
-    fun getFolders() = mainViewModel.uiState.folders.values.toList()
+    fun getFolders() = mainViewModel.folders.values.toList()
 
 }
