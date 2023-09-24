@@ -34,7 +34,6 @@ fun FolderCard(
     border: BorderStroke? = null,
     onFolderClick: (FolderTable) -> Unit
 ) {
-    val context = LocalContext.current
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp.dp
     val cardWidth = screenWidth.div(2F)

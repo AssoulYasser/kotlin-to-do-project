@@ -5,59 +5,55 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.roomtodolist.ui.components.ActionBar
 import com.example.roomtodolist.ui.components.AddFolderCard
 import com.example.roomtodolist.ui.components.Container
 import com.example.roomtodolist.ui.components.FolderCard
+import com.maxkeppeker.sheets.core.views.Grid
 
 @Composable
 fun FoldersScreen(
     foldersViewModel: FoldersViewModel
 ) {
     val folders = foldersViewModel.getFolders()
-    @Composable
-    fun RowScope.Folder(index: Int) {
-        Box(modifier = Modifier.weight(1f)) {
-            FolderCard(
-                folder = folders[index],
-                onFolderClick = {
-                    foldersViewModel.setFolderToUpdate(folders[index])
-                    foldersViewModel.navigateToFolderShowCase()
-                },
-                border = BorderStroke(1.dp, MaterialTheme.colorScheme.primaryContainer)
-            )
-        }
-    }
-    Container(actionBar = {
-        ActionBar(title = "Folders") {
-            foldersViewModel.navigateBack()
-        }
-    }) {
-        Column(
+    var isRight = false
+    Container(
+        actionBar = {
+            ActionBar(title = "Folders") {
+                foldersViewModel.navigateBack()
+            }
+        },
+        isScrollable = false
+    ) {
+        LazyVerticalGrid(
             modifier = Modifier.fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(10.dp)
+            columns = GridCells.Fixed(2)
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(5.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
+            item {
                 AddFolderCard(
                     modifier = Modifier
-                        .weight(1f)
                         .aspectRatio(1f)
+                        .padding(end = 10.dp, bottom = 10.dp)
                         .background(
                             MaterialTheme.colorScheme.primary.copy(alpha = 0.25f),
                             RoundedCornerShape(24f)
@@ -65,22 +61,24 @@ fun FoldersScreen(
                 ) {
                     foldersViewModel.navigateToAddFolderScreen()
                 }
-                if (folders.isNotEmpty())
-                    Folder(index = 0)
             }
-            for (folderIndex in 1 until folders.size step 2) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(5.dp),
-                    verticalAlignment = Alignment.CenterVertically
+
+            items(items = folders, key = { it.id!! }) { folder ->
+                Box(
+                    modifier =
+                    if (isRight)
+                        Modifier.aspectRatio(1f).padding(end = 10.dp, bottom = 10.dp)
+                    else
+                        Modifier.aspectRatio(1f).padding(start = 10.dp, bottom = 10.dp)
                 ) {
-                    if (folderIndex + 1 < folders.size) {
-                        Folder(index = folderIndex)
-                        Folder(index = folderIndex + 1)
-                    }
-                    else {
-                        Folder(index = folderIndex)
-                    }
+                    FolderCard(
+                        folder = folder,
+                        onFolderClick = {
+                            foldersViewModel.setFolderToUpdate(folder)
+                            foldersViewModel.navigateToFolderShowCase()
+                        }
+                    )
+                    isRight = !isRight
                 }
             }
         }
