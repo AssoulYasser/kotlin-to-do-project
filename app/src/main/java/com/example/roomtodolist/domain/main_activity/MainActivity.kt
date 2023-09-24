@@ -11,11 +11,19 @@ import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSiz
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
 import com.example.roomtodolist.data.DatabaseRepository
 import com.example.roomtodolist.data.SharedPreferencesRepository
+import com.example.roomtodolist.data.folder.folderAssets
+import com.example.roomtodolist.data.task.TaskPriority
+import com.example.roomtodolist.data.task.TaskTable
 import com.example.roomtodolist.ui.theme.RoomToDoListTheme
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import java.time.LocalDate
+import java.time.LocalTime
 
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 class MainActivity : ComponentActivity() {

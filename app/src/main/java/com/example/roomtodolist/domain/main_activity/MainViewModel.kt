@@ -31,6 +31,7 @@ import com.example.roomtodolist.ui.navigation.MainRoutes
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.Month
@@ -202,12 +203,19 @@ class MainViewModel(
     }
 
     fun deleteTask(task: TaskTable) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             taskManager.deleteTask(task)
             tasksPerFolderManager.deleteTask(folders[task.folder]!!, task)
         }
     }
 
+    fun selectTask(taskTable: TaskTable) {
+        viewModelScope.launch (Dispatchers.IO){
+            taskManager.selectTask(taskTable, this.coroutineContext.job) {
+                tasksPerFolderManager.deleteTask(folders[taskTable.folder]!!, taskTable)
+            }
+        }
+    }
 
     fun setUsername(name: String?) {
         uiState = uiState.copy(username = name)

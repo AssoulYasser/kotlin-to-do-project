@@ -366,7 +366,6 @@ private fun OnBoardingScreen(
     val isNotCompact = windowSizeClass.heightSizeClass != WindowHeightSizeClass.Compact
     val pagerState = rememberPagerState()
     val coroutineScope = rememberCoroutineScope()
-    Log.d("DEBUGGING : ", pagerState.toString())
     Column(
         modifier = Modifier
             .fillMaxSize()
