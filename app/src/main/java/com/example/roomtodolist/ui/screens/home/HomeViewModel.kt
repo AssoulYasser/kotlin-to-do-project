@@ -65,7 +65,7 @@ class HomeViewModel(private val mainViewModel: MainViewModel) : ViewModel() {
         uiState = uiState.copy(selectedDayInCurrentDate = day)
     }
 
-    fun isDarkMode() = mainViewModel.uiState.isDarkTheme
+    fun isDarkMode() = mainViewModel.isDarkTheme
     fun isCompactWidth() = mainViewModel.windowSizeClass.widthSizeClass == WindowWidthSizeClass.Compact
     fun getDaysOfWeek() = mainViewModel.getDaysOfTheWeek()
     fun getFolders() : List<FolderTable> = mainViewModel.folders.values.toList()
@@ -92,9 +92,9 @@ class HomeViewModel(private val mainViewModel: MainViewModel) : ViewModel() {
         return returnValue
     }
 
-    fun getProfilePicture() : Uri? = mainViewModel.uiState.profilePicture
+    fun getProfilePicture() : Uri? = mainViewModel.profilePicture
 
-    fun getUsername() : String? = mainViewModel.uiState.username
+    fun getUsername() : String? = mainViewModel.username
     fun selectTask(taskTable: TaskTable) {
         mainViewModel.selectTask(taskTable)
     }

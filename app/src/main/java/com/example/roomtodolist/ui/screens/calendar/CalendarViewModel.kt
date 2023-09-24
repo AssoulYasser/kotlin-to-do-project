@@ -59,7 +59,7 @@ class CalendarViewModel(private val mainViewModel: MainViewModel) : ViewModel() 
         selectedDay = dayOfMonth
     }
 
-    fun isDarkMode(): Boolean = mainViewModel.uiState.isDarkTheme
+    fun isDarkMode(): Boolean = mainViewModel.isDarkTheme
 
     fun getDaysOfTheWeek() = Days.values()
 

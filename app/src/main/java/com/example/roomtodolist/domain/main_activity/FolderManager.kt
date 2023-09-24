@@ -10,7 +10,12 @@ import com.example.roomtodolist.data.folder.folderColors
 class FolderManager(private val folderDAO: FolderDAO) {
 
     private var hasInitialized = false
+
     val folders = mutableStateMapOf<Long, FolderTable>()
+
+    var folderToUpdate: FolderTable? = null
+        private set
+
 
     suspend fun initFolders(onFinish: (List<FolderTable>) -> Unit) {
         if (hasInitialized)
@@ -30,9 +35,17 @@ class FolderManager(private val folderDAO: FolderDAO) {
         return newFolder
     }
 
+    fun setFolderToUpdate(folder: FolderTable) {
+        folderToUpdate = folder
+    }
+
     suspend fun updateFolder(folder: FolderTable) {
         folderDAO.updateFolder(folder)
         folders[folder.id!!] = folder
+    }
+
+    fun clearFolderToUpdate() {
+        folderToUpdate = null
     }
 
     suspend fun deleteFolder(folder: FolderTable) {

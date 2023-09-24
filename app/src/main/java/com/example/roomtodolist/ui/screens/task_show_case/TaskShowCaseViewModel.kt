@@ -24,7 +24,7 @@ class TaskShowCaseViewModel(val mainViewModel: MainViewModel) : ViewModel() {
     private var originalTask : TaskTable? = null
 
     fun start() {
-        originalTask = mainViewModel.uiState.taskToUpdate
+        originalTask = mainViewModel.taskToUpdate
         viewModelScope.launch(Dispatchers.IO) {
             if (originalTask != null) {
                 val folder = mainViewModel.folders[originalTask!!.folder]

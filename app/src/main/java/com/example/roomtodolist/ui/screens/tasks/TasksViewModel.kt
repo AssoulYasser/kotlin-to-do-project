@@ -36,7 +36,7 @@ class TasksViewModel(private val mainViewModel: MainViewModel) : ViewModel() {
         mainViewModel.setFolderToUpdate(folderTable)
     }
 
-    fun isDarkMode() = mainViewModel.uiState.isDarkTheme
+    fun isDarkMode() = mainViewModel.isDarkTheme
 
     fun getFolders() : List<FolderTable> = mainViewModel.folders.values.toList()
 

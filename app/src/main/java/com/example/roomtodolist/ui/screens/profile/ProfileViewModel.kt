@@ -8,11 +8,11 @@ class ProfileViewModel(
     private val mainViewModel: MainViewModel
 ) : ViewModel() {
 
-    fun getProfilePicture() = mainViewModel.uiState.profilePicture
+    fun getProfilePicture() = mainViewModel.profilePicture
 
-    fun getUsername() = mainViewModel.uiState.username
+    fun getUsername() = mainViewModel.username
 
-    fun isDarkMode() = mainViewModel.uiState.isDarkTheme
+    fun isDarkMode() = mainViewModel.isDarkTheme
 
     fun setUsername(newUsername: String?) {
         mainViewModel.setUsername(newUsername)

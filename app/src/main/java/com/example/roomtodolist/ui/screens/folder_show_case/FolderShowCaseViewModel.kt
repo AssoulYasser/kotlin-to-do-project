@@ -26,7 +26,7 @@ class FolderShowCaseViewModel(private val mainViewModel: MainViewModel): ViewMod
         private set
 
     fun start() {
-        originalFolder = mainViewModel.uiState.folderToUpdate
+        originalFolder = mainViewModel.folderToUpdate
         viewModelScope.launch(Dispatchers.IO) {
             if (originalFolder != null) {
                 folderNameState = originalFolder!!.name

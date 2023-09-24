@@ -14,6 +14,9 @@ class TaskManager(private val taskDAO: TaskDAO) {
 
     private val completedTasks = hashMapOf<Long, Job>()
 
+    var taskToUpdate: TaskTable? = null
+        private set
+
     suspend fun initTasks(onFinish: (List<TaskTable>) -> Unit) {
         if (hasInitialized)
             return
@@ -45,9 +48,17 @@ class TaskManager(private val taskDAO: TaskDAO) {
         }
     }
 
+    fun setTaskToUpdate(task: TaskTable) {
+        taskToUpdate = task
+    }
+
     suspend fun updateTask(task: TaskTable) {
         taskDAO.updateTask(task)
         tasks[task.id!!] = task
+    }
+
+    fun clearTaskToUpdate() {
+        taskToUpdate = null
     }
 
     suspend fun deleteTask(task: TaskTable) {
