@@ -3,7 +3,6 @@ package com.example.roomtodolist.ui.screens.home
 import android.annotation.SuppressLint
 import android.net.Uri
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -28,25 +27,28 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Clear
 import androidx.compose.material.icons.outlined.KeyboardArrowRight
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.roomtodolist.R
 import com.example.roomtodolist.data.folder.FolderTable
 import com.example.roomtodolist.data.task.TaskTable
@@ -64,55 +66,48 @@ import com.example.roomtodolist.ui.components.defaultTextFieldColors
 fun HomeScreen(
     homeViewModel: HomeViewModel
 ) {
-
-    val tasksPerFolder = homeViewModel.getTasksPerFolderInSelectedDay()
-    var isEmpty = true
-
-    for (tasks in tasksPerFolder.values) {
-        if (tasks.isNotEmpty()){
-            isEmpty = false
-            break
-        }
-    }
-
     Container(actionBar = {
-        TopBar(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(100.dp)
-                .padding(16.dp),
-            profilePicture = homeViewModel.getProfilePicture(),
-            settingsOnClick = {
-                homeViewModel.navigateToProfileScreen()
-            },
-            username = homeViewModel.getUsername(),
-        )
+        if (!homeViewModel.isSearchDisabled()) {
+            TopBar(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(100.dp)
+                    .padding(16.dp),
+                profilePicture = homeViewModel.getProfilePicture(),
+                settingsOnClick = {
+                    homeViewModel.navigateToProfileScreen()
+                },
+                username = homeViewModel.getUsername(),
+            )
+        }
     }) {
         Spacer(modifier = Modifier)
-        WeekCalendar(
-            selectedDay = homeViewModel.selectedDayInCurrentDateState,
-            setSelectedDay = { homeViewModel.setSelectedDay(it) },
-            days = homeViewModel.getDaysOfWeek(),
-            isDark = homeViewModel.isDarkMode(),
-            isCompactWidth = homeViewModel.isCompactWidth()
-        )
+        if (!homeViewModel.isSearchDisabled())
+            WeekCalendar(
+                selectedDay = homeViewModel.selectedDayInCurrentDateState,
+                setSelectedDay = { homeViewModel.setSelectedDay(it) },
+                days = homeViewModel.getDaysOfWeek(),
+                isDark = homeViewModel.isDarkMode(),
+                isCompactWidth = homeViewModel.isCompactWidth()
+            )
         SearchForTask(
             value = homeViewModel.searchState,
-            onValueChange = { homeViewModel.setSearch(it) }
+            onValueChange = { homeViewModel.setSearch(it) },
         )
-        Folders(
-            folders = homeViewModel.getFolders(),
-            onClick = {
-                homeViewModel.setFolderToUpdate(it)
-                homeViewModel.navigateToFolderShowCase()
-            },
-            addFolder = { homeViewModel.navigateToAddFolderScreen() },
-            isDark = homeViewModel.isDarkMode(),
-            seeAll = { homeViewModel.navigateToFoldersScreen() }
-        )
+        if (!homeViewModel.isSearchDisabled())
+            Folders(
+                folders = homeViewModel.getFolders(),
+                onClick = {
+                    homeViewModel.setFolderToUpdate(it)
+                    homeViewModel.navigateToFolderShowCase()
+                },
+                addFolder = { homeViewModel.navigateToAddFolderScreen() },
+                isDark = homeViewModel.isDarkMode(),
+                seeAll = { homeViewModel.navigateToFoldersScreen() }
+            )
         Tasks(
-            tasksPerFolder = tasksPerFolder,
-            noTaskExists = isEmpty,
+            tasksPerFolder = homeViewModel.getTasks(),
+            noTaskExists = homeViewModel.isEmpty(),
             seeAll = { homeViewModel.navigateToTasksScreen() },
             adjustFolder = {
                 homeViewModel.setFolderToUpdate(it)
@@ -285,6 +280,11 @@ fun SearchForTask(
         leadingIcon = {
             Icon(imageVector = Icons.Outlined.Search, contentDescription = null)
         },
+        trailingIcon = {
+            IconButton(onClick = { onValueChange("") }) {
+                Icon(imageVector = Icons.Outlined.Clear, contentDescription = null)
+            }
+        },
         placeholder = {
             Text(text = "Search Task")
         },
@@ -297,7 +297,7 @@ fun SearchForTask(
                 focusManager.clearFocus()
             }
         ),
-        textStyle = MaterialTheme.typography.bodyMedium
+        textStyle = MaterialTheme.typography.bodyMedium,
     )
 }
 

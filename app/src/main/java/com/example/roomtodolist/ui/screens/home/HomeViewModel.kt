@@ -2,6 +2,7 @@ package com.example.roomtodolist.ui.screens.home
 
 import android.annotation.SuppressLint
 import android.net.Uri
+import android.util.Log
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -16,8 +17,6 @@ import java.time.LocalDate
 
 @SuppressLint("NewApi")
 class HomeViewModel(private val mainViewModel: MainViewModel) : ViewModel() {
-
-
     var searchState by mutableStateOf("")
         private set
 
@@ -79,7 +78,7 @@ class HomeViewModel(private val mainViewModel: MainViewModel) : ViewModel() {
         selectedDayInCurrentDateState
     )
 
-    fun getTasksPerFolderInSelectedDay(): HashMap<FolderTable, MutableList<TaskTable>> {
+    private fun getTasksPerFolderInSelectedDay(): HashMap<FolderTable, MutableList<TaskTable>> {
         val date = getSelectedDate()
         val list = getTasksPerFolder()
 
@@ -95,12 +94,53 @@ class HomeViewModel(private val mainViewModel: MainViewModel) : ViewModel() {
         return returnValue
     }
 
+    private fun getSearchedTasks() : HashMap<FolderTable, MutableList<TaskTable>> {
+        var regex = ".*"
+        for (char in searchState) {
+            regex = regex.plus("$char.*")
+        }
+
+        val tasksPerFolders = getTasksPerFolder()
+        val returnValue = HashMap<FolderTable, MutableList<TaskTable>>()
+
+        for ((folder, tasks) in tasksPerFolders) {
+            returnValue[folder] = ArrayList()
+            for (task in tasks) {
+                if (task.title.matches(regex.toRegex()))
+                    returnValue[folder]!!.add(task)
+            }
+        }
+
+        return returnValue
+    }
+
     fun getProfilePicture() : Uri? = mainViewModel.profilePicture
 
-    fun getUsername() : String? = mainViewModel.username
+    fun getUsername() : String = mainViewModel.username
     fun selectTask(taskTable: TaskTable) {
         mainViewModel.selectTask(taskTable)
     }
+
+    fun getTasks() : HashMap<FolderTable, MutableList<TaskTable>> {
+        return if (searchState == "") getTasksPerFolderInSelectedDay()
+        else getSearchedTasks()
+    }
+
+    fun isEmpty() : Boolean {
+        if (searchState == "") {
+            for (tasks in getTasksPerFolderInSelectedDay().values)
+                if (tasks.isNotEmpty())
+                    return false
+            return true
+        } else {
+            for (tasks in getSearchedTasks().values)
+                if (tasks.isNotEmpty())
+                    return false
+            return true
+        }
+    }
+
+    fun isSearchDisabled() : Boolean = searchState != ""
 
 
 }
