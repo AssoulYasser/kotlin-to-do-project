@@ -1,5 +1,7 @@
 package com.example.roomtodolist.ui.components
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -13,7 +15,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import java.time.LocalTime
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun Welcoming(
     modifier: Modifier = Modifier,
@@ -21,8 +25,16 @@ fun Welcoming(
     spacer: Dp = 0.dp
 ) {
     Column(modifier, verticalArrangement = Arrangement.Center) {
-        Text(text = "Good morning", fontWeight = FontWeight.Bold, color = Color.Gray, fontSize = 14.sp)
+        Text(
+            text = if (LocalTime.now().isBefore(LocalTime.of(6, 0))) "Good morning" else "Good evening",
+            style = MaterialTheme.typography.headlineSmall,
+            color = Color.Gray
+        )
         Spacer(modifier = Modifier.height(spacer))
-        Text(text = username ?: "UNNAMED", fontWeight = FontWeight.Bold, fontSize = 16.sp, color = MaterialTheme.colorScheme.onBackground)
+        Text(
+            text = username ?: "UNNAMED",
+            style = MaterialTheme.typography.headlineMedium,
+            color = MaterialTheme.colorScheme.onBackground
+        )
     }
 }

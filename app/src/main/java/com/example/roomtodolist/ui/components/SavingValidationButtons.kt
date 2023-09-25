@@ -29,7 +29,11 @@ fun SavingValidationButtons(onSave: () -> Unit, onCancel: () -> Unit) {
                 .weight(1f)
                 .padding(end = 10.dp)
         ) {
-            Text(text = "Cancel", color = MaterialTheme.colorScheme.onBackground)
+            Text(
+                text = "Cancel",
+                style = MaterialTheme.typography.headlineMedium,
+                color = MaterialTheme.colorScheme.onBackground
+            )
         }
         Button(
             onClick = onSave,
@@ -39,7 +43,7 @@ fun SavingValidationButtons(onSave: () -> Unit, onCancel: () -> Unit) {
                 .weight(1f)
                 .padding(start = 10.dp)
         ) {
-            Text(text = "Save")
+            Text(text = "Save", style = MaterialTheme.typography.headlineMedium)
         }
     }
 }

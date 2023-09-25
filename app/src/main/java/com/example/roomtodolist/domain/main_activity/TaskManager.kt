@@ -1,5 +1,6 @@
 package com.example.roomtodolist.domain.main_activity
 
+import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
@@ -41,6 +42,8 @@ class TaskManager(private val folderDAO: FolderDAO,private val taskDAO: TaskDAO)
         if (hasInitialized)
             return
 
+        hasInitialized = true
+
         for (folder in folderDAO.getFolders()) {
             val tasksInFolder = taskDAO.getTasksFromFolder(folder.id!!)
             folder.taskCounts = tasksInFolder.size
@@ -52,8 +55,6 @@ class TaskManager(private val folderDAO: FolderDAO,private val taskDAO: TaskDAO)
                 tasks [task.id!!] = task
             }
         }
-
-        hasInitialized = true
     }
 
     private fun getFolderByKey(folderId : Long) : FolderTable? {

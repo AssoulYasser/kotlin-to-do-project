@@ -41,7 +41,11 @@ fun UpdatingValidationButtons(
                     .weight(1f)
                     .padding(end = 10.dp)
             ) {
-                Text(text = "Cancel", color = MaterialTheme.colorScheme.onBackground)
+                Text(
+                    text = "Cancel",
+                    style = MaterialTheme.typography.headlineMedium,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
             }
             Button(
                 onClick = onDelete,
@@ -51,7 +55,7 @@ fun UpdatingValidationButtons(
                     .weight(1f)
                     .padding(start = 10.dp)
             ) {
-                Text(text = "Delete")
+                Text(text = "Delete", style = MaterialTheme.typography.headlineMedium)
             }
         }
         Button(
@@ -60,7 +64,10 @@ fun UpdatingValidationButtons(
             colors = defaultFilledButtonColors(),
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text(text = "Update")
+            Text(
+                text = "Update",
+                style = MaterialTheme.typography.headlineMedium,
+            )
         }
     }
 }

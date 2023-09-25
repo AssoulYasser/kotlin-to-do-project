@@ -94,7 +94,12 @@ fun DarkLightModeEdit(isDark: Boolean, setMode: (Boolean) -> Unit) {
         .background(MaterialTheme.colorScheme.primaryContainer, defaultTextFieldShape())
         .padding(horizontal = 25.dp, vertical = 2.5.dp)
     ) {
-        Text(text = "Change mode", modifier = Modifier.align(Alignment.CenterStart), color = MaterialTheme.colorScheme.onBackground)
+        Text(
+            text = "Change mode",
+            modifier = Modifier.align(Alignment.CenterStart),
+            color = MaterialTheme.colorScheme.onBackground,
+            style = MaterialTheme.typography.headlineMedium
+        )
         Switch(
             checked = isDark,
             onCheckedChange = {
@@ -140,7 +145,7 @@ fun UsernameEdit(
             onValueChange = { usernameEdit = it },
             modifier = Modifier.fillMaxWidth(),
             placeholder = {
-                Text(text = "username")
+                Text(text = "username", style = MaterialTheme.typography.headlineMedium)
             },
             trailingIcon = {
                 IconButton(
@@ -173,7 +178,12 @@ fun UsernameEdit(
             .padding(horizontal = 25.dp, vertical = 16.dp)
             .clickable { editMode = true }
         ) {
-            Text(text = username ?: "UNNAMED", modifier = Modifier.align(Alignment.CenterStart), color = MaterialTheme.colorScheme.onBackground)
+            Text(
+                text = username ?: "UNNAMED",
+                modifier = Modifier.align(Alignment.CenterStart),
+                color = MaterialTheme.colorScheme.onBackground,
+                style = MaterialTheme.typography.headlineMedium
+            )
             Icon(
                 painter = painterResource(id = R.drawable.outlined_non_lined_arrow_right_icon),
                 contentDescription = null,

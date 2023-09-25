@@ -5,10 +5,12 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -76,8 +78,7 @@ fun TaskCard(
             Text(
                 text = taskTable.title,
                 color = MaterialTheme.colorScheme.onBackground,
-                fontWeight = FontWeight.Medium,
-                fontSize = 18.sp,
+                style = MaterialTheme.typography.headlineLarge,
                 textDecoration = if (isSelected) TextDecoration.LineThrough else TextDecoration.None
             )
             Row(
@@ -93,8 +94,9 @@ fun TaskCard(
                 Text(
                     text = taskTable.time.toString(),
                     color = MaterialTheme.colorScheme.onBackground,
-                    fontSize = 10.sp
+                    style = MaterialTheme.typography.bodySmall
                 )
+                Spacer(modifier = Modifier.width(5.dp))
                 Icon(
                     painter = painterResource(id = R.drawable.outlined_document_favorite_icon),
                     contentDescription = null,
@@ -104,7 +106,7 @@ fun TaskCard(
                 Text(
                     text = taskTable.priority.name,
                     color = taskTable.priority.getPriorityColor(),
-                    fontSize = 10.sp
+                    style = MaterialTheme.typography.bodySmall
                 )
             }
         } 

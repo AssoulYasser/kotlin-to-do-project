@@ -48,7 +48,7 @@ fun PriorityCard(
             ) {
                 Text(
                     text = "Low",
-                    fontSize = 12.sp,
+                    style = MaterialTheme.typography.bodySmall,
                     color = getContentColor(TaskPriority.LOW)
                 )
             }
@@ -63,7 +63,7 @@ fun PriorityCard(
             ) {
                 Text(
                     text = "Medium",
-                    fontSize = 12.sp,
+                    style = MaterialTheme.typography.bodySmall,
                     color = getContentColor(TaskPriority.MEDIUM)
                 )
             }
@@ -78,7 +78,7 @@ fun PriorityCard(
             ) {
                 Text(
                     text = "High",
-                    fontSize = 12.sp,
+                    style = MaterialTheme.typography.bodySmall,
                     color = getContentColor(TaskPriority.HIGH)
                 )
             }

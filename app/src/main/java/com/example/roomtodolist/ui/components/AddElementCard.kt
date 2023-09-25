@@ -36,7 +36,7 @@ fun AddFolderCard(
                 modifier = Modifier.fillMaxSize(0.25f)
             )
             Spacer(modifier = Modifier.height(12.dp))
-            Text(text = "Add Folder", color = color)
+            Text(text = "Add Folder", color = color, style = MaterialTheme.typography.bodyMedium)
         }
     }
 

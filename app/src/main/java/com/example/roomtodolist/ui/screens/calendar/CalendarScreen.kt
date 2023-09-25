@@ -97,7 +97,8 @@ private fun Tasks(
                Text(
                    text = it.key.time.toString(),
                    modifier = Modifier,
-                   color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f)
+                   color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f),
+                   style = MaterialTheme.typography.bodyMedium
                )
                Box(modifier = Modifier
                    .size(width = 5.dp, height = 25.dp)
@@ -106,7 +107,8 @@ private fun Tasks(
                Text(
                    text = it.key.title,
                    modifier = Modifier.weight(4f),
-                   color = MaterialTheme.colorScheme.onBackground
+                   color = MaterialTheme.colorScheme.onBackground,
+                   style = MaterialTheme.typography.bodyMedium
                )
            }
            Spacer(modifier = Modifier.height(10.dp))
@@ -180,7 +182,8 @@ fun CalendarGrid(
                     else it.threeLetterAbbreviation,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.weight(1f),
-                    color = MaterialTheme.colorScheme.onBackground
+                    color = MaterialTheme.colorScheme.onBackground,
+                    style = MaterialTheme.typography.bodySmall
                 )
             }
         }
@@ -222,7 +225,8 @@ fun CalendarGrid(
                                             MaterialTheme.colorScheme.onBackground
                                     else
                                         MaterialTheme.colorScheme.onBackground.copy(alpha = 0.2f),
-                            modifier = Modifier.align(Alignment.Center)
+                            modifier = Modifier.align(Alignment.Center),
+                            style = MaterialTheme.typography.bodySmall
                         )
                     }
                     dayIndex += 1
@@ -254,7 +258,8 @@ fun MonthPicker(
         }
         Text(
             text = "$selectedMonth $selectedYear",
-            color = MaterialTheme.colorScheme.onBackground
+            color = MaterialTheme.colorScheme.onBackground,
+            style = MaterialTheme.typography.bodyMedium
         )
         IconButton(onClick = onNextMonth) {
             Icon(

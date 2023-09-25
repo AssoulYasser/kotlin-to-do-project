@@ -67,8 +67,7 @@ fun EmptyElements(
 
         Text(
             text = "there are no $elementName to show",
-            fontSize = 14.sp,
-            fontWeight = FontWeight.Bold,
+            style = MaterialTheme.typography.headlineMedium,
             textAlign = TextAlign.Center,
             modifier = Modifier,
             color = MaterialTheme.colorScheme.onBackground
@@ -87,6 +86,7 @@ fun EmptyElements(
             ) {
                 Text(
                     text = "Create $elementName",
+                    style = MaterialTheme.typography.bodyMedium,
                     textAlign = TextAlign.Center,
                     color = if (isDark) MaterialTheme.colorScheme.onBackground else MaterialTheme.colorScheme.primary
                 )

@@ -72,7 +72,11 @@ fun ExpandableCard(
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.onBackground
                         )
-                        Text(text = title, color = MaterialTheme.colorScheme.onBackground)
+                        Text(
+                            text = title,
+                            style = MaterialTheme.typography.headlineSmall,
+                            color = MaterialTheme.colorScheme.onBackground
+                        )
                     }
 
                     Icon(

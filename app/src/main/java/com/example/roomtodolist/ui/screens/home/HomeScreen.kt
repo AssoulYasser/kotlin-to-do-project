@@ -2,7 +2,9 @@ package com.example.roomtodolist.ui.screens.home
 
 import android.annotation.SuppressLint
 import android.net.Uri
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -128,6 +130,7 @@ fun HomeScreen(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 private fun TopBar(
     modifier: Modifier = Modifier,
@@ -156,28 +159,15 @@ private fun TopBar(
                 username = username
             )
         }
-        Row(
-            modifier = Modifier,
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            Icon(
-                modifier = Modifier
-                    .size(25.dp),
-                painter = painterResource(id = R.drawable.outlined_notification_icon),
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.onBackground
-            )
-            Icon(
-                modifier = Modifier
-                    .size(25.dp)
-                    .clip(CircleShape)
-                    .clickable { settingsOnClick() },
-                painter = painterResource(id = R.drawable.outlined_setting_icon),
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.onBackground
-            )
-        }
+        Icon(
+            modifier = Modifier
+                .size(25.dp)
+                .clip(CircleShape)
+                .clickable { settingsOnClick() },
+            painter = painterResource(id = R.drawable.outlined_setting_icon),
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.onBackground
+        )
     }
 }
 
@@ -265,8 +255,7 @@ private fun RowScope.DayElement(
                     else {
                         if (selectedDay == dayNumber) Color.White else Color.Black
                     },
-                fontSize = 11.sp,
-                fontWeight = FontWeight.Medium,
+                style = MaterialTheme.typography.bodySmall
             )
             Text(
                 text = dayNumber.toString(),
@@ -276,8 +265,7 @@ private fun RowScope.DayElement(
                     else {
                         if (selectedDay == dayNumber) Color.White else Color.Black
                     },
-                fontSize = 11.sp,
-                fontWeight = FontWeight.Medium,
+                style = MaterialTheme.typography.bodySmall
             )
         }
     }
@@ -308,7 +296,8 @@ fun SearchForTask(
             onSearch = {
                 focusManager.clearFocus()
             }
-        )
+        ),
+        textStyle = MaterialTheme.typography.bodyMedium
     )
 }
 
@@ -322,7 +311,7 @@ fun TitleWithSeeAll(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(text = title, fontWeight = FontWeight.Black, color = MaterialTheme.colorScheme.onBackground)
+        Text(text = title, style = MaterialTheme.typography.headlineMedium, color = MaterialTheme.colorScheme.onBackground)
         TextButton(
             onClick = onSeeAll,
             contentPadding = PaddingValues(5.dp),
@@ -330,6 +319,7 @@ fun TitleWithSeeAll(
         ) {
             Text(
                 text = "See All",
+                style = MaterialTheme.typography.headlineSmall,
                 modifier = Modifier.padding(start = 10.dp)
             )
             Icon(

@@ -41,8 +41,7 @@ fun ActionBar(
             Text(
                 text = title,
                 textAlign = TextAlign.Center,
-                fontWeight = FontWeight.Bold,
-                fontSize = 16.sp,
+                style = MaterialTheme.typography.headlineLarge,
                 modifier = Modifier
                     .align(Alignment.Center)
             )

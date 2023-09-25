@@ -75,13 +75,15 @@ fun FolderCard(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text(
-                        text = folder.name,
-                        color = Color(folder.color),
+                        text = "${folder.taskCounts} Tasks",
+                        color = MaterialTheme.colorScheme.onBackground,
+                        style = MaterialTheme.typography.bodySmall,
                         textAlign = TextAlign.Center
                     )
                     Text(
-                        text = "${folder.taskCounts} Tasks",
-                        color = MaterialTheme.colorScheme.onBackground,
+                        text = folder.name,
+                        color = Color(folder.color),
+                        style = MaterialTheme.typography.headlineMedium,
                         textAlign = TextAlign.Center
                     )
                 }

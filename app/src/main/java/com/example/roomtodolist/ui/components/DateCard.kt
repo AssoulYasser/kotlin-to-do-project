@@ -100,13 +100,15 @@ fun DateCard(
                 Text(
                     text = "due to: ",
                     color = MaterialTheme.colorScheme.onBackground,
+                    style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.weight(0.5f)
                 )
                 Text(
                     text = dateUi.value,
                     color = MaterialTheme.colorScheme.onBackground,
                     modifier = Modifier.weight(1f),
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.bodyLarge
                 )
                 Button(
                     onClick = { isCalendarVisible.value = true },
@@ -120,8 +122,8 @@ fun DateCard(
                 ) {
                     Text(
                         text = "set date",
-                        fontSize = 10.sp,
-                        color = MaterialTheme.colorScheme.primary
+                        color = MaterialTheme.colorScheme.primary,
+                        style = MaterialTheme.typography.bodyMedium
                     )
                 }
             }
@@ -132,12 +134,18 @@ fun DateCard(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(text = "At: ", color = MaterialTheme.colorScheme.onBackground, modifier = Modifier.weight(0.5f))
+                Text(
+                    text = "At: ",
+                    color = MaterialTheme.colorScheme.onBackground,
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.weight(0.5f)
+                )
                 Text(
                     text = timeUi.value,
                     color = MaterialTheme.colorScheme.onBackground,
                     modifier = Modifier.weight(1f),
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.bodyLarge
                 )
                 Button(
                     onClick = { isClockVisible.value = true },
@@ -149,7 +157,11 @@ fun DateCard(
                         .weight(1f)
                         .padding(start = 20.dp)
                 ) {
-                    Text(text = "set time", fontSize = 10.sp, color = MaterialTheme.colorScheme.primary)
+                    Text(
+                        text = "set time",
+                        color = MaterialTheme.colorScheme.primary,
+                        style = MaterialTheme.typography.bodyMedium
+                    )
                 }
             }
         }
