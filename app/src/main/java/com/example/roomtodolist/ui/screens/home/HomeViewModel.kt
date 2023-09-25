@@ -2,7 +2,6 @@ package com.example.roomtodolist.ui.screens.home
 
 import android.annotation.SuppressLint
 import android.net.Uri
-import android.util.Log
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -18,7 +17,11 @@ import java.time.LocalDate
 @SuppressLint("NewApi")
 class HomeViewModel(private val mainViewModel: MainViewModel) : ViewModel() {
 
-    var uiState by mutableStateOf(HomeUiState())
+
+    var searchState by mutableStateOf("")
+        private set
+
+    var selectedDayInCurrentDateState by mutableStateOf(LocalDate.now().dayOfMonth)
         private set
 
     fun navigateToAddFolderScreen() {
@@ -58,11 +61,11 @@ class HomeViewModel(private val mainViewModel: MainViewModel) : ViewModel() {
     }
 
     fun setSearch(value: String) {
-        uiState = uiState.copy(search = value)
+        searchState = value
     }
 
     fun setSelectedDay(day: Int) {
-        uiState = uiState.copy(selectedDayInCurrentDate = day)
+        selectedDayInCurrentDateState = day
     }
 
     fun isDarkMode() = mainViewModel.isDarkTheme
@@ -73,7 +76,7 @@ class HomeViewModel(private val mainViewModel: MainViewModel) : ViewModel() {
     private fun getSelectedDate() : LocalDate = LocalDate.of(
         LocalDate.now().year,
         LocalDate.now().month,
-        uiState.selectedDayInCurrentDate
+        selectedDayInCurrentDateState
     )
 
     fun getTasksPerFolderInSelectedDay(): HashMap<FolderTable, MutableList<TaskTable>> {

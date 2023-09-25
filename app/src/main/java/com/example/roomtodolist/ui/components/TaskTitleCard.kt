@@ -20,7 +20,8 @@ fun TaskTitle(
             .fillMaxWidth(),
         placeholder = {
             Text(text = "Task title")
-        }
+        },
+        singleLine = true
     )
 }
 

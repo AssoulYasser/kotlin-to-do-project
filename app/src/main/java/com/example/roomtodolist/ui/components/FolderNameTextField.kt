@@ -20,6 +20,7 @@ fun FolderNameTextField(
         placeholder = {
             Text(text = "Folder name")
         },
+        singleLine = true,
         modifier = Modifier.fillMaxWidth()
     )
 }

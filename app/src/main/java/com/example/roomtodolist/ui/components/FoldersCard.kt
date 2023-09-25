@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -35,6 +36,22 @@ fun FoldersCard(
                 onFolderClick = onSelectFolder,
                 color =
                 if (selectedFolder() == folders[index])
+                    MaterialTheme.colorScheme.primaryContainer
+                else
+                    Color.Transparent,
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.primaryContainer)
+            )
+        }
+    }
+
+    @Composable
+    fun LastFolder() {
+        Box(modifier = Modifier.fillMaxWidth(0.5f).padding(end = 2.5.dp)) {
+            FolderCard(
+                folder = folders.last(),
+                onFolderClick = onSelectFolder,
+                color =
+                if (selectedFolder() == folders.last())
                     MaterialTheme.colorScheme.primaryContainer
                 else
                     Color.Transparent,
@@ -79,7 +96,7 @@ fun FoldersCard(
                         Folder(index = folderIndex + 1)
                     }
                     else {
-                        Folder(index = folderIndex)
+                        LastFolder()
                     }
                 }
             }

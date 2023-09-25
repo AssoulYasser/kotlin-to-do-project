@@ -2,6 +2,7 @@ package com.example.roomtodolist.ui.screens.home
 
 import android.annotation.SuppressLint
 import android.net.Uri
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -86,16 +87,15 @@ fun HomeScreen(
         )
     }) {
         Spacer(modifier = Modifier)
-
         WeekCalendar(
-            selectedDay = homeViewModel.uiState.selectedDayInCurrentDate,
+            selectedDay = homeViewModel.selectedDayInCurrentDateState,
             setSelectedDay = { homeViewModel.setSelectedDay(it) },
             days = homeViewModel.getDaysOfWeek(),
             isDark = homeViewModel.isDarkMode(),
             isCompactWidth = homeViewModel.isCompactWidth()
         )
         SearchForTask(
-            value = homeViewModel.uiState.search,
+            value = homeViewModel.searchState,
             onValueChange = { homeViewModel.setSearch(it) }
         )
         Folders(

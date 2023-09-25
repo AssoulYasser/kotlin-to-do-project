@@ -120,7 +120,7 @@ class CalendarSystem {
 
         val weeklyCalendar = linkedMapOf<Int, Days>()
 
-        while (iterableDate.dayOfMonth.toLong() < lastDateInTheWeek.dayOfMonth.toLong()) {
+        while (iterableDate.month.value < lastDateInTheWeek.month.value || iterableDate.dayOfMonth.toLong() < lastDateInTheWeek.dayOfMonth.toLong()) {
 
             val dayOfWeek = Days.getDayOfWeek(iterableDate.dayOfWeek)
             weeklyCalendar[iterableDate.dayOfMonth] = dayOfWeek
@@ -130,18 +130,6 @@ class CalendarSystem {
 
         return weeklyCalendar
     }
-//
-//    private fun getDateInCurrentWeek(day: Days): LocalDate {
-//        val distanceBetweenTodayAndStartOfWeek =
-//            currentDate.date.dayOfWeek.value.toLong() - START_OF_WEEK.value.toLong()
-//        val startOfWeekDate = currentDate.date.minusDays(distanceBetweenTodayAndStartOfWeek)
-//        val distanceBetweenStartOfWeekAndTargetDay =
-//            day.dayOfWeek.value.toLong() - startOfWeekDate.dayOfWeek.value.toLong()
-//
-//        return startOfWeekDate.plusDays(distanceBetweenStartOfWeekAndTargetDay)
-//    }
-//
-//    private fun getDayInCurrentWeek(day: Days) = getDateInCurrentWeek(day).dayOfWeek
 
     companion object {
         val START_OF_WEEK = Days.values().first().dayOfWeek
