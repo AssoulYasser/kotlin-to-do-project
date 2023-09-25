@@ -17,10 +17,6 @@ abstract class MainDataBase: RoomDatabase() {
     abstract fun getTaskDao() : TaskDAO
     abstract fun getFolderDao() : FolderDAO
 
-
-
-   //TODO(STOP IGNORING THE CONFLECT)
-
     companion object {
         @Volatile
         private var instance : MainDataBase? = null

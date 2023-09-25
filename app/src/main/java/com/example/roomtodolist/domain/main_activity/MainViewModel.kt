@@ -19,7 +19,6 @@ import androidx.navigation.NavHostController
 import com.example.roomtodolist.data.DatabaseRepository
 import com.example.roomtodolist.data.SharedPreferencesRepository
 import com.example.roomtodolist.data.folder.FolderTable
-import com.example.roomtodolist.data.folder.folderAssets
 import com.example.roomtodolist.data.task.TaskTable
 import com.example.roomtodolist.domain.calendar.CalendarSystem
 import com.example.roomtodolist.ui.navigation.MainRoutes
@@ -36,11 +35,7 @@ class MainViewModel(
 
     private var navState by mutableStateOf(MainNavState())
 
-    private val taskManager = TaskManager(databaseRepository.taskDao)
-
-    private val folderManager = FolderManager(databaseRepository.folderDao)
-
-    private val tasksPerFolderManager = TasksPerFolderManager()
+    private val taskManager = TaskManager(databaseRepository.folderDao, databaseRepository.taskDao)
 
     private val profileManager = ProfileManager(sharedPreferencesRepository)
 
@@ -56,14 +51,14 @@ class MainViewModel(
 
     val folders : Map<Long, FolderTable>
         get() = try {
-            folderManager.folders.toMap()
+            taskManager.folders
         } catch (e: Exception) {
             mapOf()
         }
 
     val tasksPerFolder : Map<FolderTable, MutableList<TaskTable>>
         get() = try {
-            tasksPerFolderManager.tasksPerFolder.toMap()
+            taskManager.tasksPerFolder.toMap()
         } catch (e: Exception) {
             mapOf()
         }
@@ -77,23 +72,18 @@ class MainViewModel(
     val isDarkTheme: Boolean
         get() = profileManager.isDarkThemeState
 
-    val taskToUpdate = taskManager.taskToUpdate
+    val taskToUpdate : TaskTable?
+        get() = taskManager.taskToUpdate
 
-    val folderToUpdate = folderManager.folderToUpdate
+    val folderToUpdate : FolderTable?
+        get() = taskManager.folderToUpdate
 
     lateinit var windowSizeClass: WindowSizeClass
         private set
 
     fun start() {
         viewModelScope.launch(Dispatchers.IO) {
-            folderManager.initFolders{ folders ->
-                tasksPerFolderManager.initFolders(folders)
-                viewModelScope.launch(Dispatchers.IO) {
-                    taskManager.initTasks { tasks ->
-                        tasksPerFolderManager.initTasks(tasks)
-                    }
-                }
-            }
+            taskManager.init()
         }
     }
 
@@ -141,35 +131,32 @@ class MainViewModel(
     }
 
     fun setFolderToUpdate(folder: FolderTable) {
-        folderManager.setFolderToUpdate(folder)
+        taskManager.setFolderToUpdate(folder)
     }
 
     fun clearFolderToUpdate() {
-        folderManager.clearFolderToUpdate()
+        taskManager.clearFolderToUpdate()
     }
 
     fun addFolder(folder: FolderTable) {
         viewModelScope.launch(Dispatchers.IO) {
-            folderManager.addFolder(folder)
-            tasksPerFolderManager.addFolder(folder)
+            taskManager.addFolder(folder)
         }
     }
 
-    fun getFolderColors() = folderManager.getColors()
+    fun getFolderColors() = taskManager.getFolderColors()
 
-    fun getFolderAssets() = folderManager.getAssets()
+    fun getFolderAssets() = taskManager.getFolderAssets()
 
     fun updateFolder(folder: FolderTable) {
         viewModelScope.launch(Dispatchers.IO) {
-            folderManager.updateFolder(folder)
-            tasksPerFolderManager.updateFolder(folder)
+            taskManager.updateFolder(folder)
         }
     }
 
     fun deleteFolder(folder: FolderTable) {
         viewModelScope.launch(Dispatchers.IO) {
-            folderManager.deleteFolder(folder)
-            tasksPerFolderManager.deleteFolder(folder)
+            taskManager.deleteFolder(folder)
         }
     }
 
@@ -184,29 +171,24 @@ class MainViewModel(
     fun addTask(task: TaskTable) {
         viewModelScope.launch(Dispatchers.IO) {
             taskManager.addTask(task)
-            tasksPerFolderManager.addTask(folders[task.folder]!!, task)
         }
     }
 
     fun updateTask(task: TaskTable) {
         viewModelScope.launch(Dispatchers.IO) {
             taskManager.updateTask(task)
-            tasksPerFolderManager.updateTask(folders[task.folder]!!, task)
         }
     }
 
     fun deleteTask(task: TaskTable) {
         viewModelScope.launch(Dispatchers.IO) {
             taskManager.deleteTask(task)
-            tasksPerFolderManager.deleteTask(folders[task.folder]!!, task)
         }
     }
 
     fun selectTask(taskTable: TaskTable) {
         viewModelScope.launch (Dispatchers.IO){
-            taskManager.selectTask(taskTable, this.coroutineContext.job) {
-                tasksPerFolderManager.deleteTask(folders[taskTable.folder]!!, taskTable)
-            }
+            taskManager.selectTask(taskTable, this.coroutineContext.job)
         }
     }
 
@@ -233,11 +215,11 @@ class MainViewModel(
 
     fun getBitmap(context: Context, drawable: Int, color: Int) : Bitmap {
 
-        if (drawable == 0) return colorizeBitmap(context, folderAssets.values.first(), folderAssets.keys.first(), color)
+        if (drawable == 0) return colorizeBitmap(context, getFolderAssets().keys.first(), getFolderAssets().values.first(), color)
 
-        val primaryAsset = folderAssets[drawable]
+        val primaryAsset = getFolderAssets()[drawable]
         return if (primaryAsset == null) {
-            colorizeBitmap(context, folderAssets.values.first(), folderAssets.keys.first(), color)
+            colorizeBitmap(context, getFolderAssets().keys.first(), getFolderAssets().values.first(), color)
         } else {
             colorizeBitmap(context, drawable, primaryAsset, color)
         }

@@ -13,12 +13,14 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 @Composable
 fun Container(
     actionBar: @Composable () -> Unit,
     isScrollable: Boolean = true,
+    contentPadding: Dp = 16.dp,
     content: @Composable ColumnScope.() -> Unit
 ) {
     Box(
@@ -34,7 +36,7 @@ fun Container(
         if (isScrollable) {
             Column(
                 modifier = Modifier
-                    .padding(horizontal = 16.dp)
+                    .padding(horizontal = contentPadding)
                     .weight(1f)
                     .background(MaterialTheme.colorScheme.background)
                     .verticalScroll(rememberScrollState()),
