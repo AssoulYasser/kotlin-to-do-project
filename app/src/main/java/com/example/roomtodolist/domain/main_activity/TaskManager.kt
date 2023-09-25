@@ -121,15 +121,34 @@ class TaskManager(private val folderDAO: FolderDAO,private val taskDAO: TaskDAO)
 
     suspend fun updateTask(task: TaskTable) {
         taskDAO.updateTask(task)
-        tasks[task.id!!] = task
-
-        val folder = getFolderByKey(task.folder)
-        for (taskIndex in tasksPerFolder[folder]!!.indices) {
-            if (tasksPerFolder[folder]!![taskIndex].id == task.id) {
-                tasksPerFolder[folder]!![taskIndex] = task
-                break
+        if (tasks[task.id]!!.folder == task.folder) {
+            val folder = getFolderByKey(task.folder)
+            for (taskIndex in tasksPerFolder[folder]!!.indices) {
+                if (tasksPerFolder[folder]!![taskIndex].id == task.id) {
+                    tasksPerFolder[folder]!![taskIndex] = task
+                    break
+                }
             }
+        } else {
+            val oldFolder = getFolderByKey(tasks[task.id!!]!!.folder)
+            val oldList = tasksPerFolder[oldFolder]!!
+            tasksPerFolder.remove(oldFolder)
+            for (taskIndex in oldList.indices) {
+                if (oldList[taskIndex].id == task.id) {
+                    oldList.removeAt(taskIndex)
+                    oldFolder!!.taskCounts --
+                    tasksPerFolder[oldFolder] = oldList
+                    break
+                }
+            }
+            val newFolder = getFolderByKey(task.folder)
+            val newList = tasksPerFolder[newFolder]!!
+            newList.add(task)
+            tasksPerFolder.remove(newFolder)
+            newFolder!!.taskCounts ++
+            tasksPerFolder[newFolder] = newList
         }
+        tasks[task.id!!] = task
     }
 
     suspend fun deleteTask(task: TaskTable) {
