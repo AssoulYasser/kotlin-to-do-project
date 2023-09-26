@@ -1,6 +1,5 @@
 package com.example.roomtodolist.domain.set_up_activity
 
-import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -25,6 +24,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PageSize
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
@@ -45,6 +45,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -59,6 +60,7 @@ import com.example.roomtodolist.ui.components.defaultButtonShape
 import com.example.roomtodolist.ui.components.defaultFilledButtonColors
 import com.example.roomtodolist.ui.components.defaultTextFieldColors
 import com.example.roomtodolist.ui.components.defaultTextFieldShape
+import com.example.roomtodolist.ui.components.rememberImeState
 import kotlinx.coroutines.launch
 
 @Composable
@@ -79,50 +81,44 @@ fun SetUpActivityScreen(
     else {
         SetProfileScreen(
             setProfilePicture = { setUpViewModel.setProfilePicture(it) },
-            setUsername = { setUpViewModel.setUserName(it) }
+            setUsername = { setUpViewModel.setUserName(it) },
+            windowSizeClass = setUpViewModel.windowSizeClass,
         ) { setUpViewModel.setUpProfile() }
     }
 }
 
 @Composable
-private fun BoxScope.UsernameScreen(username: MutableState<String?>) {
+private fun Logo() {
+    Icon(
+        painter = painterResource(id = R.drawable.logo_icon),
+        contentDescription = null,
+        modifier = Modifier
+            .size(100.dp),
+        tint = Color.White
+    )
+}
+
+@Composable
+private fun BoxScope.UsernameScreen(username: MutableState<String?>, isLandscape: Boolean = false) {
     TextField(
         value = if (username.value == null) "" else username.value!!,
         onValueChange = { username.value = it },
         modifier = Modifier
-            .align(Alignment.TopCenter)
+            .align(if (isLandscape) Alignment.Center else Alignment.TopCenter)
             .fillMaxWidth(),
         placeholder = {
-            Text(text = "Username")
+            Text(text = "Username", style = MaterialTheme.typography.bodyMedium)
         },
         singleLine = true,
         shape = defaultTextFieldShape(),
         colors = defaultTextFieldColors()
     )
-    Spacer(modifier = Modifier.height(20.dp))
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .align(Alignment.BottomCenter),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(
-            text = "Create your username",
-            textAlign = TextAlign.Center,
-            color = MaterialTheme.colorScheme.onBackground
-        )
-        Text(
-            text = "It is cool to know how we call you",
-            textAlign = TextAlign.Center,
-            color = MaterialTheme.colorScheme.onBackground
-        )
-    }
-
 }
 
 @Composable
 private fun BoxScope.ProfilePictureScreen(
-    profilePicture: MutableState<String?>
+    profilePicture: MutableState<String?>,
+    isLandscape: Boolean = false
 ) {
     val imageCropLauncher = rememberLauncherForActivityResult(CropImageContract()) { result ->
         if (result.isSuccessful)
@@ -156,10 +152,15 @@ private fun BoxScope.ProfilePictureScreen(
             contentColor = MaterialTheme.colorScheme.onBackground
         ),
         border = BorderStroke(5.dp, MaterialTheme.colorScheme.onBackground),
-        modifier = Modifier
-            .fillMaxSize(0.7f)
-            .aspectRatio(1f)
-            .align(Alignment.TopCenter),
+        modifier =
+        if (isLandscape)
+            Modifier
+                .aspectRatio(1f)
+        else
+            Modifier
+                .fillMaxSize(0.7f)
+                .aspectRatio(1f)
+                .align(Alignment.TopCenter),
         contentPadding = PaddingValues(8.dp)
     ) {
         if (profilePicture.value == null)
@@ -179,56 +180,22 @@ private fun BoxScope.ProfilePictureScreen(
                 contentScale = ContentScale.Crop
             )
     }
-    Spacer(modifier = Modifier.height(20.dp))
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .align(Alignment.BottomCenter),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(
-            text = "Choose your picture",
-            textAlign = TextAlign.Center,
-            color = MaterialTheme.colorScheme.onBackground
-        )
-        Text(
-            text = "You can change your picture in Settings anytime",
-            textAlign = TextAlign.Center,
-            color = MaterialTheme.colorScheme.onBackground
-        )
-    }
-
-
 }
 
 @Composable
-private fun BoxScope.ExplainScreen() {
+private fun BoxScope.ExplainScreen(isLandscape: Boolean = false) {
     Image(
         painter = painterResource(id = R.drawable.personal_settings_asset),
         contentDescription = null,
-        modifier = Modifier
-            .padding(20.dp)
-            .fillMaxSize(0.7f)
-            .align(Alignment.TopCenter)
+        modifier =
+        if (isLandscape)
+            Modifier.fillMaxSize()
+        else
+            Modifier
+                .padding(20.dp)
+                .fillMaxSize(0.7f)
+                .align(Alignment.TopCenter)
     )
-    Spacer(modifier = Modifier.height(20.dp))
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .align(Alignment.BottomCenter),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(
-            text = "Create your profile",
-            textAlign = TextAlign.Center,
-            color = MaterialTheme.colorScheme.onBackground
-        )
-        Text(
-            text = "Let's create your profile with a few easy steps",
-            textAlign = TextAlign.Center,
-            color = MaterialTheme.colorScheme.onBackground
-        )
-    }
 
 }
 
@@ -237,6 +204,7 @@ private fun BoxScope.ExplainScreen() {
 private fun SetProfileScreen(
     setProfilePicture: (String) -> Unit,
     setUsername: (String) -> Unit,
+    windowSizeClass: WindowSizeClass,
     finish: () -> Unit
 ) {
     val profilePicture = remember {
@@ -245,6 +213,48 @@ private fun SetProfileScreen(
     val username = remember {
         mutableStateOf<String?>(null)
     }
+    val pagerState = rememberPagerState()
+    val pageCount = 3
+    val configuration = LocalConfiguration.current
+    val isNotCompact = windowSizeClass.heightSizeClass != WindowHeightSizeClass.Compact
+    val isLandScape = configuration.screenWidthDp > configuration.screenHeightDp
+
+    if (isLandScape)
+        LandscapeSetProfilePager(
+            pageCount = pageCount,
+            pagerState = pagerState,
+            profilePicture = profilePicture,
+            username = username,
+            setProfilePicture = setProfilePicture,
+            setUsername = setUsername,
+            isNotCompact = isNotCompact,
+            finish = finish
+        )
+    else
+        PortraitSetProfilePager(
+            pageCount = pageCount,
+            pagerState = pagerState,
+            profilePicture = profilePicture,
+            username = username,
+            setProfilePicture = setProfilePicture,
+            setUsername = setUsername,
+            finish = finish
+        )
+
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+private fun PortraitSetProfilePager(
+    pageCount: Int,
+    pagerState: PagerState,
+    profilePicture: MutableState<String?>,
+    username: MutableState<String?>,
+    setProfilePicture: (String) -> Unit,
+    setUsername: (String) -> Unit,
+    finish: () -> Unit
+) {
+    val coroutineScope = rememberCoroutineScope()
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -253,9 +263,6 @@ private fun SetProfileScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceAround
     ) {
-        val pagerState = rememberPagerState()
-        val coroutineScope = rememberCoroutineScope()
-        val pageCount = 3
         Icon(
             painter = painterResource(id = R.drawable.logo_icon),
             contentDescription = null,
@@ -274,9 +281,75 @@ private fun SetProfileScreen(
                 contentAlignment = Alignment.Center
             ) {
                 when (pagerState.currentPage) {
-                    0 -> ExplainScreen()
-                    1 -> ProfilePictureScreen(profilePicture)
-                    2 -> UsernameScreen(username)
+                    0 -> {
+                        ExplainScreen()
+                        Spacer(modifier = Modifier.height(20.dp))
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .align(Alignment.BottomCenter),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text(
+                                text = "Create your profile",
+                                textAlign = TextAlign.Center,
+                                style = MaterialTheme.typography.headlineLarge,
+                                color = MaterialTheme.colorScheme.onBackground
+                            )
+                            Text(
+                                text = "Let's create your profile with a few easy steps",
+                                textAlign = TextAlign.Center,
+                                style = MaterialTheme.typography.headlineMedium,
+                                color = MaterialTheme.colorScheme.onBackground
+                            )
+                        }
+                    }
+                    1 -> {
+                        ProfilePictureScreen(profilePicture)
+                        Spacer(modifier = Modifier.height(20.dp))
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .align(Alignment.BottomCenter),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text(
+                                text = "Choose your picture",
+                                textAlign = TextAlign.Center,
+                                style = MaterialTheme.typography.headlineLarge,
+                                color = MaterialTheme.colorScheme.onBackground
+                            )
+                            Text(
+                                text = "You can change your picture in Settings anytime",
+                                textAlign = TextAlign.Center,
+                                style = MaterialTheme.typography.headlineMedium,
+                                color = MaterialTheme.colorScheme.onBackground
+                            )
+                        }
+                    }
+                    2 -> {
+                        UsernameScreen(username)
+                        Spacer(modifier = Modifier.height(20.dp))
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .align(Alignment.BottomCenter),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text(
+                                text = "Create your username",
+                                textAlign = TextAlign.Center,
+                                style = MaterialTheme.typography.headlineLarge,
+                                color = MaterialTheme.colorScheme.onBackground
+                            )
+                            Text(
+                                text = "It is cool to know how we call you",
+                                textAlign = TextAlign.Center,
+                                style = MaterialTheme.typography.headlineMedium,
+                                color = MaterialTheme.colorScheme.onBackground
+                            )
+                        }
+                    }
                 }
             }
         }
@@ -358,13 +431,244 @@ private fun SetProfileScreen(
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
+private fun LandscapeSetProfilePager(
+    pageCount: Int,
+    pagerState: PagerState,
+    profilePicture: MutableState<String?>,
+    username: MutableState<String?>,
+    setProfilePicture: (String) -> Unit,
+    setUsername: (String) -> Unit,
+    isNotCompact: Boolean,
+    finish: () -> Unit
+) {
+    val coroutineScope = rememberCoroutineScope()
+    Row(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+            .padding(16.dp),
+        horizontalArrangement = Arrangement.SpaceAround,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        HorizontalPager(
+            modifier = Modifier.weight(1f),
+            pageCount = pageCount,
+            state = pagerState,
+            userScrollEnabled = false,
+        ) {
+            Box(modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight(0.5f),
+                contentAlignment = Alignment.Center
+            ) {
+                when (pagerState.currentPage) {
+                    0 -> ExplainScreen(isLandscape = true)
+                    1 -> ProfilePictureScreen(profilePicture = profilePicture, isLandscape = true)
+                    2 -> UsernameScreen(username, isLandscape = true)
+                }
+            }
+        }
+        Box(modifier = Modifier
+            .weight(1f)
+            .fillMaxHeight()
+        ) {
+            if (!rememberImeState().value) {
+                Box(modifier = Modifier.align(Alignment.TopCenter)) {
+                    Logo()
+                }
+                Box(modifier = Modifier.align(Alignment.Center)) {
+                    when (pagerState.currentPage) {
+                        0 -> {
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .align(Alignment.BottomCenter),
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Text(
+                                    text = "Create your profile",
+                                    textAlign = TextAlign.Center,
+                                    style = MaterialTheme.typography.headlineLarge,
+                                    color = MaterialTheme.colorScheme.onBackground
+                                )
+                                Text(
+                                    text = "Let's create your profile with a few easy steps",
+                                    textAlign = TextAlign.Center,
+                                    style = MaterialTheme.typography.headlineMedium,
+                                    color = MaterialTheme.colorScheme.onBackground
+                                )
+                            }
+                        }
+
+                        1 -> {
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .align(Alignment.BottomCenter),
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Text(
+                                    text = "Choose your picture",
+                                    textAlign = TextAlign.Center,
+                                    style = MaterialTheme.typography.headlineLarge,
+                                    color = MaterialTheme.colorScheme.onBackground
+                                )
+                                Text(
+                                    text = "You can change your picture in Settings anytime",
+                                    textAlign = TextAlign.Center,
+                                    style = MaterialTheme.typography.headlineMedium,
+                                    color = MaterialTheme.colorScheme.onBackground
+                                )
+                            }
+                        }
+
+                        2 -> {
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .align(Alignment.BottomCenter),
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Text(
+                                    text = "Create your username",
+                                    textAlign = TextAlign.Center,
+                                    style = MaterialTheme.typography.headlineLarge,
+                                    color = MaterialTheme.colorScheme.onBackground
+                                )
+                                Text(
+                                    text = "It is cool to know how we call you",
+                                    textAlign = TextAlign.Center,
+                                    style = MaterialTheme.typography.headlineMedium,
+                                    color = MaterialTheme.colorScheme.onBackground
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+            Box(modifier = Modifier.align(if (rememberImeState().value) Alignment.Center else Alignment.BottomCenter)) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    if (isNotCompact) {
+                        Row(
+                            modifier = Modifier
+                                .padding(horizontal = 20.dp),
+                            horizontalArrangement = Arrangement.spacedBy(50.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            for (i in 0 until pageCount) {
+                                Box(
+                                    modifier = Modifier
+                                        .background(
+                                            color =
+                                            if (i == pagerState.currentPage) MaterialTheme.colorScheme.onBackground else MaterialTheme.colorScheme.onBackground.copy(
+                                                alpha = 0.2f
+                                            ),
+                                            shape = CircleShape
+                                        )
+                                        .size(10.dp)
+                                )
+                            }
+                        }
+                    }
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 25.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceAround
+                    ) {
+
+                        if (pagerState.currentPage == pageCount - 1)
+                            Button(
+                                onClick = {
+                                    setProfilePicture(profilePicture.value!!)
+                                    setUsername(username.value!!)
+                                    finish()
+                                },
+                                colors = defaultFilledButtonColors(),
+                                shape = defaultButtonShape(),
+                                enabled = username.value != null
+                            ) {
+                                Text(text = "Ready To Add Task")
+                            }
+                        else {
+                            Button(
+                                onClick = {
+                                    finish()
+                                },
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = Color.White,
+                                    contentColor = Color.Black
+                                ),
+                                shape = defaultButtonShape()
+                            ) {
+                                Text(text = "Skip")
+                            }
+                            Button(
+                                onClick = {
+                                    coroutineScope.launch {
+                                        pagerState.animateScrollToPage(
+                                            pagerState.currentPage + 1
+                                        )
+                                    }
+                                },
+                                colors = defaultFilledButtonColors(),
+                                shape = defaultButtonShape(),
+                                enabled = pagerState.currentPage != 1 || profilePicture.value != null
+                            ) {
+                                Text(text = "Next")
+                            }
+                        }
+
+                    }
+                }
+            }
+
+        }
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
 private fun OnBoardingScreen(
     windowSizeClass: WindowSizeClass,
     onBoardingDataList: List<OnBoardingData>,
     setFirstAccess: () -> Unit
 ) {
+    val configuration = LocalConfiguration.current
     val isNotCompact = windowSizeClass.heightSizeClass != WindowHeightSizeClass.Compact
+    val isLandScape = configuration.screenWidthDp > configuration.screenHeightDp
     val pagerState = rememberPagerState()
+
+    if (isLandScape)
+        LandscapeOnBoardingPager(
+            onBoardingDataList = onBoardingDataList,
+            pagerState = pagerState,
+            isNotCompact = isNotCompact,
+            setFirstAccess = setFirstAccess
+        )
+    else
+        PortraitOnBoardingPager(
+            onBoardingDataList = onBoardingDataList,
+            pagerState = pagerState,
+            isNotCompact = isNotCompact,
+            setFirstAccess = setFirstAccess
+        )
+
+
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+private fun PortraitOnBoardingPager(
+    onBoardingDataList: List<OnBoardingData>,
+    pagerState: PagerState,
+    isNotCompact: Boolean,
+    setFirstAccess: () -> Unit
+) {
     val coroutineScope = rememberCoroutineScope()
     Column(
         modifier = Modifier
@@ -374,13 +678,7 @@ private fun OnBoardingScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceAround
     ) {
-        Icon(
-            painter = painterResource(id = R.drawable.logo_icon),
-            contentDescription = null,
-            modifier = Modifier
-                .size(100.dp),
-            tint = Color.White
-        )
+        Logo()
         HorizontalPager(
             pageCount = onBoardingDataList.size,
             modifier = Modifier,
@@ -413,11 +711,13 @@ private fun OnBoardingScreen(
                     Text(
                         text = onBoardingDataList[pagerState.currentPage].title,
                         textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.headlineLarge,
                         color = Color.White
                     )
                     Text(
                         text = onBoardingDataList[pagerState.currentPage].description,
                         textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.headlineMedium,
                         color = Color.White
                     )
                 }
@@ -457,7 +757,8 @@ private fun OnBoardingScreen(
                         containerColor = Color.White,
                         contentColor = Color.Black
                     ),
-                    shape = defaultButtonShape()
+                    shape = defaultButtonShape(),
+                    modifier = Modifier.fillMaxWidth()
                 ) {
                     Text(text = "Get Started")
                 }
@@ -488,9 +789,142 @@ private fun OnBoardingScreen(
             }
 
         }
-
-
-
     }
+}
 
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+private fun LandscapeOnBoardingPager(
+    onBoardingDataList: List<OnBoardingData>,
+    pagerState: PagerState,
+    isNotCompact: Boolean,
+    setFirstAccess: () -> Unit
+) {
+    val coroutineScope = rememberCoroutineScope()
+    Row(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.primary)
+            .padding(16.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceAround
+    ) {
+        HorizontalPager(
+            pageCount = onBoardingDataList.size,
+            modifier = Modifier.weight(1f),
+            state = pagerState,
+            verticalAlignment = Alignment.CenterVertically,
+            userScrollEnabled = false,
+        ) {
+            Image(
+                painter = painterResource(id = onBoardingDataList[pagerState.currentPage].image),
+                contentDescription = null,
+                modifier = Modifier
+                    .padding(20.dp)
+                    .fillMaxSize(0.7f)
+            )
+        }
+        Box(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxHeight(),
+            contentAlignment = Alignment.Center
+        ) {
+            Box(modifier = Modifier.align(Alignment.TopCenter)) {
+                Logo()
+            }
+            Box(modifier = Modifier.align(Alignment.Center)) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = onBoardingDataList[pagerState.currentPage].title,
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.headlineLarge,
+                        color = Color.White
+                    )
+                    Text(
+                        text = onBoardingDataList[pagerState.currentPage].description,
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.headlineMedium,
+                        color = Color.White
+                    )
+                }
+            }
+            Box(modifier = Modifier.align(Alignment.BottomCenter)) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    if (isNotCompact) {
+                        Row(
+                            modifier = Modifier
+                                .padding(horizontal = 20.dp),
+                            horizontalArrangement = Arrangement.spacedBy(50.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            for (i in onBoardingDataList.indices) {
+                                Box(
+                                    modifier = Modifier
+                                        .background(
+                                            color =
+                                            if (i == pagerState.currentPage) Color.Black else Color.White,
+                                            shape = CircleShape
+                                        )
+                                        .size(10.dp)
+                                )
+                            }
+                        }
+                    }
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 25.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceAround
+                    ) {
+
+                        if (pagerState.currentPage == onBoardingDataList.size - 1)
+                            Button(
+                                onClick = setFirstAccess,
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = Color.White,
+                                    contentColor = Color.Black
+                                ),
+                                shape = defaultButtonShape(),
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                Text(text = "Get Started")
+                            }
+                        else {
+                            Button(
+                                onClick = setFirstAccess,
+                                colors = defaultFilledButtonColors(),
+                                shape = defaultButtonShape()
+                            ) {
+                                Text(text = "Skip")
+                            }
+                            Button(
+                                onClick = {
+                                    coroutineScope.launch {
+                                        pagerState.animateScrollToPage(
+                                            pagerState.currentPage + 1
+                                        )
+                                    }
+                                },
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = Color.White,
+                                    contentColor = Color.Black
+                                ),
+                                shape = defaultButtonShape()
+                            ) {
+                                Text(text = "Next")
+                            }
+                        }
+
+                    }
+                }
+            }
+        }
+    }
 }
