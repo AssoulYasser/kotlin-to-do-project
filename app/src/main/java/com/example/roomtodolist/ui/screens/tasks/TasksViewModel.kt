@@ -44,4 +44,8 @@ class TasksViewModel(private val mainViewModel: MainViewModel) : ViewModel() {
 
     fun getTasksPerFolder(): Map<FolderTable, MutableList<TaskTable>> = mainViewModel.tasksPerFolder
 
+    fun selectTask(taskTable: TaskTable) {
+        mainViewModel.selectTask(taskTable)
+    }
+
 }

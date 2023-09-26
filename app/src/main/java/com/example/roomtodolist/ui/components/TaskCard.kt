@@ -1,5 +1,6 @@
 package com.example.roomtodolist.ui.components
 
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -25,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
@@ -41,6 +43,7 @@ fun TaskCard(
     onSelect: (TaskTable) -> Unit,
     isSelected: Boolean
 ) {
+    val context = LocalContext.current
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -57,6 +60,11 @@ fun TaskCard(
                 .size(16.dp)
                 .clip(CircleShape)
                 .clickable {
+                    Toast.makeText(
+                        context,
+                        if (isSelected) "Task marked as uncompleted" else "task marked as completed",
+                        Toast.LENGTH_SHORT
+                    ).show()
                     onSelect(taskTable)
                 },
             content = {

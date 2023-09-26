@@ -63,8 +63,8 @@ class MainViewModel(
             mapOf()
         }
 
-    val username: String
-        get() = profileManager.usernameState.toString()
+    val username: String?
+        get() = profileManager.usernameState
 
     val profilePicture: Uri?
         get() = profileManager.profilePictureState
@@ -121,6 +121,8 @@ class MainViewModel(
             navState = navState.copy(currentDestination = navState.navigationStack.pop())
         navigateTo()
     }
+
+    fun inNavRoot() : Boolean = navState.currentDestination == MainRoutes.HOME.name
 
     private fun navigateTo() {
         navState.navHostController?.navigate(navState.currentDestination)

@@ -48,8 +48,9 @@ fun TasksScreen(
             onClick = {
                 tasksViewModel.setTaskToUpdate(it)
                 tasksViewModel.navigateToTaskShowCase()
-            }
-        ) {}
+            },
+            onSelectTask = { tasksViewModel.selectTask(it) }
+        )
     }
 }
 

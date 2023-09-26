@@ -116,7 +116,7 @@ class HomeViewModel(private val mainViewModel: MainViewModel) : ViewModel() {
 
     fun getProfilePicture() : Uri? = mainViewModel.profilePicture
 
-    fun getUsername() : String = mainViewModel.username
+    fun getUsername() : String? = mainViewModel.username
     fun selectTask(taskTable: TaskTable) {
         mainViewModel.selectTask(taskTable)
     }

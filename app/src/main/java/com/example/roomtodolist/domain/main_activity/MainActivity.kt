@@ -54,6 +54,8 @@ class MainActivity : ComponentActivity() {
 
     @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
+        if (mainViewModel.inNavRoot())
+            finish()
         mainViewModel.navigateBack()
     }
 
