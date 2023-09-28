@@ -19,7 +19,7 @@ fun AddTaskScreen(
 ) {
     val context = LocalContext.current
     Container(actionBar = {
-        ActionBar {
+        ActionBar(title = "Add Task") {
             addTaskViewModel.navigateBack()
             addTaskViewModel.clear()
         }
